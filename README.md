@@ -9,7 +9,7 @@ UML Modeling - <a href="http://argouml.tigris.org/" title="ArgoUML">ArgoUML</a>
 
 Technologies
 ------------
-* **API** - Python<br/
+* **API** - Python
 * **Client** - HTML5 / NodeJS / JQuery (Server Side Language?)
 * **Database** - ??? on Amazon RDS/DynamoDB
 * **Web Server** - Nginx on Amazon EC2
