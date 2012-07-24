@@ -1,0 +1,143 @@
+/*
+SCOPE: Page
+*/
+
+html, body {
+	margin: 0px;
+	padding: 0px;
+	font-family: "Helvetica Neue",Helvetica,Arial,freesans;
+	font-size: 12px;
+    background: #FFFFFF; /* Old browsers */
+}
+
+
+#wrapper {
+	width: 960px;
+	margin: 0 auto 0 auto;
+}
+
+/*
+SCOPE: Header
+*/
+
+#header {
+	/* height: 150px; -- auto sized for now */
+	background-color:#20fd2f;
+}
+	
+#page-top-bar {
+	height:5px;
+	background-color: #0f92cf;
+}
+	
+#header-account {
+	float: right;
+	color: #ffffff;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border: 1px solid #0f92cf;
+	margin: 0 20px 0 0;
+	text-align: center;
+	padding: 4px;
+	background-color: #0f92cf;
+}
+#logo {
+	font-size: 72px;
+	font-weight: bold;
+}
+	
+/*
+SCOPE: Main Navigation
+*/
+
+#main-navigation {
+	background-color:#e1dfbf;
+}
+
+#main-navigation ul {
+	list-style-type: none;
+	height: 30px;
+	margin: 0px;
+	padding: 0px;
+}
+
+#main-navigation ul li {
+	float: left;
+	font-size: 16px;
+	margin: 0px;
+	padding: 5px 10px 5px 10px;
+	background-color: #ffffff;
+}
+
+#main-navigation ul li:hover {
+	background-color: #c1d3ff;
+	border-bottom: 2px solid #CC0000;
+}
+
+/*
+SCOPE: Auction Listings
+*/
+
+#auctions {
+	background-color: #4dfca4;
+	position: relative;
+}
+
+#auctions .auction {
+	margin: 5px 5px 5px 5px;
+	width: 174px;
+	background-color: #c3d5c2;
+	float: left;
+	border-radius: 5px;
+	border: 4px solid #cc0000;
+}
+
+#auctions .auction-title {
+	font-size: 12px;
+	text-align: center;
+}
+#auctions .auction-image {
+	margin: 0px auto 0px auto;
+}
+#auctions .auction-image img {
+	border: 0;
+	height: 160px;
+	width: 160px;
+	margin: 7px;
+}
+#auctions .auction-info {
+	background-color: #000000;
+	color: #ffffff;
+}
+
+#auctions .auction-info div {
+	margin: 0px auto 0px auto;
+	text-align: center;
+}
+
+#auctions .auction-info .auction-current-price {
+	font-size: 14px;
+	color: #FFFFFF;
+}
+
+#auctions .auction-info .auction-time-remaining {
+	font-size: 16px;
+	color: #CC0000;
+}
+#auctions .auction-info .auction-current-winner {
+	font-size: 12px;
+	color: #00CC00;
+}
+#auctions .auction-bid-button {
+	font-size: 18px;
+	text-align: center;
+	background-color: #c3fdb1;
+	padding: 2px;
+	color: #000000;
+	border:1px solid #000000;
+}
+#auctions .auction-footer {
+	color: #000000;
+	padding: 1px;
+	text-align: center;
+}
