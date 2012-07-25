@@ -80,7 +80,7 @@ SCOPE: Auction Listings
 
 #auctions {
 	background-color: #4dfca4;
-	position: relative;
+	clear: both;
 }
 
 #auctions .auction {
