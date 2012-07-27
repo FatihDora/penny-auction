@@ -5,5 +5,5 @@ desktop.ini
 
 # ignore text editor and IDE metadata files
 .project
-.swp
+*.swp
 
