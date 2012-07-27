@@ -7,7 +7,7 @@ html, body {
 	padding: 0px;
 	font-family: "Helvetica Neue",Helvetica,Arial,freesans;
 	font-size: 12px;
-    background: #FFFFFF; /* Old browsers */
+	background-color:#fff;
 }
 
 
@@ -22,28 +22,37 @@ SCOPE: Header
 
 #header {
 	/* height: 150px; -- auto sized for now */
-	background-color:#20fd2f;
+	background-color:#fff;
 }
 	
 #page-top-bar {
 	height:5px;
-	background-color: #0f92cf;
+	background-color: #5c9ccc;
 }
 	
 #header-account {
 	float: right;
-	color: #ffffff;
+	color: #fff;
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
-	border: 1px solid #0f92cf;
 	margin: 0 20px 0 0;
 	text-align: center;
 	padding: 4px;
-	background-color: #0f92cf;
+	background: #5c9ccc;
 }
+
+#header-account a {
+	color: #f0f0f0;
+	text-decoration: none;
+}
+
+#header-account a:hover {
+	color: #fff;
+}
+
 #logo {
-	font-size: 72px;
-	font-weight: bold;
+margin: 0px;
+padding: 0px;
 }
 	
 /*
@@ -51,27 +60,47 @@ SCOPE: Main Navigation
 */
 
 #main-navigation {
-	background-color:#e1dfbf;
+	background: url('/images/ui-bg_gloss-wave.png') 50% 50% repeat-x;
+	border-radius: 4px;
+}
+
+#main-navigation a {
+	color: #333;
+	text-decoration: none;
+}
+
+#main-navigation a:hover {
+	color: #555;
 }
 
 #main-navigation ul {
 	list-style-type: none;
-	height: 30px;
 	margin: 0px;
 	padding: 0px;
+	height: 30px;
 }
 
 #main-navigation ul li {
 	float: left;
 	font-size: 16px;
-	margin: 0px;
-	padding: 5px 10px 5px 10px;
-	background-color: #ffffff;
+	margin: 0px 0px 0px 0px;
+
 }
 
 #main-navigation ul li:hover {
-	background-color: #c1d3ff;
-	border-bottom: 2px solid #CC0000;
+	background: -moz-linear-gradient(top,  rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.25) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.25)), color-stop(100%,rgba(255,255,255,0.25))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(255,255,255,0.25) 0%,rgba(255,255,255,0.25) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(255,255,255,0.25) 0%,rgba(255,255,255,0.25) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(255,255,255,0.25) 0%,rgba(255,255,255,0.25) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(255,255,255,0.25) 0%,rgba(255,255,255,0.25) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40ffffff', endColorstr='#40ffffff',GradientType=0 ); /* IE6-9 */	
+}
+
+#main-navigation ul li a {
+	color: #fff;
+	padding: 5px 10px;
+	display: block;
 }
 
 /*
@@ -79,45 +108,55 @@ SCOPE: Auction Listings
 */
 
 #auctions {
-	background-color: #4dfca4;
+	background-color:#fff;
 	clear: both;
 }
 
 #auctions .auction {
-	margin: 5px 5px 5px 5px;
+	margin: 5px 7px 5px 7px;
 	width: 174px;
-	background-color: #c3d5c2;
 	float: left;
-	border-radius: 5px;
-	border: 4px solid #cc0000;
+	border-radius: 10px;
+	border: 1px solid #a6c9e2; 
+	background: #fcfdfd url(images/ui-bg_inset-hard.png) 50% bottom repeat-x; color: #222222; }
+}
+
+#auctions .auction:hover {
+	border-color:#555;
 }
 
 #auctions .auction-title {
 	font-size: 12px;
 	text-align: center;
 }
+
+#auctions .auction-title a {
+	color: #68bf65;
+	display: block;
+	padding: 2px;
+}
 #auctions .auction-image {
-	margin: 0px auto 0px auto;
+	margin: 0px 7px 0px 7px;
 }
 #auctions .auction-image img {
 	border: 0;
-	height: 160px;
-	width: 160px;
-	margin: 7px;
+	max-height: 100%;
+    max-width: 160px;
 }
 #auctions .auction-info {
-	background-color: #000000;
+	/*background-color: #e1e1e1;*/
 	color: #ffffff;
 }
 
 #auctions .auction-info div {
 	margin: 0px auto 0px auto;
 	text-align: center;
+	margin-bottom: 2px;
 }
 
 #auctions .auction-info .auction-current-price {
 	font-size: 14px;
-	color: #FFFFFF;
+	color: #555;
 }
 
 #auctions .auction-info .auction-time-remaining {
@@ -126,15 +165,22 @@ SCOPE: Auction Listings
 }
 #auctions .auction-info .auction-current-winner {
 	font-size: 12px;
-	color: #00CC00;
+	color: #000000;
 }
 #auctions .auction-bid-button {
 	font-size: 18px;
 	text-align: center;
-	background-color: #c3fdb1;
+	background-color: #fff;
 	padding: 2px;
 	color: #000000;
-	border:1px solid #000000;
+	border:1px solid #68bf65;
+	margin: 0px 40px 0px 40px;
+	border-radius: 10px;
+}
+
+#auctions .auction-bid-button:hover {
+	background-color:#e1f3e0;
+	cursor: pointer;
 }
 #auctions .auction-footer {
 	color: #000000;
