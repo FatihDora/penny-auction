@@ -1,0 +1,12 @@
+# ignore operating system metadata files
+thumbs.db
+desktop.ini
+.DS_Store
+
+# ignore text editor and IDE metadata files
+.project
+*.swp
+
+# ignore cached Python bytecode
+*.pyc
+
