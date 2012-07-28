@@ -34,6 +34,24 @@ class list_auto_bidders_for_auction:
 		return "<something>"
 
 
+
+
+class get_nonce:
+	def GET(self):
+		return user.get_nonce()
+
+class login:
+	def GET(self):
+		return user.login()
+
+class logout:
+	def GET(self):
+		return user.logout()
+
+class validate_email:
+	def GET(self):
+		return user.validate_email()
+
+
 app = web.application(urls, globals())
 main = app.cgirun()
-
