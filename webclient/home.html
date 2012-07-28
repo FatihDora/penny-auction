@@ -10,6 +10,54 @@
 	<link rel="shortcut icon" href="/images/favicon.ico" />
 	<link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
 	<link rel="stylesheet" type="text/css" href="/css/screen.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
+	<script type="text/javascript">
+	
+	function padzero(number, length) {
+
+	    var str = '' + number;
+	    while (str.length < length) {
+	        str = '0' + str;
+	    }
+
+	    return str;
+
+	}
+		$(document).ready(function() {
+			$(".auction-time-remaining").each(function(i) {
+				var parts = this.innerHTML.split(":");
+				var d = new Date();
+				d.setHours(parts[0]);
+				d.setMinutes(parts[1]);
+				d.setSeconds(parts[2]);
+				var oldHours = d.getHours();
+				if (oldHours >= d.getHours()) {
+					this.innerHTML = padzero(d.getHours(),2) + ":" + padzero(d.getMinutes(),2) + ":" + padzero(d.getSeconds(),2);
+				}
+			});
+			window.setInterval(function() {
+				$(".auction-time-remaining").each(function(i) {
+					var parts = this.innerHTML.split(":");
+					var d = new Date();
+					d.setHours(parts[0]);
+					d.setMinutes(parts[1]);
+					d.setSeconds(parts[2]);
+					var oldHours = d.getHours();
+					d.setSeconds(d.getSeconds() - 1);
+					if (oldHours >= d.getHours()) {
+						this.innerHTML = padzero(d.getHours(),2) + ":" + padzero(d.getMinutes(),2) + ":" + padzero(d.getSeconds(),2);
+						if (this.innerHTML == "00:00:00") { this.style.backgroundColor="#CC0000"; $(this).animate({backgroundColor: '#FFFFFF'}, 'slow');}
+					}
+					else
+					{
+						this.innerHTML = "00:00:00";
+					}
+				})
+			},1000);
+			
+		});	
+	</script>
 </head>
 <body id="home">
 	<div id="header-background"></div>
@@ -29,119 +77,19 @@
 			</ul>
 		</div>
 		<div id="auctions">
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
+			{% for auction in auctions %}
+			<div id="{{auction.id}}" class="auction">
+				<div class="auction-title"><a href="{{auction.productUrl}}">{{auction.name}}</a></div>
+				<div class="auction-image"><img src="{{auction.imageUrl}}" alt="{{auction.name}}" /></div>
 				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
+					<div class="auction-current-price">₱{{auction.price}}</div>
+					<div class="auction-time-remaining">{{auction.auctionRemaining}}</div>
+					<div class="auction-current-winner">{{auction.currentWinner}}</div>
 				</div>
 				<div class="auction-bid-button">Bid!</div>
 				<div class="auction-footer"></div>
 			</div>
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
-				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer"></div>
-			</div>
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
-				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer"></div>
-			</div>
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
-				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer"></div>
-			</div>
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
-				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer"></div>
-			</div>
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
-				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer"></div>
-			</div>
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
-				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer"></div>
-			</div>
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
-				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer"></div>
-			</div>
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
-				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer"></div>
-			</div>
-			<div id="item1" class="auction">
-				<div class="auction-title"><a href="#" title="link to auction page">Señor Gato</a></div>
-				<div class="auction-image"><img src="/images/senor_gif.gif" alt="auction image" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">$0.05</div>
-					<div class="auction-time-remaining">00:00:05</div>
-					<div class="auction-current-winner">darinh</div>
-				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer">
-					
-				</div>
-			</div>
-			
+			{% endfor %}
 		</div>
 	</div>
 </body>	
