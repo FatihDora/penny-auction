@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from google.appengine.ext import db
-import lib import web
+from lib import web
 
 
 urls = (
@@ -54,4 +54,8 @@ class validate_email:
 
 
 app = web.application(urls, globals())
-main = app.cgirun()
+def main():
+	app.wsgifunc()
+
+if __name__ == '__main__':
+	main()
