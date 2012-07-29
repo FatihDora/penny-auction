@@ -56,12 +56,18 @@ class get_nonce:
 class register:
 	def GET(self):
 		inputs = web.input()
-		return user_controller.user_register(inputs.username, inputs.password).username
+		try:
+			return user_controller.user_register(inputs.username, inputs.password).username
+		except Exception as e:
+			return e
 
 class authenticate:
 	def GET(self):
 		inputs = web.input()
-		return user_controller.user_authenticate(inputs.username, inputs.password)
+		try:
+			return user_controller.user_authenticate(inputs.username, inputs.password)
+		except Exception as e:
+			return e
 
 app = web.application(urls, globals())
 main = app.cgirun()
