@@ -7,12 +7,12 @@ handlers:
 
 - url: /
   script: home.py
-  
+
 - url: /images
   static_dir: static/images
-  
+
 - url: /css
   static_dir: static/css
-  
+
 - url: /js
   static_dir: static/js

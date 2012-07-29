@@ -1,47 +1,39 @@
 #!/usr/bin/env python
 
 import wsgiref.handlers
-from datetime import datetime  
+from datetime import datetime
 from datetime import timedelta
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 
-class Auction(db.Model):
-	id = db.IntegerProperty()
-	name = db.StringProperty()
-	productUrl = db.StringProperty()
-	imageUrl = db.StringProperty()
-	currentPrice = db.FloatProperty()
-	currentWinner = db.StringProperty()
-	auctionEnd = db.DateTimeProperty()
-	
+import Auction
 
 class HomeHandler(webapp.RequestHandler):
 	def get(self):
 		populate()
 		auctions = db.GqlQuery('SELECT * FROM Auction ORDER BY auctionEnd DESC').fetch(15)
-		
+
 		listValues = []
 		for auction in auctions:
 			delta = auction.auctionEnd.replace(microsecond=0) - datetime.now().replace(microsecond=0)
 			auction.auctionRemaining = delta
 			auction.price = "{0:.2f}".format(auction.currentPrice)
 			listValues.append(auction)
-			
+
 		values = {
 			'auctions': listValues
 		}
 		#	delta = auction.auctionEnd
-			
+
 		#values = {
 		#	'auctions': auctions
-		#}	
+		#}
 		self.response.out.write(
 			template.render('home.html', values))
 	def post(self):
 		self.redirect('/')
-		
+
 
 def populate():
 	#q = db.GqlQuery("SELECT * FROM Auction")
@@ -76,14 +68,14 @@ def populate():
 	auction = Auction(id=14,name="Senor Gato",productUrl="http://www.google.com",imageUrl="/images/senor_gif.gif",currentPrice=8.30,currentWinner="darinh",auctionEnd=datetime.now() + timedelta(seconds=20))
 	auction.put()
 	auction = Auction(id=15,name="Senor Gato",productUrl="http://www.google.com",imageUrl="/images/senor_gif.gif",currentPrice=2.09,currentWinner="darinh",auctionEnd=datetime.now() + timedelta(seconds=19))
-	auction.put()			
-	
-	
+	auction.put()
+
+
 def main():
 	app = webapp.WSGIApplication([
 	  (r'.*', HomeHandler)], debug=True)
 	wsgiref.handlers.CGIHandler().run(app)
-	
-	
+
+
 if __name__ == "__main__":
 	main()

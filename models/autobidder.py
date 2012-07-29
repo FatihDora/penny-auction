@@ -5,7 +5,5 @@
 from __future__ import division
 
 from google.appengine.ext import db
-from lib import web
 
-class autobidder:
-
+class Autobidder:
