@@ -5,6 +5,7 @@ from lib import web
 
 
 urls = (
+	'/', 'index',
 	'/create_auto_bidder', 'create_auto_bidder',
 	'/get_auto_bidder_status', 'get_auto_bidder_status',
 	'/cancel_auto_bidder', 'cancel_auto_bidder',
@@ -13,25 +14,29 @@ urls = (
 )
 
 
+class index:
+	def GET(self):
+		return "index stub"
+
 class create_auto_bidder:
 	def GET(self):
-		return "<something>"
+		return "create_auto_bidder stub"
 
 class cancel_auto_bidder:
 	def GET(self):
-		return "<something>"
+		return "cancel_auto_bidder stub"
 
 class list_auto_bidders:
 	def GET(self):
-		return "<something>"
+		return "list_auto_bidder stub"
 
 class get_auto_bidder_status:
 	def GET(self):
-		return "<something>"
+		return "get_auto_bidder_status stub"
 
 class list_auto_bidders_for_auction:
 	def GET(self):
-		return "<something>"
+		return "list_auto_bidders_for_auction stub"
 
 
 
@@ -54,8 +59,5 @@ class validate_email:
 
 
 app = web.application(urls, globals())
-def main():
-	app.wsgifunc()
+main = app.cgirun()
 
-if __name__ == '__main__':
-	main()
