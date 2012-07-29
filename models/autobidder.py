@@ -7,10 +7,10 @@ from __future__ import division
 from google.appengine.ext import db
 
 class Autobidder(db.Model):
-        id = db.IntegerProperty()
-		user_id = db.IntegerProperty()
-		auction_id = db.IntegerProperty()
-		bid_type_id = db.IntegerProperty()
-		remaining_bids = db.IntegerProperty()
-        create_time = db.DateTimeProperty()
+        id = db.IntegerProperty(required=True)
+		user_id = db.IntegerProperty(required=True)
+		auction_id = db.IntegerProperty(required=True)
+		bid_type_id = db.IntegerProperty(required=True)
+		remaining_bids = db.IntegerProperty(required=True)
+        create_time = db.DateTimeProperty(required=True)
 
