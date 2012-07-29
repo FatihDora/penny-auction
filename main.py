@@ -7,6 +7,8 @@ from __future__ import division
 from google.appengine.ext import db
 from lib import web
 
+import sys
+import random
 
 urls = (
 	'/', 'index',
@@ -14,7 +16,13 @@ urls = (
 	'/get_auto_bidder_status', 'get_auto_bidder_status',
 	'/cancel_auto_bidder', 'cancel_auto_bidder',
 	'/list_auto_bidders_for_user', 'list_auto_bidders_for_user',
-	'/list_auto_bidders_for_auction', 'list_auto_bidders_for_auction'
+	'/list_auto_bidders_for_auction', 'list_auto_bidders_for_auction',
+
+	'/get_nonce', 'get_nonce',
+	'/user_register', 'register',
+	'/user_login', 'login',
+	'/user_logout', 'logout',
+	'/user_validate_email', 'validate_email'
 )
 
 
@@ -44,22 +52,45 @@ class list_auto_bidders_for_auction:
 
 
 
-
 class get_nonce:
 	def GET(self):
-		return user.get_nonce()
+		'''
+			Get a random number, to be used only once, hence nonce ("Number used
+			ONCE")
+		'''
+		return random.randint(32768, sys.maxint)
+
+class register:
+	'''
+		Register a new account
+	'''
+	def GET(self):
+		return False
 
 class login:
 	def GET(self):
-		return user.login()
+		'''
+			Login to the API and return a hash which corresponds to the
+			username, password, and salt
+		'''
+		inputs = web.input()
+		salt1 = inputs.salt1
+
+		return salt1
 
 class logout:
 	def GET(self):
-		return user.logout()
+		'''
+			Log out of the service
+		'''
+		return True
 
 class validate_email:
 	def GET(self):
-		return user.validate_email()
+		'''
+			 Validate the user's email
+		'''
+		return True
 
 
 app = web.application(urls, globals())
