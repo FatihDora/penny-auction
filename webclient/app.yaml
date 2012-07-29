@@ -6,7 +6,7 @@ runtime: python
 handlers:
 
 - url: /
-  script: home.py
+  script: controllers/home.py
   
 - url: /images
   static_dir: static/images
@@ -16,3 +16,6 @@ handlers:
   
 - url: /js
   static_dir: static/js
+  
+- url: /user/.*
+  script: controllers/testAPI.py

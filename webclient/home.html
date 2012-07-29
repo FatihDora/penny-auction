@@ -12,59 +12,21 @@
 	<link rel="stylesheet" type="text/css" href="/css/screen.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
-	<script type="text/javascript">
-	
-	function padzero(number, length) {
-
-	    var str = '' + number;
-	    while (str.length < length) {
-	        str = '0' + str;
-	    }
-
-	    return str;
-
-	}
-		$(document).ready(function() {
-			$(".auction-time-remaining").each(function(i) {
-				var parts = this.innerHTML.split(":");
-				var d = new Date();
-				d.setHours(parts[0]);
-				d.setMinutes(parts[1]);
-				d.setSeconds(parts[2]);
-				var oldHours = d.getHours();
-				if (oldHours >= d.getHours()) {
-					this.innerHTML = padzero(d.getHours(),2) + ":" + padzero(d.getMinutes(),2) + ":" + padzero(d.getSeconds(),2);
-				}
-			});
-			window.setInterval(function() {
-				$(".auction-time-remaining").each(function(i) {
-					var parts = this.innerHTML.split(":");
-					var d = new Date();
-					d.setHours(parts[0]);
-					d.setMinutes(parts[1]);
-					d.setSeconds(parts[2]);
-					var oldHours = d.getHours();
-					d.setSeconds(d.getSeconds() - 1);
-					if (oldHours >= d.getHours()) {
-						this.innerHTML = padzero(d.getHours(),2) + ":" + padzero(d.getMinutes(),2) + ":" + padzero(d.getSeconds(),2);
-						if (this.innerHTML == "00:00:00") { this.style.backgroundColor="#CC0000"; $(this).animate({backgroundColor: '#FFFFFF'}, 'slow');}
-					}
-					else
-					{
-						this.innerHTML = "00:00:00";
-					}
-				})
-			},1000);
-			
-		});	
-	</script>
+	<script src="/js/functions.js"></script>
+	<script src="/js/core.js"></script>
 </head>
 <body id="home">
 	<div id="header-background"></div>
 	<div id="page-top-bar"></div>
 	<div id="wrapper">
 	    <div id="header">
-		<div id="header-account">Logged in as <a href="#">Darin</a>.  <a href="#">Logout</a></div>
+		<div id="header-account">
+			{% if user %}
+				Logged in as <a href="javascript:void(0);">{{user.username}}</a>.  <a href="#">Logout</a>
+			{% else %}
+				<a href="javascript:void(0);" id="user-login">Login</a> or <a href="javscript:void(0);" id="user-register">Register</a>
+			{% endif %}
+			</div>
 		    <div id="logo"><img src="/images/logo.png" alt="Piso Auction" /></div>
 		</div>
 		<div id="main-navigation">
@@ -94,51 +56,3 @@
 	</div>
 </body>	
 </html>
-
-
-<!--
-{% for shout in shouts %}
-<div>
-	{{shout.message}}
-	from 
-	{% ifequal shout.who None %}
-		Anonymous
-	{% else %}
-		{{shout.who}}
-	{% endifequal %}
-</div>
-{% endfor %}
-
-<form action="home" method="post" accept-charset="utf-8">
-	<p>From: <input type="text" name="who" value="" id="who"></p>
-	<p>Message: <input type="text" name="message" value="" id="message"></p>
-
-	<p><input type="submit" value="Shout"></p>
-	<p><input type="button" name="getData" value="Get Data!" id="getData"></p>
-</form>
-<div id="newData"></div>
-
-<script type="text/javascript" href="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
-
-$(document).ready(function() {
-  $("#getData").click(function() {
-	$.ajax({
-	            type: "POST",
-	            url: "http://www.hotelbeasain.com/webservice/wshotelbeasain.asmx?op=EstadoHabitacionesFechas",
-	            data: '{}',
-	            contentType: "application/json; charset=utf-8",
-	            dataType: "json",
-	            success: function (resul) {
-	                // if (resul.d)
-	                    alert('El usuario es válido.');
-	                // else
-	                    // alert('El usuairo es inválido.');
-	            },
-	            error:function (xhr, ajaxOptions, thrownError){
-	                    alert(xhr.status);
-	                    alert(thrownError);
-	                }
-	        });
-	});
-});
--->
