@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from google.appengine.ext import db
-import web
+import lib import web
 
 
 urls = (
