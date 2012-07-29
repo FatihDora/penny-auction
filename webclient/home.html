@@ -13,15 +13,15 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
 	<script type="text/javascript">
-	
+
 	function padzero(number, length) {
 
-	    var str = '' + number;
-	    while (str.length < length) {
-	        str = '0' + str;
-	    }
+		var str = '' + number;
+		while (str.length < length) {
+			str = '0' + str;
+		}
 
-	    return str;
+		return str;
 
 	}
 		$(document).ready(function() {
@@ -55,17 +55,17 @@
 					}
 				})
 			},1000);
-			
-		});	
+
+		});
 	</script>
 </head>
 <body id="home">
 	<div id="header-background"></div>
 	<div id="page-top-bar"></div>
 	<div id="wrapper">
-	    <div id="header">
+		<div id="header">
 		<div id="header-account">Logged in as <a href="#">Darin</a>.  <a href="#">Logout</a></div>
-		    <div id="logo"><img src="/images/logo.png" alt="Piso Auction" /></div>
+			<div id="logo"><img src="/images/logo.png" alt="Piso Auction" /></div>
 		</div>
 		<div id="main-navigation">
 			<ul>
@@ -92,7 +92,7 @@
 			{% endfor %}
 		</div>
 	</div>
-</body>	
+</body>
 </html>
 
 
@@ -100,7 +100,7 @@
 {% for shout in shouts %}
 <div>
 	{{shout.message}}
-	from 
+	from
 	{% ifequal shout.who None %}
 		Anonymous
 	{% else %}
@@ -123,22 +123,22 @@
 $(document).ready(function() {
   $("#getData").click(function() {
 	$.ajax({
-	            type: "POST",
-	            url: "http://www.hotelbeasain.com/webservice/wshotelbeasain.asmx?op=EstadoHabitacionesFechas",
-	            data: '{}',
-	            contentType: "application/json; charset=utf-8",
-	            dataType: "json",
-	            success: function (resul) {
-	                // if (resul.d)
-	                    alert('El usuario es válido.');
-	                // else
-	                    // alert('El usuairo es inválido.');
-	            },
-	            error:function (xhr, ajaxOptions, thrownError){
-	                    alert(xhr.status);
-	                    alert(thrownError);
-	                }
-	        });
+				type: "POST",
+				url: "http://www.hotelbeasain.com/webservice/wshotelbeasain.asmx?op=EstadoHabitacionesFechas",
+				data: '{}',
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function (resul) {
+					// if (resul.d)
+						alert('El usuario es válido.');
+					// else
+						// alert('El usuairo es inválido.');
+				},
+				error:function (xhr, ajaxOptions, thrownError){
+						alert(xhr.status);
+						alert(thrownError);
+					}
+			});
 	});
 });
 -->

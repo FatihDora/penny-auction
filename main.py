@@ -7,8 +7,7 @@ from __future__ import division
 from google.appengine.ext import db
 from lib import web
 
-import sys
-import random
+from controllers import user_controller
 
 urls = (
 	'/', 'index',
@@ -20,9 +19,7 @@ urls = (
 
 	'/get_nonce', 'get_nonce',
 	'/user_register', 'register',
-	'/user_login', 'login',
-	'/user_logout', 'logout',
-	'/user_validate_email', 'validate_email'
+	'/user_authenticate', 'authenticate'
 )
 
 
@@ -54,44 +51,17 @@ class list_auto_bidders_for_auction:
 
 class get_nonce:
 	def GET(self):
-		'''
-			Get a random number, to be used only once, hence nonce ("Number used
-			ONCE")
-		'''
-		return random.randint(32768, sys.maxint)
+		return user_controller.user_get_nonce()
 
 class register:
-	'''
-		Register a new account
-	'''
 	def GET(self):
-		return False
-
-class login:
-	def GET(self):
-		'''
-			Login to the API and return a hash which corresponds to the
-			username, password, and salt
-		'''
 		inputs = web.input()
-		salt1 = inputs.salt1
+		return user_controller.user_register(inputs.username, inputs.password).username
 
-		return salt1
-
-class logout:
+class authenticate:
 	def GET(self):
-		'''
-			Log out of the service
-		'''
-		return True
-
-class validate_email:
-	def GET(self):
-		'''
-			 Validate the user's email
-		'''
-		return True
-
+		inputs = web.input()
+		return user_controller.user_authenticate(inputs.username, inputs.password)
 
 app = web.application(urls, globals())
 main = app.cgirun()
