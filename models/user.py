@@ -10,3 +10,6 @@ class User(db.Model):
 	password_salt = db.StringProperty()
 	create_time = db.DateTimeProperty()
 	personal_information = db.StringProperty()
+	# implicit property 'active_autobidders' created by the Autobidder class
+	# implicit property 'auctions' created by the Auction class
+
