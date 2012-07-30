@@ -6,13 +6,8 @@ runtime: python
 handlers:
 
 - url: /
-<<<<<<< HEAD
   script: controllers/home.py
-  
-=======
-  script: home.py
 
->>>>>>> 37183e2a79b4ab6d3e6fdab1a720e83c0b914572
 - url: /images
   static_dir: static/images
 
@@ -21,9 +16,6 @@ handlers:
 
 - url: /js
   static_dir: static/js
-<<<<<<< HEAD
   
 - url: /user/.*
   script: controllers/testAPI.py
-=======
->>>>>>> 37183e2a79b4ab6d3e6fdab1a720e83c0b914572
