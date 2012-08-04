@@ -12,6 +12,9 @@ class AppSettings(db.Model):
 	OLD_HASH_WORK_LEVEL = 12
 	NEW_HASH_WORK_LEVEL = 12
 
+	# the starting duration of an auction, in seconds
+	AUCTION_INITIAL_DURATION = 3600
+
 	# the time added to an auction's duration when a bid is placed, in seconds
 	AUCTION_BID_BUMP_TIME = 120
 
