@@ -19,8 +19,25 @@ var GET_AUCTION_INFO = '/get_auction_info';
 
 
 $(document).ready(function() {
-	
-	
+	/* Set up the jQuery AJAX stuff */
+	$.ajaxSetup({
+		async: true,
+		dataType: "jsonp",
+		cache: false, /* default for 'jsonp' */
+		type: "GET",
+		beforeSend: function(xhr, settings) {
+			// Before every AJAX request, do this
+		},
+		complete: function(xhr, status) {
+			// After every AJAX request, and after success/error handlers are
+			// called
+		},
+		error: function(xhr, status, error) {
+			// Error handler
+			showDialog("error", "Unexpected Error", status);
+		}
+	});
+
 	/* 1s Timer */
 	window.setInterval(function() {
 		$(".auction-time-remaining").each(function(i) {
@@ -41,7 +58,7 @@ $(document).ready(function() {
 			}
 		})
 	},1000);
-	
+
 	/* Bid Button Clicked */
 	$(".auction-bid-button").click(function() {
 		var auction_id = $(this).parent().attr("id");
@@ -55,7 +72,7 @@ $(document).ready(function() {
 			}
 		});
 	});
-	
+
 	/* Login Button Clicked */
 	$("#user-login").click(function() {
 		var u = 'tester2';
@@ -71,41 +88,41 @@ $(document).ready(function() {
 			}
 		});
 	});
-	
-	/***************** TEST LOGIN STUFF ********************/
-	
-	$(".login").click(function(e) {
-	                e.preventDefault();
-	                $("fieldset#login-menu").toggle();
-	                $(".login").toggleClass("menu-open");
-	            });
 
-	            $("fieldset#login-menu").mouseup(function() {
-	                return false
-	            });
-	
-	            $(document).mouseup(function(e) {
-	                if($(e.target).parent("a.login").length==0) {
-	                    $(".login").removeClass("menu-open");
-	                    $("fieldset#login-menu").hide();
-	                }
-	            });
-	
+	/***************** TEST LOGIN STUFF ********************/
+
+	$(".login").click(function(e) {
+					e.preventDefault();
+					$("fieldset#login-menu").toggle();
+					$(".login").toggleClass("menu-open");
+				});
+
+				$("fieldset#login-menu").mouseup(function() {
+					return false
+				});
+
+				$(document).mouseup(function(e) {
+					if($(e.target).parent("a.login").length==0) {
+						$(".login").removeClass("menu-open");
+						$("fieldset#login-menu").hide();
+					}
+				});
+
 	$("#show-registration").click(function() {
 		$("#overlay").css('display','block');
 		$("fieldset#registration-menu").css('display','block');
-		
+
 	});
-		
+
 	$("#overlay").click(function() {
 		$(this).css('display','none');
 		$("fieldset#registration-menu").css('display','none');
 	});
 
-	
+
 	/************** END TEST LOGIN STUFF *******************/
-	
-	
+
+
 	/* Count auctions down */
 	$(".auction-time-remaining").each(function(i) {
 		var parts = this.innerHTML.split(":");
@@ -118,6 +135,6 @@ $(document).ready(function() {
 			this.innerHTML = padzero(d.getHours(),2) + ":" + padzero(d.getMinutes(),2) + ":" + padzero(d.getSeconds(),2);
 		}
 	});
-	
-	
+
+
 });

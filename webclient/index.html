@@ -9,17 +9,20 @@
 	<meta name="author" content="Praetorium US, Inc." />
 	<link rel="shortcut icon" href="/images/favicon.ico" />
 	<link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
-	<link rel="stylesheet" type="text/css" href="/css/screen.css">
+	<link rel="stylesheet" type="text/css" href="/css/screen.css" />
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/redmond/jquery-ui.css" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
 	<script src="/js/functions.js"></script>
 	<script src="/js/core.js"></script>
+	<script src="/js/messageDialog.js"></script>
 </head>
 <body id="home">
+	{% include "messageDialog.html" %}
 	<div id="header-background"></div>
 	<div id="page-top-bar"></div>
 	<div id="wrapper">
-	    <div id="header">
+		<div id="header">
 		<div id="header-account">
 			<!--
 			{% if user %}
@@ -30,28 +33,28 @@
 			<div id="login-container">
 			  <div id="login-nav" class="login-nav"><a id="show-registration" href="#">Register</a> or <a href="#" class="login"><span>Login</span></a> </div>
 			  <fieldset id="login-menu">
-			    <form>
-			      <label for="login-username">Username or email</label>
-			      <input id="login-username"name="username"value=""title="username"tabindex="4"type="text">
-			      </p>
-			      <p>
-			        <label for="login-password">Password</label>
-			        <input id="login-password"name="password"value=""title="password"tabindex="5"type="password">
-			      </p>
-			      <p class="login-submit">
-			        <input id="login-submit" value="Login" tabindex="6" type="submit">
-			        <input id="login-remember" name="login-remember" value="1" tabindex="7" type="checkbox">
-			        <label for="login-remember">Remember me</label>
-			      </p>
-			      <p class="forgot"> <a href="#"id="resend_password_link">Forgot your password?</a> </p>
-			      <p class="forgot-username"> <a id="forgot_username_link" 
+				<form>
+				  <label for="login-username">Username or email</label>
+				  <input id="login-username"name="username"value=""title="username"tabindex="4"type="text">
+				  </p>
+				  <p>
+					<label for="login-password">Password</label>
+					<input id="login-password"name="password"value=""title="password"tabindex="5"type="password">
+				  </p>
+				  <p class="login-submit">
+					<input id="login-submit" value="Login" tabindex="6" type="submit">
+					<input id="login-remember" name="login-remember" value="1" tabindex="7" type="checkbox">
+					<label for="login-remember">Remember me</label>
+				  </p>
+				  <p class="forgot"> <a href="#"id="resend_password_link">Forgot your password?</a> </p>
+				  <p class="forgot-username"> <a id="forgot_username_link"
 			title="If you remember your password, try logging in with your email"
 			href="#">Forgot your username?</a> </p>
-			    </form>
+				</form>
 			  </fieldset>
 			</div>
 			</div>
-		    <div id="logo"><img src="/images/logo.png" alt="Piso Auction" /></div>
+			<div id="logo"><img src="/images/logo.png" alt="Piso Auction" /></div>
 		<div id="main-navigation">
 			<ul>
 				<li><a href="#">Home</a></li>
@@ -80,23 +83,23 @@
 	<div id="overlay" class="white-overlay">&nbsp</div>
 	  <fieldset id="registration-menu">
 		<h3>Register!</h3>
-	    <form>
+		<form>
 		  <p>
 		  <label for="register-username">Username</label>
 		  <input id="register-username" name="register-username" value="" title="username" tabindex="1" type="text">
 		  </p>
 		  <p>
-	      <label for="register-email">Email</label>
-	      <input id="register-email" name="register-email" value="" title="email" tabindex="2" type="text">
-	      </p>
-	      <p>
-	        <label for="register-password">Password</label>
-	        <input id="register-password" name="register-password" value="" title="password" tabindex="3" type="password">
-	      </p>
-	      <p class="register-submit">
-	        <input id="register-submit"value="Register"tabindex="4"type="submit">
-	      </p>
-	    </form>
+		  <label for="register-email">Email</label>
+		  <input id="register-email" name="register-email" value="" title="email" tabindex="2" type="text">
+		  </p>
+		  <p>
+			<label for="register-password">Password</label>
+			<input id="register-password" name="register-password" value="" title="password" tabindex="3" type="password">
+		  </p>
+		  <p class="register-submit">
+			<input id="register-submit"value="Register"tabindex="4"type="submit">
+		  </p>
+		</form>
 	  </fieldset>
 </body>
 </html>
