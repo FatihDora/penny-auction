@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import models.user
+import models.user as user
+import lib.bcrypt.bcrypt as bcrypt
 
 import hashlib
 import random
@@ -18,26 +19,62 @@ def user_authenticate(username, password):
 		Login to the API and return a hash which corresponds to the
 		username, password, and salt
 	'''
-	return True
+	user_key = db.Key.from_path("User", username)
+	u = db.get(user_key)
 
+	# Verify the user exists in the database
+	if u == None:
+		raise Exception("Invalid username or password!")
+
+	# Verify the username/password combination (including the user's password
+	# salt) matches the hashed password currently stored to the user object
+	hashed_password = user_hash_password(username, password, u.password_salt)
+	if hashed_password != u.hashed_password:
+		raise Exception("Invalid username or password")
+
+	return u.hashed_password
 
 def user_register(username, password):
 	'''
 		Register a new account
 	'''
+	# try to authenticate. if it succeeds, throw an error
+	login_succeeded = False
+	try:
+		user_authenticate(username, password)
+		login_succeeded = True
+	except Exception as e:
+		pass
+
+	if login_succeeded:
+		raise Exception("Another account already exists with this name!")
+
 	# create a new user and hash their password
-	u = user.User(username=username, create_time=now())
-	u.update_password(password)
+	u = user.User(key_name=username,
+			username=username, create_time=datetime.now())
+	user_update_password(u, password)
 	u.put()
 
 	# return the new user instance
 	return u
 
-def user_update_password(username, raw_password):
-	# update the salt for the user
-	user.password_salt = random.randint(32768, sys.maxint)
+def user_update_password(user_object, new_password):
+	'''
+		Update the specified user to now have the specified salt. Also,
+		recompute a random password salt
+	'''
+	# compute a new salt for the user
+	new_salt = bcrypt.gensalt()
 
 	# compute the new password hash using the new salt
-	algorithm = hashlib.new("sha256")
-	algorithm.update(raw_password + user.password_salt + username)
-	user.hashed_password = algorithm.hexdigest()
+	user_object.hashed_password = user_hash_password(user_object.username,
+			new_password, new_salt)
+	user_object.password_salt = new_salt
+
+def user_hash_password(username, password, salt):
+	'''
+		Generate a password hash based on the provided username, password, and
+		salt
+	'''
+	# compute the new password hash using the new salt
+	return bcrypt.hashpw(password + username, salt)
