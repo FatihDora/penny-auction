@@ -4,6 +4,7 @@
 # make Python do floating-point division by default
 from __future__ import division
 
+from threading import Timer
 from google.appengine.ext import db
 
 class Auction(db.Model):
