@@ -16,6 +16,33 @@ html, body {
 	margin: 0 auto 0 auto;
 }
 
+a:link, a:visited {
+    color:#27b;
+    text-decoration:none;
+}
+a:hover {
+    text-decoration:underline;
+}
+a img {
+    border-width:0;
+}
+
+/* Lightbox */
+
+.white-overlay{
+	display: none;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	z-index:1001;
+	-moz-opacity: 0.8;
+	opacity:.80;
+	filter: alpha(opacity=80);
+}
+
 /*
 SCOPE: Header
 */
@@ -58,7 +85,7 @@ padding: 0px;
 /*
 SCOPE: Login Form
 */
-#loginContainer {
+#login-container {
     margin:0 auto;
     position: relative;
 }
@@ -67,23 +94,14 @@ SCOPE: Login Form
     width:520px;
     min-height:500px;
 }
-a:link, a:visited {
-    color:#27b;
-    text-decoration:none;
-}
-a:hover {
-    text-decoration:underline;
-}
-a img {
-    border-width:0;
-}
-#topnav {
+
+#login-nav {
     padding-bottom: 2px;
-	font-size:11px;
+	font-size:12px;
     line-height:23px;
     text-align:right;
 }
-#topnav a.signin {
+#login-nav a.login {
     background:#88bbd4;
     padding:4px 6px 6px;
     text-decoration:none;
@@ -95,43 +113,38 @@ a img {
     *background:transparent url("/images/signin-nav-bg-ie.png") no-repeat 0 0;
     *padding:4px 12px 6px;
 }
-#topnav a.signin:hover {
+#login-nav a.login:hover {
     background:#555;
     *background:transparent url("/images/signin-nav-bg-hover-ie.png") no-repeat 0 0;
     *padding:4px 12px 6px;
 }
-#topnav a.signin, #topnav a.signin:hover {
+#login-nav a.login, #login-nav a.login:hover {
     *background-position:0 3px!important;
 }
 
-a.signin {
+a.login {
     position:relative;
     margin-left:3px;
 }
-a.signin span {
+a.login span {
     background-image:url("/images/toggle_down_light.png");
     background-repeat:no-repeat;
     background-position:100% 50%;
     padding:4px 16px 6px 0;
 }
-#topnav a.menu-open {
+
+#login-nav a.menu-open {
     background:#ddeef6!important;
     color:#666!important;
     outline:none;
 }
-#small_signup {
-    display:inline;
-    float:none;
-    line-height:23px;
-    margin:25px 0 0;
-    width:170px;
-}
-a.signin.menu-open span {
+
+a.login.menu-open span {
     background-image:url("/images/toggle_up_dark.png");
     color:#789;
 }
 
-#signin_menu {
+#login-menu {
     -moz-border-radius-topleft:5px;
     -moz-border-radius-bottomleft:5px;
     -moz-border-radius-bottomright:5px;
@@ -158,7 +171,7 @@ a.signin.menu-open span {
     font-size:11px;
 }
 
-#signin_menu input[type=text], #signin_menu input[type=password] {
+#login-menu input[type=text], #login-menu input[type=password] {
     display:block;
     -moz-border-radius:4px;
     -webkit-border-radius:4px;
@@ -168,26 +181,26 @@ a.signin.menu-open span {
     padding:5px;
     width:203px;
 }
-#signin_menu p {
+#login-menu p {
     margin:0;
 }
-#signin_menu a {
+#login-menu a {
     color:#6AC;
 }
-#signin_menu label {
+#login-menu label {
     font-weight:normal;
 }
-#signin_menu p.remember {
+#login-menu p.login-submit {
     padding:10px 0;
 }
-#signin_menu p.forgot, #signin_menu p.complete {
+#login-menu p.forgot, #login-menu p.complete {
     clear:both;
     margin:5px 0;
 }
-#signin_menu p a {
+#login-menu p a {
     color:#27B!important;
 }
-#signin_submit {
+#login-submit {
     -moz-border-radius:4px;
     -webkit-border-radius:4px;
     background:#39d url('/images/bg-btn-blue.png') repeat-x scroll 0 0;
@@ -199,11 +212,84 @@ a.signin.menu-open span {
     margin:0 5px 0 0;
     font-weight:bold;
 }
-#signin_submit::-moz-focus-inner {
+#login-submit::-moz-focus-inner {
 padding:0;
 border:0;
 }
-#signin_submit:hover, #signin_submit:focus {
+#login-submit:hover, #login-submit:focus {
+    background-position:0 -5px;
+    cursor:pointer;
+}
+
+/* Registration Form */
+
+#registration-menu {
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+	border-radius: 5px;
+    display:none;
+    background-color:#ddeef6;
+    position:absolute;
+	top: 30%;
+	left: 50%;
+	margin-left: -105px;
+	z-index:1002;
+	overflow: auto;
+    width:210px;
+    border:2px solid #ACE;
+    text-align:left;
+    padding:12px;
+    color:#789;
+    font-size:11px;
+	
+}
+
+#registration-menu input[type=text], #registration-menu input[type=password] {
+    display:block;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border:1px solid #ACE;
+    font-size:13px;
+    margin:0 0 5px;
+    padding:5px;
+    width:203px;
+}
+#registration-menu p {
+    margin:0;
+}
+#registration-menu a {
+    color:#6AC;
+}
+#registration-menu label {
+    font-weight:normal;
+}
+#registration-menu p.register-submit {
+    padding:10px 0;
+}
+#registration-menu p.forgot, #registration-menu p.complete {
+    clear:both;
+    margin:5px 0;
+}
+#registration-menu p a {
+    color:#27B!important;
+}
+#register-submit {
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    background:#39d url('/images/bg-btn-blue.png') repeat-x scroll 0 0;
+    border:1px solid #39D;
+    color:#fff;
+    text-shadow:0 -1px 0 #39d;
+    padding:4px 10px 5px;
+    font-size:11px;
+    margin:0 5px 0 0;
+    font-weight:bold;
+}
+#register-submit::-moz-focus-inner {
+padding:0;
+border:0;
+}
+#register-submit:hover, #register-submit:focus {
     background-position:0 -5px;
     cursor:pointer;
 }

@@ -27,21 +27,21 @@
 			{% else %}
 				<a href="javascript:void(0);" id="user-login">Login</a> or <a href="javscript:void(0);" id="user-register">Register</a>
 			{% endif %} -->
-			<div id="loginContainer">
-			  <div id="topnav" class="topnav"><a href="login"class="signin"><span>Sign in</span></a> </div>
-			  <fieldset id="signin_menu">
+			<div id="login-container">
+			  <div id="login-nav" class="login-nav"><a id="show-registration" href="#">Register</a> or <a href="#" class="login"><span>Login</span></a> </div>
+			  <fieldset id="login-menu">
 			    <form>
-			      <label for="username">Username or email</label>
-			      <input id="username"name="username"value=""title="username"tabindex="4"type="text">
+			      <label for="login-username">Username or email</label>
+			      <input id="login-username"name="username"value=""title="username"tabindex="4"type="text">
 			      </p>
 			      <p>
-			        <label for="password">Password</label>
-			        <input id="password"name="password"value=""title="password"tabindex="5"type="password">
+			        <label for="login-password">Password</label>
+			        <input id="login-password"name="password"value=""title="password"tabindex="5"type="password">
 			      </p>
-			      <p class="remember">
-			        <input id="signin_submit"value="Sign in"tabindex="6"type="submit">
-			        <input id="remember"name="remember_me"value="1"tabindex="7"type="checkbox">
-			        <label for="remember">Remember me</label>
+			      <p class="login-submit">
+			        <input id="login-submit" value="Login" tabindex="6" type="submit">
+			        <input id="login-remember" name="login-remember" value="1" tabindex="7" type="checkbox">
+			        <label for="login-remember">Remember me</label>
 			      </p>
 			      <p class="forgot"> <a href="#"id="resend_password_link">Forgot your password?</a> </p>
 			      <p class="forgot-username"> <a id="forgot_username_link" 
@@ -77,5 +77,26 @@
 			{% endfor %}
 		</div>
 	</div>
+	<div id="overlay" class="white-overlay">&nbsp</div>
+	  <fieldset id="registration-menu">
+		<h3>Register!</h3>
+	    <form>
+		  <p>
+		  <label for="register-username">Username</label>
+		  <input id="register-username" name="register-username" value="" title="username" tabindex="1" type="text">
+		  </p>
+		  <p>
+	      <label for="register-email">Email</label>
+	      <input id="register-email" name="register-email" value="" title="email" tabindex="2" type="text">
+	      </p>
+	      <p>
+	        <label for="register-password">Password</label>
+	        <input id="register-password" name="register-password" value="" title="password" tabindex="3" type="password">
+	      </p>
+	      <p class="register-submit">
+	        <input id="register-submit"value="Register"tabindex="4"type="submit">
+	      </p>
+	    </form>
+	  </fieldset>
 </body>
 </html>

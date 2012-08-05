@@ -19,6 +19,8 @@ var GET_AUCTION_INFO = '/get_auction_info';
 
 
 $(document).ready(function() {
+	
+	
 	/* 1s Timer */
 	window.setInterval(function() {
 		$(".auction-time-remaining").each(function(i) {
@@ -42,9 +44,6 @@ $(document).ready(function() {
 	
 	/* Bid Button Clicked */
 	$(".auction-bid-button").click(function() {
-	  	//$.getJSON('/user/', { username: 'darin', password: 'letmein' }, function(data) {
-		//$(this).innerHTML = data;
-		//});
 		var auction_id = $(this).parent().attr("id");
 		jQuery.ajax({
 			url: API + BID,
@@ -74,21 +73,35 @@ $(document).ready(function() {
 	});
 	
 	/***************** TEST LOGIN STUFF ********************/
-	$(".signin").click(function(e) {
+	
+	$(".login").click(function(e) {
 	                e.preventDefault();
-	                $("fieldset#signin_menu").toggle();
-	                $(".signin").toggleClass("menu-open");
+	                $("fieldset#login-menu").toggle();
+	                $(".login").toggleClass("menu-open");
 	            });
 
-	            $("fieldset#signin_menu").mouseup(function() {
+	            $("fieldset#login-menu").mouseup(function() {
 	                return false
 	            });
+	
 	            $(document).mouseup(function(e) {
-	                if($(e.target).parent("a.signin").length==0) {
-	                    $(".signin").removeClass("menu-open");
-	                    $("fieldset#signin_menu").hide();
+	                if($(e.target).parent("a.login").length==0) {
+	                    $(".login").removeClass("menu-open");
+	                    $("fieldset#login-menu").hide();
 	                }
 	            });
+	
+	$("#show-registration").click(function() {
+		$("#overlay").css('display','block');
+		$("fieldset#registration-menu").css('display','block');
+		
+	});
+		
+	$("#overlay").click(function() {
+		$(this).css('display','none');
+		$("fieldset#registration-menu").css('display','none');
+	});
+
 	
 	/************** END TEST LOGIN STUFF *******************/
 	
