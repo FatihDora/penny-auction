@@ -110,10 +110,11 @@ $(document).ready(function() {
 
 	$("#show-registration").click(function() {
 		$("#overlay").css('display','block');
+		$("#overlay").css('height',$(document).height()+'px');
+		$("#overlay").css('width',$(document).width()+'px');
 		$("fieldset#registration-menu").css('display','block');
-
 	});
-
+	
 	$("#overlay").click(function() {
 		$(this).css('display','none');
 		$("fieldset#registration-menu").css('display','none');
