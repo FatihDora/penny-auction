@@ -19,7 +19,9 @@ urls = (
 
 	'/get_nonce', 'get_nonce',
 	'/user_register', 'register',
-	'/user_authenticate', 'authenticate'
+	'/user_authenticate', 'authenticate',
+	'/user_username_exists', 'username_exists',
+	'/user_email_exists', 'email_exists'
 )
 
 
@@ -57,7 +59,7 @@ class register:
 	def GET(self):
 		inputs = web.input()
 		try:
-			return user_controller.user_register(inputs.username, inputs.password).username
+			return user_controller.user_register(inputs.username, inputs.email, inputs.password).username
 		except Exception as e:
 			return e
 
@@ -69,6 +71,22 @@ class authenticate:
 		except Exception as e:
 			return e
 
+class username_exists:
+	def GET(self):
+		inputs = web.input()
+		try:
+			return user_controller.user_username_exists(inputs.username)
+		except Exception as e:
+			return e
+	
+class email_exists:
+	def GET(self):
+		inputs = web.input()
+		try:
+			return user_controller.user_email_exists(inputs.email)
+		except Exception as e:
+			return e
+		
 app = web.application(urls, globals())
 main = app.cgirun()
 
