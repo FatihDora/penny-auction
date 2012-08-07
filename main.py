@@ -6,6 +6,7 @@ from __future__ import division
 
 from google.appengine.ext import db
 from lib import web
+import json
 
 from controllers import user_controller
 
@@ -75,17 +76,31 @@ class username_exists:
 	def GET(self):
 		inputs = web.input()
 		try:
-			return user_controller.user_username_exists(inputs.username)
+			if not inputs.username:
+				result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
+				return inputs.callback + "(" + json.dumps(result) + ");"
+				
+			web.header('Content-Type', 'application/json')
+			result ={'result':user_controller.user_username_exists(inputs.username)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
 		except Exception as e:
-			return e
+			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
+			return inputs.callback + "(" + json.dumps(result) + ");"
 	
 class email_exists:
 	def GET(self):
 		inputs = web.input()
 		try:
-			return user_controller.user_email_exists(inputs.email)
+			if not inputs.email:
+				result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
+				return inputs.callback + "(" + json.dumps(result) + ");"
+				
+			web.header('Content-Type', 'application/json')
+			result ={'result':user_controller.user_email_exists(inputs.email)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
 		except Exception as e:
-			return e
+			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
+			return inputs.callback + "(" + json.dumps(result) + ");"
 		
 app = web.application(urls, globals())
 main = app.cgirun()

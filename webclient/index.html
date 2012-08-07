@@ -1,103 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="chrome=1">
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta http-equiv='X-UA-Compatible' content='chrome=1'>
+	<meta http-equiv='Content-type' content='text/html; charset=utf-8'>
 	<title>Home</title>
-	<meta name="keywords" content="piso,auction,iphone,ipad,ipod,apple" />
-	<meta name="description" content="Piso Auction is a fun and exciting way to purchase the items you love!" />
-	<meta name="author" content="Praetorium US, Inc." />
-	<link rel="shortcut icon" href="/images/favicon.ico" />
-	<link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
-	<link rel="stylesheet" type="text/css" href="/css/screen.css" />
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/redmond/jquery-ui.css" />
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
-	<script src="/js/functions.js"></script>
-	<script src="/js/core.js"></script>
-	<script src="/js/messageDialog.js"></script>
+	<meta name='keywords' content='piso,auction,iphone,ipad,ipod,apple' />
+	<meta name='description' content='Piso Auction is a fun and exciting way to purchase the items you love!' />
+	<meta name='author' content='Praetorium US, Inc.' />
+	<link rel='shortcut icon' href='/images/favicon.ico' />
+	<link rel='icon' href='/images/favicon.ico' type='image/x-icon' />
+	<link rel='stylesheet' type='text/css' href='/css/screen.css' />
+	<link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/redmond/jquery-ui.css' />
+	<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
+	<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js'></script>
+	<script src='/js/functions.js'></script>
+	<script src='/js/core.js'></script>
+	<script src='/js/messageDialog.js'></script>
 </head>
-<body id="home">
-	{% include "messageDialog.html" %}
-	<div id="header-background"></div>
-	<div id="page-top-bar"></div>
-	<div id="wrapper">
-		<div id="header">
-		<div id="header-account">
+<body id='home'>
+	{% include 'messageDialog.html' %}
+	<div id='header-background'></div>
+	<div id='page-top-bar'></div>
+	<div id='wrapper'>
+		<div id='header'>
+		<div id='header-account'>
 			<!--
 			{% if user %}
-				Logged in as <a href="javascript:void(0);">{{user.username}}</a>.  <a href="#">Logout</a>
+				Logged in as <a href='javascript:void(0);'>{{user.username}}</a>.  <a href='#'>Logout</a>
 			{% else %}
-				<a href="javascript:void(0);" id="user-login">Login</a> or <a href="javscript:void(0);" id="user-register">Register</a>
+				<a href='javascript:void(0);' id='user-login'>Login</a> or <a href='javscript:void(0);' id='user-register'>Register</a>
 			{% endif %} -->
-			<div id="login-container">
-			  <div id="login-nav" class="login-nav"><a id="show-registration" href="#">Register</a> or <a href="#" class="login"><span>Login</span></a> </div>
-			  <fieldset id="login-menu">
+			<div id='login-container'>
+			  <div id='login-nav' class='login-nav'><a id='show-registration' href='#'>Register</a> or <a href='#' class='login'><span>Login</span></a> </div>
+			  <fieldset id='login-menu'>
 				<form>
-				  <label for="login-username">Username or email</label>
-				  <input id="login-username"name="username"value=""title="username"tabindex="4"type="text">
+				  <label for='login-username'>Username or email</label>
+				  <input id='login-username'name='username'value=''title='username'tabindex='4'type='text'>
 				  </p>
 				  <p>
-					<label for="login-password">Password</label>
-					<input id="login-password"name="password"value=""title="password"tabindex="5"type="password">
+					<label for='login-password'>Password</label>
+					<input id='login-password'name='password'value=''title='password'tabindex='5'type='password'>
 				  </p>
-				  <p class="login-submit">
-					<input id="login-submit" value="Login" tabindex="6" type="submit">
-					<input id="login-remember" name="login-remember" value="1" tabindex="7" type="checkbox">
-					<label for="login-remember">Remember me</label>
+				  <p class='login-submit'>
+					<input id='login-submit' value='Login' tabindex='6' type='submit'>
+					<input id='login-remember' name='login-remember' value='1' tabindex='7' type='checkbox'>
+					<label for='login-remember'>Remember me</label>
 				  </p>
-				  <p class="forgot"> <a href="#"id="resend_password_link">Forgot your password?</a> </p>
-				  <p class="forgot-username"> <a id="forgot_username_link"
-			title="If you remember your password, try logging in with your email"
-			href="#">Forgot your username?</a> </p>
+				  <p class='forgot'> <a href='#'id='resend_password_link'>Forgot your password?</a> </p>
+				  <p class='forgot-username'> <a id='forgot_username_link'
+			title='If you remember your password, try logging in with your email'
+			href='#'>Forgot your username?</a> </p>
 				</form>
 			  </fieldset>
 			</div>
 			</div>
-			<div id="logo"><img src="/images/logo.png" alt="Piso Auction" /></div>
-		<div id="main-navigation">
+			<div id='logo'><img src='/images/logo.png' alt='Piso Auction' /></div>
+		<div id='main-navigation'>
 			<ul>
-				<li><a href="#">Home</a></li>
-				<li><a href="#">Auctions</a></li>
-				<li><a href="#">How It Works</a></li>
-				<li><a href="#">Winners</a></li>
-				<li><a href="#">FAQ</a></li>
+				<li><a href='#'>Home</a></li>
+				<li><a href='#'>Auctions</a></li>
+				<li><a href='#'>How It Works</a></li>
+				<li><a href='#'>Winners</a></li>
+				<li><a href='#'>FAQ</a></li>
 			</ul>
 		</div>
-		<div id="auctions">
+		<div id='auctions'>
 			{% for auction in auctions %}
-			<div id="{{auction.id}}" class="auction">
-				<div class="auction-title"><a href="{{auction.productUrl}}">{{auction.name}}</a></div>
-				<div class="auction-image"><img src="{{auction.imageUrl}}" alt="{{auction.name}}" /></div>
-				<div class="auction-info">
-					<div class="auction-current-price">₱{{auction.price}}</div>
-					<div class="auction-time-remaining">{{auction.auctionRemaining}}</div>
-					<div class="auction-current-winner">{{auction.currentWinner}}</div>
+			<div id='{{auction.id}}' class='auction'>
+				<div class='auction-title'><a href='{{auction.productUrl}}'>{{auction.name}}</a></div>
+				<div class='auction-image'><img src='{{auction.imageUrl}}' alt='{{auction.name}}' /></div>
+				<div class='auction-info'>
+					<div class='auction-current-price'>₱{{auction.price}}</div>
+					<div class='auction-time-remaining'>{{auction.auctionRemaining}}</div>
+					<div class='auction-current-winner'>{{auction.currentWinner}}</div>
 				</div>
-				<div class="auction-bid-button">Bid!</div>
-				<div class="auction-footer"></div>
+				<div class='auction-bid-button'>Bid!</div>
+				<div class='auction-footer'></div>
 			</div>
 			{% endfor %}
 		</div>
 	</div>
-	<div id="overlay" class="white-overlay">&nbsp</div>
-	  <fieldset id="registration-menu">
+	<div id='overlay' class='white-overlay'>&nbsp;</div>
+	  <fieldset id='registration-menu'>
 		<h3>Register!</h3>
 		<form>
+		<span id='register-username-icon' class='ui-icon' style='float:right; margin:19px 0px 0px 7px; visibility: hidden;'></span>
 		  <p>
-		  <label for="register-username">Username</label>
-		  <input id="register-username" name="register-username" value="" title="username" tabindex="1" type="text">
+		  <label for='register-username'>Username</label>
+		  <input id='register-username' name='register-username' value='' title='username' tabindex='1' type='text'>
 		  </p>
 		  <p>
-		  <label for="register-email">Email</label>
-		  <input id="register-email" name="register-email" value="" title="email" tabindex="2" type="text">
+			<span id='register-email-icon' class='ui-icon' style='float:right; margin:19px 0px 0px 7px; visibility: hidden;'></span>
+		  <label for='register-email'>Email</label>
+		  <input id='register-email' name='register-email' value='' title='email' tabindex='2' type='text'>
+		  <span id='register-email-icon'></span>
 		  </p>
 		  <p>
-			<label for="register-password">Password</label>
-			<input id="register-password" name="register-password" value="" title="password" tabindex="3" type="password">
+			<label for='register-password'>Password</label>
+			<input id='register-password' name='register-password' value='' title='password' tabindex='3' type='password'>
 		  </p>
-		  <p class="register-submit">
-			<input id="register-submit"value="Register"tabindex="4"type="submit">
+		  <p class='register-submit'>
+			<input id='register-submit'value='Register'tabindex='4'type='submit'>
 		  </p>
 		</form>
 	  </fieldset>

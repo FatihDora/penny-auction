@@ -233,7 +233,7 @@ border:0;
 	margin-left: -105px;
 	z-index:1002;
 	overflow: auto;
-    width:210px;
+    width:240px;
     border:2px solid #ACE;
     text-align:left;
     padding:12px;
@@ -292,6 +292,18 @@ border:0;
     cursor:pointer;
 }
 	
+.data-valid {
+	border: 1px solid #23DB4E;
+	background-color: #E1F0E5;
+}
+
+.data-invalid {
+	border: 1px solid #DB2323;
+	background-color: #F0E1E1;
+}
+
+.blank {}
+
 /*
 SCOPE: Main Navigation
 */
