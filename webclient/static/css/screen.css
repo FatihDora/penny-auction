@@ -13,7 +13,7 @@ html, body {
 
 #wrapper {
 	width: 960px;
-	margin: 0 auto 0 auto;
+	margin: 30px auto 0 auto;
 }
 
 a:link, a:visited {
@@ -51,19 +51,34 @@ SCOPE: Header
 }
 	
 #page-top-bar {
-	height:5px;
-	background-color: #5c9ccc;
+	height:30px;
+	background: #000000 url('/images/top-bar-bg.png') repeat-x;
+	color: #ffffff;
+	display: block;
+	font-weight: bold;
+	position: fixed;
+	width: 100%;
+	top: 0px;
+	clear: both;
+	z-index: 1000;
+	/*background-color: #5c9ccc;*/
 }
-	
-#header-account {
-	float: right;
+
+#page-top-bar a, #page-top-bar a:visited  {
+	color: #aaa;
+}
+
+#page-top-bar a:hover {
 	color: #fff;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	margin: 0 20px 0 0;
-	text-align: center;
-	padding: 4px;
-	background: #5c9ccc;
+	text-decoration: none;
+}
+
+
+#top-bar-wrapper {
+	width: 960px;
+	height: 30px;
+	padding: 6px 0;
+	margin: 0 auto;
 }
 
 #header-account a {
@@ -86,17 +101,13 @@ SCOPE: Login Form
 #login-container {
     margin:0 auto;
     position: relative;
-}
-
-#content {
-    width:520px;
-    min-height:500px;
+	float: right;
 }
 
 #login-nav {
-    padding-bottom: 2px;
+    /*padding-bottom: 2px;
 	font-size:12px;
-    line-height:23px;
+    line-height:23px;*/
     text-align:right;
 }
 #login-nav a.login {
@@ -112,7 +123,7 @@ SCOPE: Login Form
     *padding:4px 12px 6px;
 }
 #login-nav a.login:hover {
-    background:#555;
+    background:#aaa;
     *background:transparent url("/images/signin-nav-bg-hover-ie.png") no-repeat 0 0;
     *padding:4px 12px 6px;
 }
@@ -143,10 +154,10 @@ a.login.menu-open span {
 }
 
 #login-menu {
-    -moz-border-radius-topleft:5px;
+	-moz-border-radius-topright:5px;
     -moz-border-radius-bottomleft:5px;
     -moz-border-radius-bottomright:5px;
-    -webkit-border-top-left-radius:5px;
+	-webkit-border-top-right-radius:5px;
     -webkit-border-bottom-left-radius:5px;
     -webkit-border-bottom-right-radius:5px;
 	border-top-left-radius: 5px;
@@ -162,7 +173,7 @@ a.login.menu-open span {
     padding:12px;
     top: 24.5px;
     right: 0px;
-    margin-top:-3px;
+    margin-top:-10px;
     margin-right: 0px;
     *margin-right: -1px;
     color:#789;
@@ -302,7 +313,7 @@ border:0;
 	background-color: #F0E1E1;
 }
 
-.blank {}
+
 
 /*
 SCOPE: Main Navigation
@@ -322,11 +333,24 @@ SCOPE: Main Navigation
 	color: #555;
 }
 
-#main-navigation ul {
+#main-navigation ul, #account-navigation ul, #bid-info ul {
 	list-style-type: none;
 	margin: 0px;
 	padding: 0px;
 	height: 30px;
+}
+
+#bid-info {
+	float: right;
+}
+
+#account-navigation ul {
+	float: left;
+}
+
+#account-navigation ul li, #bid-info ul li {
+	float: left;
+	margin: 0 10px;
 }
 
 #main-navigation ul li {

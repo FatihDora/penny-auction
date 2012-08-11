@@ -20,41 +20,59 @@
 <body id='home'>
 	{% include 'messageDialog.html' %}
 	<div id='header-background'></div>
-	<div id='page-top-bar'></div>
+	<div id='page-top-bar'><div id='top-bar-wrapper'>
+		{% if user %}
+		<div id='account-navigation'>
+			<ul>
+				<li><a href='#'>Account</a></li>
+				<li><a href='#'>Wins</a></li>
+				<li><a href='#'>How It Works</a></li>
+				<li><a href='#'>Winners</a></li>
+				<li><a href='#'>FAQ</a></li>
+			</ul>
+		</div>
+		<div id='bid-info'>
+			<ul>
+				<li>Bids: <a href="#">38</a></li>
+			</ul>
+		</div>
+		{% else %}
+	<div id='login-container'>
+	  <div id='login-nav' class='login-nav'><a id='show-registration' href='#'>Register</a> or <a href='#' class='login'><span>Login</span></a> </div>
+	  <fieldset id='login-menu'>
+		<form>
+		  <label for='login-username'>Username or email</label>
+		  <input id='login-username'name='username'value=''title='username'tabindex='4'type='text'>
+		  </p>
+		  <p>
+			<label for='login-password'>Password</label>
+			<input id='login-password'name='password'value=''title='password'tabindex='5'type='password'>
+		  </p>
+		  <p class='login-submit'>
+			<input id='login-submit' value='Login' tabindex='6' type='submit'>
+			<input id='login-remember' name='login-remember' value='1' tabindex='7' type='checkbox'>
+			<label for='login-remember'>Remember me</label>
+		  </p>
+		  <p class='forgot'> <a href='#'id='resend_password_link'>Forgot your password?</a> </p>
+		  <p class='forgot-username'> <a id='forgot_username_link'
+	title='If you remember your password, try logging in with your email'
+	href='#'>Forgot your username?</a> </p>
+		</form>
+	  </fieldset>
+	</div>
+	{% endif %}
+	</div>
+	</div>
 	<div id='wrapper'>
 		<div id='header'>
-		<div id='header-account'>
 			<!--
-			{% if user %}
+			
 				Logged in as <a href='javascript:void(0);'>{{user.username}}</a>.  <a href='#'>Logout</a>
-			{% else %}
+			
 				<a href='javascript:void(0);' id='user-login'>Login</a> or <a href='javscript:void(0);' id='user-register'>Register</a>
-			{% endif %} -->
-			<div id='login-container'>
-			  <div id='login-nav' class='login-nav'><a id='show-registration' href='#'>Register</a> or <a href='#' class='login'><span>Login</span></a> </div>
-			  <fieldset id='login-menu'>
-				<form>
-				  <label for='login-username'>Username or email</label>
-				  <input id='login-username'name='username'value=''title='username'tabindex='4'type='text'>
-				  </p>
-				  <p>
-					<label for='login-password'>Password</label>
-					<input id='login-password'name='password'value=''title='password'tabindex='5'type='password'>
-				  </p>
-				  <p class='login-submit'>
-					<input id='login-submit' value='Login' tabindex='6' type='submit'>
-					<input id='login-remember' name='login-remember' value='1' tabindex='7' type='checkbox'>
-					<label for='login-remember'>Remember me</label>
-				  </p>
-				  <p class='forgot'> <a href='#'id='resend_password_link'>Forgot your password?</a> </p>
-				  <p class='forgot-username'> <a id='forgot_username_link'
-			title='If you remember your password, try logging in with your email'
-			href='#'>Forgot your username?</a> </p>
-				</form>
-			  </fieldset>
-			</div>
-			</div>
-			<div id='logo'><img src='/images/logo.png' alt='Piso Auction' /></div>
+			 -->
+
+			<div id='logo'><img src='/images/piso-symbol.png' alt='Piso Auction' /></div>
 		<div id='main-navigation'>
 			<ul>
 				<li><a href='#'>Home</a></li>
