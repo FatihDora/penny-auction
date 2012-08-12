@@ -238,7 +238,7 @@ border:0;
 	border-radius: 5px;
     display:none;
     background-color:#ddeef6;
-    position:absolute;
+    position:fixed;
 	top: 30%;
 	left: 50%;
 	margin-left: -105px;
@@ -263,6 +263,25 @@ border:0;
     padding:5px;
     width:203px;
 }
+
+#close-registration-menu {
+	border: 2px solid #ACE;
+	background-color: #fff;
+	font-size: 20px;
+	text-align: center;
+	line-height: 18px;
+	width: 20px;
+	height: 20px;
+	border-radius: 5px;
+	position: absolute;
+	top:2px;
+	right: 2px;
+}
+
+#close-registration-menu:hover {
+	cursor: pointer;
+}
+
 #registration-menu p {
     margin:0;
 }
@@ -339,7 +358,10 @@ SCOPE: Main Navigation
 	padding: 0px;
 	height: 30px;
 }
-
+#account-navigation, #bid-info {
+	visibility: hidden;
+	display: none;
+}
 #bid-info {
 	float: right;
 }

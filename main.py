@@ -59,18 +59,23 @@ class get_nonce:
 class register:
 	def GET(self):
 		inputs = web.input()
+		web.header('Content-Type', 'application/json')
 		try:
-			return user_controller.user_register(inputs.username, inputs.email, inputs.password).username
+			result = {'username',user_controller.user_register(inputs.username, inputs.email, inputs.password).username}
+			return inputs.callback + "(" + json.dumps(result) + ");"
 		except Exception as e:
-			return e
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 class authenticate:
 	def GET(self):
 		inputs = web.input()
+		web.header('Content-Type', 'application/json')
 		try:
-			return user_controller.user_authenticate(inputs.username, inputs.password)
+			result ={'result':user_controller.user_authenticate(inputs.username, inputs.password)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+		
 		except Exception as e:
-			return e
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 class username_exists:
 	def GET(self):
@@ -84,8 +89,7 @@ class username_exists:
 			result ={'result':user_controller.user_username_exists(inputs.username)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
 		except Exception as e:
-			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
-			return inputs.callback + "(" + json.dumps(result) + ");"
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 	
 class email_exists:
 	def GET(self):
