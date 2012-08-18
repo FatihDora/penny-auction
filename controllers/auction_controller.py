@@ -25,4 +25,4 @@ class AuctionController:
 		
 		next_auto_bidder.use_bid()
 		auction.place_bid(next_auto_bidder.owner)
-		
+	
