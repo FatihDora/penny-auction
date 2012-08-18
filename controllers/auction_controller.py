@@ -14,15 +14,20 @@ class AuctionController:
 		auction place a bid. If no auto bidders with remaining bids are
 		attached, nothing happens. '''
 
-		next_auto_bidder = None
-		for this_auto_bidder in auction.attached_autobidders:
-			if next_auto_bidder is None or this_auto_bidder.last_bid_time < next_auto_bidder.last_bid_time:
-				next_auto_bidder = this_auto_bidder
-
 		# shortcut out if there are no autobidders on this auction
-		if next_auto_bidder is None:
+		if len(auction.attached_autobidders) == 0:
 			return
-		
-		next_auto_bidder.use_bid()
+
+		# sort autobidders by last bid time, oldest to youngest
+		auction.attached_autobidders.sort(key=lambda this_autobidder: this_autobidder.last_bid_time)
+
+		for next_autobidder in auction.attached_autobidders:
+			try:
+				next_auto_bidder.use_bid()
+			except NoBidsRemainingException as exception:
+				del auction.attached_autobidders[this_autobidder_index]
+				continue
+			break
+
 		auction.place_bid(next_auto_bidder.owner)
 	
