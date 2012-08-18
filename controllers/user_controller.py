@@ -63,16 +63,11 @@ def user_register(username, email, password):
     '''
         Register a new account
     '''
-    # try to authenticate. if it succeeds, throw an error
-    login_succeeded = False
-    try:
-        user_authenticate(username, password)
-        login_succeeded = True
-    except Exception as e:
-        pass
+    if user_username_exists(username):
+        raise Exception("Another account already exists with this username!")
 
-    if login_succeeded:
-        raise Exception("Another account already exists with this name!")
+	if user_email_exists(email):
+		raise Exception("Another account already exists with this email!")
 
     # create a new user and hash their password
     u = user.User(key_name=username,
@@ -80,8 +75,8 @@ def user_register(username, email, password):
     user_update_password(u, password)
     u.put()
 
-    # return the new user instance
-    return u
+    # return the new username
+    return username
 
 def user_update_password(user_object, new_password):
     '''

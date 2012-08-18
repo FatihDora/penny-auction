@@ -129,6 +129,9 @@ $('#registration-form').submit(function(e) {
 			$('#bid-info').css('display','block');
 			$('#login-container').css('visibility','hidden');
 			$('#login-container').css('display','none');
+			$('#overlay').css('display','none');
+			$('fieldset#registration-menu').css('display','none');
+			
 		}
 	});
 	return false;
