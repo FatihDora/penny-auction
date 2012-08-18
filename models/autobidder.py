@@ -10,7 +10,7 @@ class Autobidder(db.Model):
         id = db.IntegerProperty(required=True)
         user = db.ReferenceProperty(User, collection_name='active_autobidders')
         auction = db.ReferenceProperty(Auction, collection_name='attached_autobidders')
-        bid_type = db.ReferenceProperty(BidType, collection_name='auctions')
+        bid_type = db.ReferenceProperty(BidType, collection_name='active_autobidders')
         remaining_bids = db.IntegerProperty(required=True)
         create_time = db.DateTimeProperty(required=True)
 
