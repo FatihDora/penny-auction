@@ -7,6 +7,9 @@ from __future__ import division
 from google.appengine.ext import db
 
 class Autobidder(db.Model):
+	''' This class models an auto bidder, which places bids on an auction
+	automatically on behalf of its creator. '''
+
 	id = db.IntegerProperty(required=True)
 	user = db.ReferenceProperty(User, collection_name='active_autobidders')
 	auction = db.ReferenceProperty(Auction, collection_name='attached_autobidders')
