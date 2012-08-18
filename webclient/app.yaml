@@ -2,6 +2,7 @@ application: pisoauction
 version: 1
 api_version: 1
 runtime: python
+threadsafe: true
 
 handlers:
 

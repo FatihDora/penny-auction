@@ -60,9 +60,11 @@ class register:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
+		
 		try:
-			result = {'username',user_controller.user_register(inputs.username, inputs.email, inputs.password).username}
+			result = {'result':user_controller.user_register(inputs.username, inputs.email, inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
+	
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
@@ -73,7 +75,7 @@ class authenticate:
 		try:
 			result ={'result':user_controller.user_authenticate(inputs.username, inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		
+			
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
