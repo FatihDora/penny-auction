@@ -11,14 +11,11 @@ class Auction(db.Model):
     ''' This class represents a single auction. '''
 
     id = db.IntegerProperty(required=True)
-    name = db.StringProperty()
-    user = db.ReferenceProperty(User, collection_name='auctions')
-    productUrl = db.StringProperty()
-    imageUrl = db.StringProperty()
-    currentPrice = db.FloatProperty()
-    currentWinner = db.StringProperty()
+    name = db.StringProperty(required=True)
+    bids = db.ReferenceProperty(BidHistory, collection_name='auctions')
+    currentWinner = db.ReferenceProperty(User, collection_name='auctions_won')
     auctionEnd = db.DateTimeProperty()
-    # there is an implicit property 'attached_autobidders' created by the Autobidder class
+    # implicit property 'attached_autobidders' created by the Autobidder class
 
     def __init__(self):
 
