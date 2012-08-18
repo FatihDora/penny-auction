@@ -29,4 +29,3 @@ class Auction(db.Model):
 	def begin(self):
 		''' Begins this auction. '''
 		self.countdown_timer.start()
-
