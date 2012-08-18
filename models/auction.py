@@ -13,10 +13,10 @@ class Auction(db.Model):
 	id = db.IntegerProperty(required=True)
 	name = db.StringProperty(required=True)
 	item = db.ReferenceProperty(Item, collection_name='auctions')
-	bids = db.ReferenceProperty(BidHistory, collection_name='auctions')
 	currentWinner = db.ReferenceProperty(User, collection_name='auctions_won')
 	auctionEnd = db.DateTimeProperty()
 	# implicit property 'attached_autobidders' created by the Autobidder class
+	# implicit property 'past_bids' created by the BidHistory class
 
 	def __init__(self):
 

@@ -11,6 +11,7 @@ class User(db.Model):
 	password_salt = db.StringProperty(required=True)
 	create_time = db.DateTimeProperty(required=True)
 	personal_information = db.StringProperty()
-	bids = db.ReferenceProperty(BidHistory, collection='users')
 	# implicit property 'active_autobidders' created by the Autobidder class
 	# implicit property 'auctions_won' created by the Auction class
+	# implicit property 'past_bids' created by the BidHistory class
+	# implicit property 'available_bids' created by the BidPool class

@@ -7,4 +7,5 @@ class BidType(db.Model):
 	id = db.IntegerProperty(required=True)
 	name = db.StringProperty(required=True)
 	# implicit property 'active_autobidders' created by the Autobidder class
-	# implicit property 'bids' created by the BidHistory class
+	# implicit property 'past_bids' created by the BidHistory class
+	# implicit property 'outstanding_bids' created by the BidPool class
