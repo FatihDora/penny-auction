@@ -5,6 +5,6 @@ from google.appengine.ext import db
 
 class BidType(db.Model):
     id = db.IntegerProperty(required=True)
-    name = db.StringProperty()
+    name = db.StringProperty(required=True)
     # implicit property 'active_autobidders' created by the Autobidder class
 
