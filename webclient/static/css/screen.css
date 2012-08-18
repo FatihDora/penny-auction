@@ -13,7 +13,32 @@ html, body {
 
 #wrapper {
 	width: 960px;
-	margin: 0 auto 0 auto;
+	margin: 30px auto 0 auto;
+}
+
+a:link, a:visited {
+    color:#27b;
+    text-decoration:none;
+}
+a:hover {
+    text-decoration:underline;
+}
+a img {
+    border-width:0;
+}
+
+/* Lightbox */
+
+.white-overlay{
+	display: none;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	background-color: white;
+	z-index:1001;
+	-moz-opacity: 0.8;
+	opacity:.80;
+	filter: alpha(opacity=80);
 }
 
 /*
@@ -26,19 +51,34 @@ SCOPE: Header
 }
 	
 #page-top-bar {
-	height:5px;
-	background-color: #5c9ccc;
+	height:30px;
+	background: #000000 url('/images/top-bar-bg.png') repeat-x;
+	color: #ffffff;
+	display: block;
+	font-weight: bold;
+	position: fixed;
+	width: 100%;
+	top: 0px;
+	clear: both;
+	z-index: 1000;
+	/*background-color: #5c9ccc;*/
 }
-	
-#header-account {
-	float: right;
+
+#page-top-bar a, #page-top-bar a:visited  {
+	color: #aaa;
+}
+
+#page-top-bar a:hover {
 	color: #fff;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	margin: 0 20px 0 0;
-	text-align: center;
-	padding: 4px;
-	background: #5c9ccc;
+	text-decoration: none;
+}
+
+
+#top-bar-wrapper {
+	width: 960px;
+	height: 30px;
+	padding: 6px 0;
+	margin: 0 auto;
 }
 
 #header-account a {
@@ -54,7 +94,246 @@ SCOPE: Header
 margin: 0px;
 padding: 0px;
 }
+
+/*
+SCOPE: Login Form
+*/
+#login-container {
+    margin:0 auto;
+    position: relative;
+	float: right;
+}
+
+#login-nav {
+    /*padding-bottom: 2px;
+	font-size:12px;
+    line-height:23px;*/
+    text-align:right;
+}
+#login-nav a.login {
+    background:#88bbd4;
+    padding:4px 6px 6px;
+    text-decoration:none;
+    font-weight:bold;
+    color:#fff;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    *background:transparent url("/images/signin-nav-bg-ie.png") no-repeat 0 0;
+    *padding:4px 12px 6px;
+}
+#login-nav a.login:hover {
+    background:#aaa;
+    *background:transparent url("/images/signin-nav-bg-hover-ie.png") no-repeat 0 0;
+    *padding:4px 12px 6px;
+}
+#login-nav a.login, #login-nav a.login:hover {
+    *background-position:0 3px!important;
+}
+
+a.login {
+    position:relative;
+    margin-left:3px;
+}
+a.login span {
+    background-image:url("/images/toggle_down_light.png");
+    background-repeat:no-repeat;
+    background-position:100% 50%;
+    padding:4px 16px 6px 0;
+}
+
+#login-nav a.menu-open {
+    background:#ddeef6!important;
+    color:#666!important;
+    outline:none;
+}
+
+a.login.menu-open span {
+    background-image:url("/images/toggle_up_dark.png");
+    color:#789;
+}
+
+#login-menu {
+	-moz-border-radius-topright:5px;
+    -moz-border-radius-bottomleft:5px;
+    -moz-border-radius-bottomright:5px;
+	-webkit-border-top-right-radius:5px;
+    -webkit-border-bottom-left-radius:5px;
+    -webkit-border-bottom-right-radius:5px;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+    display:none;
+    background-color:#ddeef6;
+    position:absolute;
+    width:210px;
+    z-index:100;
+    border:1px transparent;
+    text-align:left;
+    padding:12px;
+    top: 24.5px;
+    right: 0px;
+    margin-top:-10px;
+    margin-right: 0px;
+    *margin-right: -1px;
+    color:#789;
+    font-size:11px;
+}
+
+#login-menu input[type=text], #login-menu input[type=password] {
+    display:block;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border:1px solid #ACE;
+    font-size:13px;
+    margin:0 0 5px;
+    padding:5px;
+    width:203px;
+}
+#login-menu p {
+    margin:0;
+}
+#login-menu a {
+    color:#6AC;
+}
+#login-menu label {
+    font-weight:normal;
+}
+#login-menu p.login-submit {
+    padding:10px 0;
+}
+#login-menu p.forgot, #login-menu p.complete {
+    clear:both;
+    margin:5px 0;
+}
+#login-menu p a {
+    color:#27B!important;
+}
+#login-submit {
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    background:#39d url('/images/bg-btn-blue.png') repeat-x scroll 0 0;
+    border:1px solid #39D;
+    color:#fff;
+    text-shadow:0 -1px 0 #39d;
+    padding:4px 10px 5px;
+    font-size:11px;
+    margin:0 5px 0 0;
+    font-weight:bold;
+}
+#login-submit::-moz-focus-inner {
+padding:0;
+border:0;
+}
+#login-submit:hover, #login-submit:focus {
+    background-position:0 -5px;
+    cursor:pointer;
+}
+
+/* Registration Form */
+
+#registration-menu {
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+	border-radius: 5px;
+    display:none;
+    background-color:#ddeef6;
+    position:fixed;
+	top: 30%;
+	left: 50%;
+	margin-left: -105px;
+	z-index:1002;
+	overflow: auto;
+    width:240px;
+    border:2px solid #ACE;
+    text-align:left;
+    padding:12px;
+    color:#789;
+    font-size:11px;
 	
+}
+
+#registration-menu input[type=text], #registration-menu input[type=password] {
+    display:block;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border:1px solid #ACE;
+    font-size:13px;
+    margin:0 0 5px;
+    padding:5px;
+    width:203px;
+}
+
+#close-registration-menu {
+	border: 2px solid #ACE;
+	background-color: #fff;
+	font-size: 20px;
+	text-align: center;
+	line-height: 18px;
+	width: 20px;
+	height: 20px;
+	border-radius: 5px;
+	position: absolute;
+	top:2px;
+	right: 2px;
+}
+
+#close-registration-menu:hover {
+	cursor: pointer;
+}
+
+#registration-menu p {
+    margin:0;
+}
+#registration-menu a {
+    color:#6AC;
+}
+#registration-menu label {
+    font-weight:normal;
+}
+#registration-menu p.register-submit {
+    padding:10px 0;
+}
+#registration-menu p.forgot, #registration-menu p.complete {
+    clear:both;
+    margin:5px 0;
+}
+#registration-menu p a {
+    color:#27B!important;
+}
+#register-submit {
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    background:#39d url('/images/bg-btn-blue.png') repeat-x scroll 0 0;
+    border:1px solid #39D;
+    color:#fff;
+    text-shadow:0 -1px 0 #39d;
+    padding:4px 10px 5px;
+    font-size:11px;
+    margin:0 5px 0 0;
+    font-weight:bold;
+}
+#register-submit::-moz-focus-inner {
+padding:0;
+border:0;
+}
+#register-submit:hover, #register-submit:focus {
+    background-position:0 -5px;
+    cursor:pointer;
+}
+	
+.data-valid {
+	border: 1px solid #23DB4E;
+	background-color: #E1F0E5;
+}
+
+.data-invalid {
+	border: 1px solid #DB2323;
+	background-color: #F0E1E1;
+}
+
+
+
 /*
 SCOPE: Main Navigation
 */
@@ -73,11 +352,27 @@ SCOPE: Main Navigation
 	color: #555;
 }
 
-#main-navigation ul {
+#main-navigation ul, #account-navigation ul, #bid-info ul {
 	list-style-type: none;
 	margin: 0px;
 	padding: 0px;
 	height: 30px;
+}
+#account-navigation, #bid-info {
+	visibility: hidden;
+	display: none;
+}
+#bid-info {
+	float: right;
+}
+
+#account-navigation ul {
+	float: left;
+}
+
+#account-navigation ul li, #bid-info ul li {
+	float: left;
+	margin: 0 10px;
 }
 
 #main-navigation ul li {
@@ -118,7 +413,7 @@ SCOPE: Auction Listings
 	float: left;
 	border-radius: 10px;
 	border: 1px solid #a6c9e2; 
-	background: #fcfdfd url(images/ui-bg_inset-hard.png) 50% bottom repeat-x; color: #222222; }
+	background: #fcfdfd url(/images/ui-bg_inset-hard.png) 50% bottom repeat-x; color: #222222; }
 }
 
 #auctions .auction:hover {

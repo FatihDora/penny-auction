@@ -10,23 +10,20 @@ from google.appengine.ext import db
 class Auction(db.Model):
 	''' This class represents a single auction. '''
 
-	id = db.IntegerProperty()
-	name = db.StringProperty()
-	user = db.ReferenceProperty(User, collection_name='auctions')
-	productUrl = db.StringProperty()
-	imageUrl = db.StringProperty()
-	currentPrice = db.FloatProperty()
-	currentWinner = db.StringProperty()
+	id = db.IntegerProperty(required=True)
+	name = db.StringProperty(required=True)
+	bids = db.ReferenceProperty(BidHistory, collection_name='auctions')
+	currentWinner = db.ReferenceProperty(User, collection_name='auctions_won')
 	auctionEnd = db.DateTimeProperty()
-	# there is an implicit property 'attached_autobidders' created by the Autobidder class
+	# implicit property 'attached_autobidders' created by the Autobidder class
 
 	def __init__(self):
 
 		# initialize the auction timer, but do not start it
 		self.countdown_timer = Timer(
-				AppSettings().AUCTION_INITIAL_DURATION,
-				AuctionController.invoke_auto_bidding,
-				(self)
+			AppSettings().AUCTION_INITIAL_DURATION,
+			AuctionController.invoke_auto_bidding,
+			(self)
 		)
 
 	def begin(self):

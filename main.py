@@ -6,6 +6,7 @@ from __future__ import division
 
 from google.appengine.ext import db
 from lib import web
+import json
 
 from controllers import user_controller
 
@@ -19,7 +20,9 @@ urls = (
 
 	'/get_nonce', 'get_nonce',
 	'/user_register', 'register',
-	'/user_authenticate', 'authenticate'
+	'/user_authenticate', 'authenticate',
+	'/user_username_exists', 'username_exists',
+	'/user_email_exists', 'email_exists'
 )
 
 
@@ -56,13 +59,53 @@ class get_nonce:
 class register:
 	def GET(self):
 		inputs = web.input()
-		return user_controller.user_register(inputs.username, inputs.password).username
+		web.header('Content-Type', 'application/json')
+		try:
+			result = {'username',user_controller.user_register(inputs.username, inputs.email, inputs.password).username}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+		except Exception as e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 class authenticate:
 	def GET(self):
 		inputs = web.input()
-		return user_controller.user_authenticate(inputs.username, inputs.password)
+		web.header('Content-Type', 'application/json')
+		try:
+			result ={'result':user_controller.user_authenticate(inputs.username, inputs.password)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+		
+		except Exception as e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
+class username_exists:
+	def GET(self):
+		inputs = web.input()
+		try:
+			if not inputs.username:
+				result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
+				return inputs.callback + "(" + json.dumps(result) + ");"
+				
+			web.header('Content-Type', 'application/json')
+			result ={'result':user_controller.user_username_exists(inputs.username)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+		except Exception as e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+	
+class email_exists:
+	def GET(self):
+		inputs = web.input()
+		try:
+			if not inputs.email:
+				result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
+				return inputs.callback + "(" + json.dumps(result) + ");"
+				
+			web.header('Content-Type', 'application/json')
+			result ={'result':user_controller.user_email_exists(inputs.email)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+		except Exception as e:
+			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
+			return inputs.callback + "(" + json.dumps(result) + ");"
+		
 app = web.application(urls, globals())
 main = app.cgirun()
 
