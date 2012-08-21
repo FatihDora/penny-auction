@@ -34,19 +34,9 @@
 			</div>
 		</div>
 		<div id='auctions'>
-			{% for auction in auctions %}
-			<div id='{{auction.id}}' class='auction'>
-				<div class='auction-title'><a href='{{auction.productUrl}}'>{{auction.name}}</a></div>
-				<div class='auction-image'><img src='{{auction.imageUrl}}' alt='{{auction.name}}' /></div>
-				<div class='auction-info'>
-					<div class='auction-current-price'>₱{{auction.price}}</div>
-					<div class='auction-time-remaining'>{{auction.auctionRemaining}}</div>
-					<div class='auction-current-winner'>{{auction.currentWinner}}</div>
-				</div>
-				<div class='auction-bid-button'>Bid!</div>
-				<div class='auction-footer'></div>
+			<div style="margin:0 auto;">
+				<h3>Loading...</h3>
 			</div>
-			{% endfor %}
 		</div>
 	</div>
 </body>

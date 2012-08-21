@@ -110,7 +110,19 @@ $(document).ready(function() {
     /***********************************
 	 *  (3) Load auctions              *
 	 ***********************************/
-
+/*  DO A REQUEST TO GET THE AUCTIONS... PRINT OUT THIS STUFF IN A LOOP:
+<div id='{{auction.id}}' class='auction'>
+	<div class='auction-title'><a href='{{auction.productUrl}}'>{{auction.name}}</a></div>
+	<div class='auction-image'><img src='{{auction.imageUrl}}' alt='{{auction.name}}' /></div>
+	<div class='auction-info'>
+		<div class='auction-current-price'>₱{{auction.price}}</div>
+		<div class='auction-time-remaining'>{{auction.auctionRemaining}}</div>
+		<div class='auction-current-winner'>{{auction.currentWinner}}</div>
+	</div>
+	<div class='auction-bid-button'>Bid!</div>
+	<div class='auction-footer'></div>
+</div>
+*/
 	/* 1s Timer */
 	window.setInterval(function() {
 		$(".auction-time-remaining").each(function(i) {
