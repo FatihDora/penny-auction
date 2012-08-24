@@ -64,6 +64,7 @@ class register:
 		try:
 			result = {'result':user_controller.user_register(inputs.username, inputs.email, inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
+	
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 

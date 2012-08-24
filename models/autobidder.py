@@ -16,3 +16,14 @@ class Autobidder(db.Model):
 	bid_type = db.ReferenceProperty(BidType, collection_name='active_autobidders')
 	remaining_bids = db.IntegerProperty(required=True)
 	create_time = db.DateTimeProperty(required=True)
+
+	def use_bid(self):
+		''' Uses up one of the bids in this autobidder. Throws a
+		NoBidsRemainingException if there are no bids left to use. '''
+
+		if self.remaining_bids > 0:
+			self.remaining_bids -= 1
+			self.put()
+		else:
+			raise NoBidsRemainingException(self)
+
