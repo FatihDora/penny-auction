@@ -8,6 +8,12 @@ handlers:
 
 - url: /
   script: controllers/index.py
+  
+- url: /item/.*
+  script: controllers/item.py
+  
+- url: /register
+  script: controllers/register.py
 
 - url: /images
   static_dir: static/images

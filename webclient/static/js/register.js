@@ -5,37 +5,8 @@ BEGIN REGISTER & LOGIN STUFF *******************
 
 var typewatch;
 
-$(".login").click(function(e) {
-  e.preventDefault();
-  $("fieldset#login-menu").toggle();
-  return $(".login").toggleClass("menu-open");
-});
-
-$("fieldset#login-menu").mouseup(function() {
-  return false;
-});
-
-$(document).mouseup(function(e) {
-  if ($(e.target).parent("a.login").length === 0) {
-    $(".login").removeClass("menu-open");
-    return $("fieldset#login-menu").hide();
-  }
-});
-
-$("#show-registration").click(function() {
-  $("#overlay").css("display", "block");
-  $("#overlay").css("height", $(document).height() + "px");
-  $("#overlay").css("width", $(document).width() + "px");
-  return $("fieldset#registration-menu").css("display", "block");
-});
-
 $("#overlay").click(function() {
   $(this).css("display", "none");
-  return $("fieldset#registration-menu").css("display", "none");
-});
-
-$("#close-registration-menu").click(function() {
-  $("#overlay").css("display", "none");
   return $("fieldset#registration-menu").css("display", "none");
 });
 
@@ -52,13 +23,9 @@ $("#login-form").submit(function(e) {
       return;
     }
     if (data.result) {
-      $("#account-navigation").css("visibility", "visible");
-      $("#account-navigation").css("display", "block");
-      $("#user-account").html("<a href='user'>&#35; " + username + "</a>");
-      $("#bid-info").css("visibility", "visible");
-      $("#bid-info").css("display", "block");
-      $("#login-container").css("visibility", "hidden");
-      return $("#login-container").css("display", "none");
+      $('#header-right').css('visibility','hidden');
+      $('#header-right').css('display','none');
+	  return;
     }
   });
   return false;
