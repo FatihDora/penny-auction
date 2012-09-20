@@ -20,6 +20,41 @@ class UserControllerTestCase(unittest.TestCase):
         user_controller.user_register("testUser", "testUser@me.com",
                 "testPassword")
 
+    def testUserAuthenticate(self):
+        self.make_user()
+
+        # bad username
+        try:
+            user_controller.user_authenticate("fakeUser", "doesn't matter")
+            self.fail("User permitted to login with bad username!")
+        except:
+            # expected behavior
+            pass
+
+        # bad password
+        try:
+            user_controller.user_authenticate("testUser", "bad password")
+            self.fail("User permitted to login with bad password!")
+        except:
+            # expected behavior
+            pass
+
+# cannot run this part because the cookie cannot be set due to path resolution
+# problems in web.py's setcookie function
+#
+#       # good login
+#       user_hash = user_controller.user_authenticate("testUser",
+#           "testPassword")
+#       user_key = db.Key.from_path("User", "testUser")
+#       user_object = db.get(user_key)
+#       hashed_password = user_controller.user_hash_password("testUser",
+#           "testPassword", user_object.password_salt)
+#       self.assertEquals(hashed_password, user_hash)
+#       user_key = db.Key.from_path("User", "testUser")
+#       user_object = db.get(user_key)
+#       hashed_password = user_controller.user_hash_password("testUser",
+#           "testPassword", user_object.password_salt)
+
     def testUserCannotRegisterTwice(self):
         self.make_user()
         try:
