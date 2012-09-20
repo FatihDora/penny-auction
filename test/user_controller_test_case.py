@@ -9,11 +9,8 @@ from google.appengine.ext import testbed
 
 class UserControllerTestCase(unittest.TestCase):
     def setUp(self):
-        # First, create an instance of the Testbed class.
         self.testbed = testbed.Testbed()
-        # Then activate the testbed, which prepares the service stubs for use.
         self.testbed.activate()
-        # Next, declare which service stubs you want to use.
         self.testbed.init_datastore_v3_stub()
 
     def tearDown(self):
@@ -31,6 +28,42 @@ class UserControllerTestCase(unittest.TestCase):
         except:
             # expected behavior
             pass
+
+    def testUserEmailExists(self):
+        self.assertFalse(user_controller.user_email_exists("testUser@me.com"))
+
+        self.make_user()
+        self.assertTrue(user_controller.user_email_exists("testUser@me.com"))
+
+    def testUserUsernameExists(self):
+        self.assertFalse(user_controller.user_username_exists("testUser"))
+
+        self.make_user()
+        self.assertTrue(user_controller.user_username_exists("testUser"))
+
+    def testUserUpdatePassword(self):
+        self.make_user()
+
+        # validate the password hash
+        user_key = db.Key.from_path("User", "testUser")
+        user_object = db.get(user_key)
+        hashed_password = user_controller.user_hash_password("testUser",
+            "testPassword", user_object.password_salt)
+        self.assertEquals(hashed_password, user_object.hashed_password)
+
+        # change the password
+        user_controller.user_update_password(user_object, "testNewPassword")
+
+        # validate the new password hash
+        new_hashed_password = user_controller.user_hash_password("testUser",
+            "testNewPassword", user_object.password_salt)
+        self.assertEquals(new_hashed_password, user_object.hashed_password)
+
+        # pull a new refrence to the user from the DB and re-validate the new
+        # password hash
+        dup_user_key = db.Key.from_path("User", "testUser")
+        dup_user_object = db.get(dup_user_key)
+        self.assertEquals(new_hashed_password, dup_user_object.hashed_password)
 
 if __name__ == '__main__':
     unittest.main()
