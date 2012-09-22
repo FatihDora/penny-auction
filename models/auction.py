@@ -6,14 +6,16 @@ from __future__ import division
 
 from threading import Timer
 from google.appengine.ext import db
+import models.item as item
+import models.user as user
 
 class Auction(db.Model):
 	''' This class represents a single auction. '''
 
 	id = db.IntegerProperty(required=True)
 	name = db.StringProperty(required=True)
-	item = db.ReferenceProperty(Item, collection_name='auctions')
-	currentWinner = db.ReferenceProperty(User, collection_name='auctions_won')
+	item = db.ReferenceProperty(item.Item, collection_name='auctions')
+	currentWinner = db.ReferenceProperty(user.User, collection_name='auctions_won')
 	auctionEnd = db.DateTimeProperty()
 	# implicit property 'attached_autobidders' created by the Autobidder class
 	# implicit property 'past_bids' created by the BidHistory class
