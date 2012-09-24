@@ -4,6 +4,7 @@
 # make Python do floating-point division by default
 from __future__ import division
 from fixtures import dummy_users
+from fixtures import dummy_items
 
 from google.appengine.ext import db
 from lib import web
@@ -147,3 +148,4 @@ app = web.application(urls, globals())
 main = app.cgirun()
 if (os.getenv("APPLICATION_ID").startswith("dev~")):
 	dummy_users.DummyUsers.setup()
+	dummy_items.DummyItems.setup()

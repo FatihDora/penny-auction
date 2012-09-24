@@ -93,8 +93,9 @@ def user_register(username, email, password):
 		raise Exception("Another account already exists with this email!")
 
 	# create a new user and hash their password
-	user_object = user.User(key_name=username,
-			username=username, email=email, create_time=datetime.now())
+	user_object = user.User(key_name=username, username=username, email=email,
+			hashed_password="TBD", password_salt="TBD",
+			create_time=datetime.now())
 	user_update_password(user_object, password)
 	user_object.put()
 
