@@ -3,9 +3,11 @@
 
 # make Python do floating-point division by default
 from __future__ import division
+from fixtures import dummy_users
 
 from google.appengine.ext import db
 from lib import web
+import os
 import json
 
 from controllers import user_controller
@@ -60,11 +62,11 @@ class register:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
-		
+
 		try:
 			result = {'result':user_controller.user_register(inputs.username, inputs.email, inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-	
+
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
@@ -75,7 +77,7 @@ class authenticate:
 		try:
 			result ={'result':user_controller.user_authenticate(inputs.username, inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-			
+
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
@@ -86,13 +88,13 @@ class username_exists:
 			if not inputs.username:
 				result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 				return inputs.callback + "(" + json.dumps(result) + ");"
-				
+
 			web.header('Content-Type', 'application/json')
 			result ={'result':user_controller.user_username_exists(inputs.username)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
-	
+
 class email_exists:
 	def GET(self):
 		inputs = web.input()
@@ -100,14 +102,15 @@ class email_exists:
 			if not inputs.email:
 				result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 				return inputs.callback + "(" + json.dumps(result) + ");"
-				
+
 			web.header('Content-Type', 'application/json')
 			result ={'result':user_controller.user_email_exists(inputs.email)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
 		except Exception as e:
 			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		
+
 app = web.application(urls, globals())
 main = app.cgirun()
-
+if (os.getenv("APPLICATION_ID").startswith("dev~")):
+	dummy_users.DummyUsers.setup()
