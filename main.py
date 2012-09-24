@@ -5,6 +5,7 @@
 from __future__ import division
 from fixtures import dummy_users
 from fixtures import dummy_items
+from fixtures import dummy_bidtypes
 
 from google.appengine.ext import db
 from lib import web
@@ -149,3 +150,4 @@ main = app.cgirun()
 if (os.getenv("APPLICATION_ID").startswith("dev~")):
 	dummy_users.DummyUsers.setup()
 	dummy_items.DummyItems.setup()
+	dummy_bidtypes.DummyBidTypes.setup()
