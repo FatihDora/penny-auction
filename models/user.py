@@ -4,10 +4,14 @@
 from google.appengine.ext import db
 
 class User(db.Model):
-	id = db.IntegerProperty()
-	username = db.StringProperty()
-	email = db.EmailProperty()
-	hashed_password = db.StringProperty()
-	password_salt = db.StringProperty()
-	create_time = db.DateTimeProperty()
+	id = db.IntegerProperty(required=True)
+	username = db.StringProperty(required=True)
+	email = db.EmailProperty(required=True)
+	hashed_password = db.StringProperty(required=True)
+	password_salt = db.StringProperty(required=True)
+	create_time = db.DateTimeProperty(required=True)
 	personal_information = db.StringProperty()
+	# implicit property 'active_autobidders' created by the Autobidder class
+	# implicit property 'auctions_won' created by the Auction class
+	# implicit property 'past_bids' created by the BidHistory class
+	# implicit property 'available_bids' created by the BidPool class

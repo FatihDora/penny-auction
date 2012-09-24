@@ -31,7 +31,7 @@ $('#overlay').click(function() {
 
 $('#close-registration-menu').click(function() {
 	$('#overlay').css('display','none');
-	$('fieldset#registration-menu').css('display','none');	
+	$('fieldset#registration-menu').css('display','none');
 });
 
 
@@ -61,7 +61,7 @@ $('#register-username').keyup(function(e) {
 		return;
 	}
 	var username = $(this).val();
-    $(this).data('timer', setTimeout(function() {
+	$(this).data('timer', setTimeout(function() {
 		callApi(USER_USERNAME_EXISTS,{username:username},function(data) {
 			if (data.exception) {showDialog("error", "Registration Error", data.exception);return;}
 			$('#register-username-icon').css('visibility','visible');
@@ -74,10 +74,10 @@ $('#register-username').keyup(function(e) {
 				// False = Username Does Not Exist
 				// Display Green Checkmark Icon
 				$('#register-username-icon').attr('class','ui-icon ui-corner-all ui-icon-check data-valid');
-				$('#register-username-icon').attr('title','Username not in use');	
+				$('#register-username-icon').attr('title','Username not in use');
 			}
 	});
-	}, AJAX_KEYPRESS_DELAY));    
+	}, AJAX_KEYPRESS_DELAY));
 });
 
 $('#register-email').keyup(function() {
@@ -88,7 +88,7 @@ $('#register-email').keyup(function() {
 	} else {
 		$('#register-email-icon').css('visibility','visible');
 	}
-	
+
 	var email = $(this).val();
 	var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	if(re.test(email)){
@@ -104,7 +104,7 @@ $('#register-email').keyup(function() {
 					// False = Username Does Not Exist
 					// Display Green Checkmark Icon
 					$('#register-email-icon').attr('class','ui-icon ui-corner-all ui-icon-check data-valid');
-					$('#register-email-icon').attr('title','Email has not been registered.');						
+					$('#register-email-icon').attr('title','Email has not been registered.');
 				}
 			});
 	} else {
@@ -112,7 +112,7 @@ $('#register-email').keyup(function() {
 		// Display Red X Icon
 		$('#register-email-icon').attr('class','ui-icon ui-corner-all ui-icon-closethick data-invalid');
 		$('#register-email-icon').attr('title','Invalid Email.');
-	}    
+	}
 });
 
 $('#registration-form').submit(function(e) {
@@ -129,9 +129,6 @@ $('#registration-form').submit(function(e) {
 			$('#bid-info').css('display','block');
 			$('#login-container').css('visibility','hidden');
 			$('#login-container').css('display','none');
-			$('#overlay').css('display','none');
-			$('fieldset#registration-menu').css('display','none');
-			
 		}
 	});
 	return false;
@@ -140,8 +137,8 @@ $('#registration-form').submit(function(e) {
 var typewatch = (function(){
   var timer = 0;
   return function(callback, ms){
-    clearTimeout (timer);
-    timer = setTimeout(callback, ms);
-  }  
+	clearTimeout (timer);
+	timer = setTimeout(callback, ms);
+  }
 })();
 /************** END REGISTER & LOGIN STUFF *******************/
