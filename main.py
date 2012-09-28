@@ -9,6 +9,13 @@ from lib import web
 import json
 
 from controllers import user_controller
+import models.auction as auction
+import models.autobidder as autobidder
+import models.bid_history as bid_history
+import models.bid_type as bid_type
+import models.bid_type_value as bid_type_value
+import models.item as item
+import models.user as user
 
 urls = (
 	'/', 'index',
@@ -22,7 +29,9 @@ urls = (
 	'/user_register', 'register',
 	'/user_authenticate', 'authenticate',
 	'/user_username_exists', 'username_exists',
-	'/user_email_exists', 'email_exists'
+	'/user_email_exists', 'email_exists',
+
+	'/reset_data', 'reset_data'
 )
 
 
@@ -108,6 +117,30 @@ class email_exists:
 			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 			return inputs.callback + "(" + json.dumps(result) + ");"
 		
+class reset_data:
+	def GET(self):
+		br = '<br/>'
+		try :
+
+			result = 'Preparing Database...' + br
+			# Clear Database
+			result += '&gt; Deleting Auctions: ' + str(db.delete(auction.Auction.all())) + br
+			result += '&gt; Deleting Auto Bidders: ' + str(db.delete(autobidder.Autobidder.all())) + br
+			result += '&gt; Deleting Bid History: ' + str(db.delete(bid_history.BidHistory.all())) + br
+			result += '&gt; Deleting Bid Types: ' + str(db.delete(bid_type.BidType.all())) + br
+			result += '&gt; Deleting Bid Value: ' + str(db.delete(bid_type_value.BidTypeValue.all())) + br
+			result += '&gt; Deleting Items: ' + str(db.delete(item.Item.all())) + br
+			result += '&gt; Deleting Users: ' + str(db.delete(user.User.all())) + br
+			result += '... Done.' + br + br
+
+			result += 'Loading Data...' + br
+
+
+		except Exception as e:
+			result = result + str(e)
+
+		return result
+
 app = web.application(urls, globals())
 main = app.cgirun()
 
