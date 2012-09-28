@@ -35,7 +35,7 @@ def user_authenticate(username, password):
 	if hashed_password != u.hashed_password:
 		raise Exception("Invalid username or password")
 
-<<<<<<< HEAD
+
 	# TODO: Create a hash that uniquely identifies a user.	This will be stored
 	#		in a cookie.  The auth hash will be used to authenticate the user in
 	#		future requests.  For now, I'm using the user's username.
@@ -59,38 +59,18 @@ def user_authenticate_hash(authhash):
 		raise Exception("Invalid hash.")
 
 	return username
-=======
-	# TODO: Create a hash that uniquely identifies a user.	This will be stored
-	#		in a cookie.  The auth hash will be used to authenticate the user in
-	#		future requests.  For now, I'm using the user's username.
-	# http://webpy.org/cookbook/cookies
-	web.setcookie('pisoauction', u.username, 3600)
-	return u.hashed_password
-
-def user_authenticate_hash(authhash):
-	'''
-		This will be used to authenticate a user auth-hash.  This hash is generated
-		by the user_authentication() method and is stored in a cookie for user
-		requests.
-	'''
-
-	# TODO: We are currently using the user's username as the hash until a new
-	#		hashing method is built.
-	username = hash_to_username(authhash)
-	user_key = db.Key.from_path("User",username)
-
-	if not user_key:
-		raise Exception("Invalid hash.")
-
-	return username
->>>>>>> models
 
 def user_register(username, email, password):
-	'''
-		Register a new account
-	'''
-	if user_username_exists(username):
-		raise Exception("Another account already exists with this username!")
+    '''
+        Register a new account
+    '''
+    # try to authenticate. if it succeeds, throw an error
+    login_succeeded = False
+    try:
+        user_authenticate(username, password)
+        login_succeeded = True
+    except Exception as e:
+        pass
 
 	if user_email_exists(email):
 		raise Exception("Another account already exists with this email!")
@@ -101,8 +81,8 @@ def user_register(username, email, password):
 	user_update_password(user_object, password)
 	user_object.put()
 
-	# return the new username
-	return username
+    # return the new user instance
+    return u
 
 def user_update_password(user_object, new_password):
 	'''

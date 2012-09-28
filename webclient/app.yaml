@@ -9,6 +9,12 @@ handlers:
 - url: /
   script: controllers/index.py
 
+- url: /item/.*
+  script: controllers/item.py
+
+- url: /register
+  script: controllers/register.py
+
 - url: /images
   static_dir: static/images
 
@@ -17,6 +23,6 @@ handlers:
 
 - url: /js
   static_dir: static/js
-  
+
 - url: /user/.*
   script: controllers/testAPI.py
