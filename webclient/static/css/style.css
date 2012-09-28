@@ -926,7 +926,7 @@ border: 0;
 	float:left;
 	margin-right:11px;
 }
-.gallery ul li .cart-button a.hov {
+.gallery ul li .cart-button align{
 	margin-top:-32px;
 	background:#FFF;
 }

@@ -10,7 +10,8 @@ $("#overlay").click(function() {
   return $("fieldset#registration-menu").css("display", "none");
 });
 
-$("#login-form").submit(function(e) {
+$('#login-form').submit(function(e) {
+  alert('omfg... in');
   var password, username;
   username = $("#login-username").val();
   password = $("#login-password").val();
