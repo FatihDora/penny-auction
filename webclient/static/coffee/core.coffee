@@ -23,21 +23,7 @@ GET_AUCTION_INFO = "/get_auction_info"
 AJAX_KEYPRESS_DELAY = 500 # In milliseconds, how long to wait after a keypress before initiating ajax request.
 
 $(document).ready ->
-	###
-	Order of Operations
-	 
-	1) Initialize objects. Set Defaults. Hook-up events.
-	2) Check for and validate cookie hash.
-		2.a - Get user info (username,bids,level,etc.)
-		2.b - Display user info bars and hide login/register (top & bottom)
-	3) Load auctions
-	###
-
-
-	###
-	(1) Initialize
-	###
-
+	
 	# Set up the jQuery AJAX stuff 
 	$.ajaxSetup
 		async: true
@@ -64,56 +50,10 @@ $(document).ready ->
 			success: (data) ->
 				alert data
 
-	###
-	(2) User Auth
-	###
-
 	# validate cookie 
 	cookie = getCookie("pisoauction")
 	if cookie? and cookie isnt ""
-		$("#account-navigation").css "visibility", "visible"
-		$("#account-navigation").css "display", "block"
-		$("#bid-info").css "visibility", "visible"
-		$("#bid-info").css "display", "block"
-		$("#login-container").css "visibility", "hidden"
-		$("#login-container").css "display", "none"
-	else
-		$.getScript "/js/register.js", ->
-			# enable login / register buttons here
-
-		$("#account-navigation").css "visibility", "hidden"
-		$("#account-navigation").css "display", "none"
-		$("#bid-info").css "visibility", "hidden"
-		$("#bid-info").css "display", "none"
-		$("#login-container").css "visibility", "visible"
-		$("#login-container").css "display", "block"
-
-	###
-	2.a - Get user info
-	###
-
-	###
-	2.b - Display user info
-	###
-
-	###
-	(3) Load auctions
-	###
-
-	#  DO A REQUEST TO GET THE AUCTIONS... PRINT OUT THIS STUFF IN A LOOP:
-	###
-	<div id='{{auction.id}}' class='auction'>
-		<div class='auction-title'><a href='{{auction.productUrl}}'>{{auction.name}}</a></div>
-		<div class='auction-image'><img src='{{auction.imageUrl}}' alt='{{auction.name}}' /></div>
-		<div class='auction-info'>
-			<div class='auction-current-price'>₱{{auction.price}}</div>
-			<div class='auction-time-remaining'>{{auction.auctionRemaining}}</div>
-			<div class='auction-current-winner'>{{auction.currentWinner}}</div>
-		</div>
-		<div class='auction-bid-button'>Bid!</div>
-		<div class='auction-footer'></div>
-	</div>
-	###
+		return
 
 	# 1s Timer 
 	window.setInterval (->
@@ -146,4 +86,123 @@ $(document).ready ->
 		d.setSeconds parts[2]
 		oldHours = d.getHours()
 		@innerHTML = padzero(d.getHours(), 2) + ":" + padzero(d.getMinutes(), 2) + ":" + padzero(d.getSeconds(), 2)  if oldHours >= d.getHours()
+
+	$("#messageDialog").dialog
+		autoOpen: false
+		modal: true
+		width: 300
+		height: 200
+		buttons:
+			Ok: ->
+				$(this).dialog "close"
+
+# Login Stuff
+
+	$("#login-username").focus ->
+  		if $(this).val() is "username"
+    		$(this).val ""
+    		$(this).css "color", "#000"
+
+	$("#login-password").focus ->
+ 		if $(this).val() is "password"
+    		$(this).val ""
+    		$(this).css "color", "#000"
+
+	$("#login-username").blur ->
+  		if $(this).val() is ""
+    		$(this).val "username"
+    		$(this).css "color", "#ddd"
+
+	$("#login-password").blur ->
+  		if $(this).val() is ""
+    		$(this).val "password"
+    		$(this).css "color", "#ddd"
+
+	$("#login-form").submit (e) ->
+		username = $("#login-username").val()
+		password = $("#login-password").val()
+		callApi USER_AUTHENTICATE,
+			username: username
+			password: password
+		, (data) ->
+			if data.exception
+				showDialog "error", "Login Error", data.exception
+				return
+
+			if data.result
+				# Logged in
+				return
+
+		false
+
+	$("#registration-form").submit (e) ->
+		username = $("#register-username").val()
+		email = $("#register-email").val()
+		password = $("#register-password").val()
+		callApi USER_REGISTER,
+			username: username
+			email: email
+			password: password
+		, (data) ->
+			if data.exception
+				showDialog "error", "Registration Error", data.exception
+				return
+
+			if data.result
+				# User Registered
+				return
+
+		false
+
+	# END $(document).ready
+
+typewatch = (->
+	timer = 0
+	(callback, ms) ->
+		clearTimeout timer
+		timer = setTimeout(callback, ms)
+)()
+
+showDialog = (dialogType, title, message) ->
+	# figure out which icon to use
+	icon = "info"
+	switch dialogType
+		when "info"
+			icon = "info"
+		when "error"
+			icon = "alert"
+		else
+			icon = "info"
+	
+	# update the message dialog
+	$("#messageDialog p").html "<span class='ui-icon ui-icon-" + icon + "' style='float:left; margin:0 7px 20px 0;'></span>" + message
+	$("#messageDialog").dialog title: title
+	
+	# show the message dialog
+	$("#messageDialog").dialog "open"
+
+padzero = (number, length) ->
+	str = "" + number
+	str = "0" + str	while str.length < length
+	str
+	
+getCookie = (c_name) ->
+	i = undefined
+	x = undefined
+	y = undefined
+	ARRcookies = document.cookie.split(";")
+	i = 0
+	while i < ARRcookies.length
+		x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="))
+		y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1)
+		x = x.replace(/^\s+|\s+$/g, "")
+		return unescape(y)	if x is c_name
+		i++
+		
+callApi = (method, data, callback) ->
+	jQuery.ajax
+		url: API + method
+		data: data
+		jsonp: "callback"
+		success: callback
 
