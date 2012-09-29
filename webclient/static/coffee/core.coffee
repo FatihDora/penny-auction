@@ -11,7 +11,7 @@ LIST_AUTO_BIDDERS_FOR_AUCTION = "/list_auto_bidders_for_auction"
 # User Auth
 USER_REGISTER = "/user_register"
 USER_AUTHENTICATE = "/user_authenticate"
-GET_NONCE = "/get_nonce"
+VALIDATE_EMAIL = "/user_validate_email"
 USER_USERNAME_EXISTS = "/user_username_exists"
 USER_EMAIL_EXISTS = "/user_email_exists"
 
@@ -150,10 +150,24 @@ $(document).ready ->
 				return
 
 			if data.result
-				$("#leftcol").html("<div class='content'><h1>Almost Done!</h1><br/><br/><h2>An email has been dispatched to " + email + ".<br/>Please click the link in the email we sent to verify your account.</h1></div>")
+				$("#leftcol").html("<div class='contact'><h1 class='red'>Almost Done!</h1><br/><br/><h2>An email has been dispatched to " + email + ".<br/>Please click the link in the email to verify your account.</h1></div>")
 				return
 
 		false
+
+	if $("#validate-email").length > 0
+		code = getParameterByName('code')
+		callApi VALIDATE_EMAIL,
+			code: code
+		, (data) ->
+			if data.exception
+				$("#validate-email").html("<h1 class='red'>Validation Error</h1><br/><br/><h2>" + data.exception + "</h2>")
+				return
+
+			if data.result
+				$("#validate-email").html("<div class='contact'><h1 class='red'>Email Verified!</h1><br/><br/><h2>Your account has been validated.</h1></div>")
+				return
+
 
 	# END $(document).ready
 
@@ -206,4 +220,15 @@ callApi = (method, data, callback) ->
 		data: data
 		jsonp: "callback"
 		success: callback
+
+# For getting parameters from the Query String
+getParameterByName = (name) ->
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]")
+  regexS = "[\\?&]" + name + "=([^&#]*)"
+  regex = new RegExp(regexS)
+  results = regex.exec(window.location.search)
+  unless results?
+    ""
+  else
+    decodeURIComponent results[1].replace(/\+/g, " ")
 

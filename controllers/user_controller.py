@@ -105,7 +105,46 @@ def user_register(username, email, password):
 	
 	user_object.put()
 
-	mail.send_mail('darinh@gmail.com', email, "Please Validate Your Account", "<a href='http://localhost:8081/user_validate_email?callback=test&code=" + str(email_validation_code) + "'>Validate Email</a>")
+	message = mail.EmailMessage(sender="Darin Hoover <darinh@gmail.com>",
+								subject="Please Validate Your Account")
+
+	message.to = email # FirstName + " " + LastName + "<" + email + ">"
+
+	message.body = """
+	Dear <FIRST NAME>:
+
+	Your Piso Auction account has been created, but we still need to
+	validate your email address.  Please click the following link
+	to verify your email account:
+
+	http://pisoauction.appspot.com/validate_email?code=""" + str(email_validation_code) + """
+
+	Once your email has been validated, you will be able to login.
+
+	Please let us know if you have any questions.
+
+	The Piso Auction Team
+	"""
+
+	message.html = """
+	<html><head></head><body>
+	Dear <FIRST NAME>:
+
+	Your Piso Auction account has been created, but we still need to
+	validate your email address.  Please click the following link
+	to verify your email account:
+
+	<a href='http://pisoauction.appspot.com/validate_email?code=""" + str(email_validation_code) + """'>Validate Email</a>
+
+	Once your email has been validated, you will be able to login.
+
+	Please let us know if you have any questions.
+
+	The Piso Auction Team
+	</body></html>
+	"""
+
+	message.send()
 
 
 	# return the new user instance
@@ -116,15 +155,18 @@ def user_validate_email(email_validation_code):
 		Attempts to validate a user's email with an email_validation_code
 	'''
 
+	if not email_validation_code:
+		raise Exception("You must provide a validaton code.")
+
 	q = user.User.all().filter("email_validation_code =", str(email_validation_code))
 
 	u = q.get()
 
 	if not u:
-		raise Exception("Validation Failed")
+		raise Exception("Validation failed for code: " + str(email_validation_code))
 		
 	if u.email_validated == True:
-		raise Exception("Email already validated")
+		raise Exception("Email already validated.")
 
 	u.email_validated = True
 	u.put()
