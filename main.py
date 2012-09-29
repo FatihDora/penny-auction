@@ -28,6 +28,7 @@ urls = (
 	'/get_nonce', 'get_nonce',
 	'/user_register', 'register',
 	'/user_authenticate', 'authenticate',
+	'/user_authenticate_cookie', 'authenticate_cookie',
 	'/user_username_exists', 'username_exists',
 	'/user_email_exists', 'email_exists',
 
@@ -83,9 +84,21 @@ class authenticate:
 		try:
 			result ={'result':user_controller.user_authenticate(inputs.username, inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		
+
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class authenticate_cookie:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+		try:
+			result ={'result':user_controller.user_authenticate_cookie()}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception as e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
 
 class username_exists:
 	def GET(self):

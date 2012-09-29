@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import models.user as user
+from models import user, user_cookie
 import lib.bcrypt.bcrypt as bcrypt
+from lib import web 
 
 from google.appengine.ext import db
 from datetime import datetime
@@ -36,29 +37,36 @@ def user_authenticate(username, password):
 		raise Exception("Invalid username or password")
 
 
-	# TODO: Create a hash that uniquely identifies a user.	This will be stored
-	#		in a cookie.  The auth hash will be used to authenticate the user in
-	#		future requests.  For now, I'm using the user's username.
-	# http://webpy.org/cookbook/cookies
-	web.setcookie('pisoauction', u.username, 3600)
-	return u.hashed_password
+	
+	create_cookie(u.username)
 
-def user_authenticate_hash(authhash):
+	return u.username
+
+def user_authenticate_cookie():
 	'''
-		This will be used to authenticate a user auth-hash.  This hash is generated
-		by the user_authentication() method and is stored in a cookie for user
-		requests.
+		This will be used to authenticate a user's cookie information.
 	'''
 
 	# TODO: We are currently using the user's username as the hash until a new
 	#		hashing method is built.
-	username = hash_to_username(authhash)
-	user_key = db.Key.from_path("User",username)
 
-	if not user_key:
-		raise Exception("Invalid hash.")
+	username = web.cookies().get('username')
+	token = web.cookies().get('token')
 
-	return username
+	if (username == None or token == None):
+		raise Exception("Invalid cookie")
+
+	q = user_cookie.UserCookie.all().filter("username =", username).filter("token =", token)
+
+	cookie = q.get()
+
+	if not cookie:
+		raise Exception("Invalid cookie")
+
+	cookie.delete() # cookie was used up, so delete it
+	create_cookie(username) # create new cookie
+
+	return True
 
 def user_register(username, email, password):
     '''
@@ -76,8 +84,14 @@ def user_register(username, email, password):
 		raise Exception("Another account already exists with this email!")
 
 	# create a new user and hash their password
+	salt = bcrypt.gensalt()
+	pass_hash = user_hash_password(username,password,salt)
 	user_object = user.User(key_name=username,
-			username=username, email=email, create_time=datetime.now())
+							username=username,
+							hashed_password=pass_hash,
+							password_salt=salt,
+							email=email,
+							create_time=datetime.now())
 	user_update_password(user_object, password)
 	user_object.put()
 
@@ -131,12 +145,19 @@ def user_email_exists(email):
 	else:
 		return True
 
-def hash_to_username(userhash):
+def create_cookie(username):
 	'''
-		Converts the user hash to a username (the user key)
+		Creates a cookie in user_cookie and sends it to the browser.
 	'''
 
-	# TODO: ReWrite this to actually do something.	Since the hash is currently the
-	#		username, there's nothing to do.
+	# Cookie Design: http://jaspan.com/improved_persistent_login_cookie_best_practice
+	# Cookie Syntax: http://webpy.org/cookbook/cookies
 
-	return userhash
+	token = bcrypt.gensalt()
+	web.setcookie('username', username, 3600)
+	web.setcookie('token', token, 3600)
+	cookie = user_cookie.UserCookie(username=username,token=token)
+	cookie.put()
+
+	return
+	
