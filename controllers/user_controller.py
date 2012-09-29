@@ -91,20 +91,19 @@ def user_register(username, email, password):
 	# create a new user and hash their password
 	salt = bcrypt.gensalt()
 
-	logging.debug('salt: ' + salt)
+	logging.debug('salt: ' + str(salt))
 	
 	email_validation_code = user_get_nonce()
-	logging.debug('email_validation_code:' + email_validation_code)
+	logging.debug('email_validation_code:' + str(email_validation_code))
 	
 	pass_hash = user_hash_password(username,password,salt)
-	logging.debug('pass_hash:' + pass_hash)
+	logging.debug('pass_hash:' + str(pass_hash))
 
 	user_object = user.User(key_name=username,username=username,hashed_password=pass_hash,
 		password_salt=salt,email=email,email_validation_code=str(email_validation_code),
 		create_time=datetime.now())
 	
-	result = user_object.put()
-	logging('Put Result: ' + result)
+	user_object.put()
 
 	mail.send_mail('darinh@gmail.com', 'darinh@gmail.com', "Please Validate Your Account", "<a href='http://localhost:8081/user_validate_email?callback=test&code=" + str(email_validation_code) + "'>Validate Email</a>")
 
