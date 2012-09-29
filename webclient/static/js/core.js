@@ -151,9 +151,9 @@
     });
     return $("#registration-form").submit(function(e) {
       var email, password, username;
-      username = $("#register-username").val();
-      email = $("#register-email").val();
-      password = $("#register-password").val();
+      username = $("#Username").val();
+      email = $("#Email").val();
+      password = $("#Password").val();
       callApi(USER_REGISTER, {
         username: username,
         email: email,
@@ -164,7 +164,7 @@
           return;
         }
         if (data.result) {
-
+          $("#leftcol").html("<div class='content'><h1>Almost Done!</h1><br/><br/><h2>An email has been dispatched to " + email + ".<br/>Please click the link in the email we sent to verify your account.</h1></div>");
         }
       });
       return false;
