@@ -3,6 +3,8 @@
 
 import models.item as item
 
+from google.appengine.ext import db
+
 def items_list():
 	'''
 		Get a list of all item names
@@ -11,7 +13,7 @@ def items_list():
 
 def item_add(name, quantity, price, url, image_url):
 	'''
-		Create a new item with the specified properties
+		Create a new item with the specified properties (administrative only)
 	'''
 	pass
 
@@ -24,13 +26,13 @@ def item_get_info(name):
 
 def item_update_price(name, price):
 	'''
-		Update the price of the specified item
+		Update the price of the specified item (administrative only)
 	'''
 	pass
 
 def item_update_quantity(name, quantity):
 	'''
-		Update the quantity of the specified item
+		Update the quantity of the specified item (administrative only)
 	'''
 	pass
 
