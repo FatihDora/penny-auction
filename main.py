@@ -6,7 +6,7 @@ from __future__ import division
 
 from google.appengine.ext import db
 from lib import web
-import json
+import json, logging
 
 from controllers import user_controller
 import models.auction as auction
@@ -27,6 +27,7 @@ urls = (
 
 	'/get_nonce', 'get_nonce',
 	'/user_register', 'register',
+	'/user_validate_email', 'validate_email',
 	'/user_authenticate', 'authenticate',
 	'/user_authenticate_cookie', 'authenticate_cookie',
 	'/user_username_exists', 'username_exists',
@@ -34,7 +35,6 @@ urls = (
 
 	'/reset_data', 'reset_data'
 )
-
 
 class index:
 	def GET(self):
@@ -74,6 +74,17 @@ class register:
 			result = {'result':user_controller.user_register(inputs.username, inputs.email, inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
 	
+		except Exception as e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class validate_email:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+		try:
+			result = {'result':user_controller.user_validate_email(inputs.code)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
@@ -153,6 +164,10 @@ class reset_data:
 
 		return result
 
-app = web.application(urls, globals())
-main = app.cgirun()
+def main():
+	logging.getLogger().setLevel(logging.DEBUG)
+	app = web.application(urls, globals())
+	main = app.cgirun()
 
+if __name__ == '__main__':
+	main()

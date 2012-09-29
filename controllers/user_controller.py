@@ -4,8 +4,11 @@
 from models import user, user_cookie
 import lib.bcrypt.bcrypt as bcrypt
 from lib import web 
+import logging
 
 from google.appengine.ext import db
+from google.appengine.api import mail
+
 from datetime import datetime
 import hashlib
 import random
@@ -23,12 +26,13 @@ def user_authenticate(username, password):
 		Login to the API and return a hash which corresponds to the
 		username, password, and salt
 	'''
-	user_key = db.Key.from_path("User", username)
-	u = db.get(user_key)
 
 	# Verify the user exists in the database
 	if not user_username_exists(username):
 		raise Exception("Invalid username or password!")
+
+	user_key = db.Key.from_path("User", username)
+	u = db.get(user_key)
 
 	# Verify the username/password combination (including the user's password
 	# salt) matches the hashed password currently stored to the user object
@@ -36,8 +40,6 @@ def user_authenticate(username, password):
 	if hashed_password != u.hashed_password:
 		raise Exception("Invalid username or password")
 
-
-	
 	create_cookie(u.username)
 
 	return u.username
@@ -69,34 +71,67 @@ def user_authenticate_cookie():
 	return True
 
 def user_register(username, email, password):
-    '''
-        Register a new account
-    '''
-    # try to authenticate. if it succeeds, throw an error
-    login_succeeded = False
-    try:
-        user_authenticate(username, password)
-        login_succeeded = True
-    except Exception as e:
-        pass
+	'''
+		Register a new account
+	'''
+	logging.debug('user_register(username, email, password) = (' + username + ',' + email + ',' + password + ')')
+
+	if user_username_exists(username):
+		logging.debug('username exists')
+		raise Exception("Another account already exists with this username!")
+
+	logging.debug('passed username check')
 
 	if user_email_exists(email):
+		logging.debug('email exists')
 		raise Exception("Another account already exists with this email!")
+
+	logging.debug('passed email check')
 
 	# create a new user and hash their password
 	salt = bcrypt.gensalt()
-	pass_hash = user_hash_password(username,password,salt)
-	user_object = user.User(key_name=username,
-							username=username,
-							hashed_password=pass_hash,
-							password_salt=salt,
-							email=email,
-							create_time=datetime.now())
-	user_update_password(user_object, password)
-	user_object.put()
 
-    # return the new user instance
-    return u
+	logging.debug('salt: ' + salt)
+	
+	email_validation_code = user_get_nonce()
+	logging.debug('email_validation_code:' + email_validation_code)
+	
+	pass_hash = user_hash_password(username,password,salt)
+	logging.debug('pass_hash:' + pass_hash)
+
+	user_object = user.User(key_name=username,username=username,hashed_password=pass_hash,
+		password_salt=salt,email=email,email_validation_code=str(email_validation_code),
+		create_time=datetime.now())
+	
+	result = user_object.put()
+	logging('Put Result: ' + result)
+
+	mail.send_mail('darinh@gmail.com', 'darinh@gmail.com', "Please Validate Your Account", "<a href='http://localhost:8081/user_validate_email?callback=test&code=" + str(email_validation_code) + "'>Validate Email</a>")
+
+
+	# return the new user instance
+	return user_object.username
+
+def user_validate_email(email_validation_code):
+	'''
+		Attempts to validate a user's email with an email_validation_code
+	'''
+
+	try:
+		q = user.User.all().filter("email_validation_code =", str(email_validation_code))
+
+		user = q.get()
+
+		if not user:
+			raise Exception("Validation Failed")
+		
+		if user.email_validated == True:
+			raise Exception("Email already validated")
+
+	except Exception as e:
+		pass
+
+	return
 
 def user_update_password(user_object, new_password):
 	'''
@@ -124,11 +159,10 @@ def user_username_exists(username):
 	'''
 		Check to see if the given username exists in the database.
 	'''
-	user_key = db.Key.from_path("User", username)
-	u = db.get(user_key)
+	q = user.User.all().filter('username = ', username)
 
 	#Verify the user exists in the database
-	if u == None:
+	if q.get() == None:
 		return False
 	else:
 		return True
