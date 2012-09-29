@@ -15,6 +15,9 @@ handlers:
 - url: /register
   script: controllers/register.py
 
+- url: /validate_email
+  script: controllers/validate_email.py
+
 - url: /images
   static_dir: static/images
 
