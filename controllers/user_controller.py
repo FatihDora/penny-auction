@@ -118,15 +118,18 @@ def user_validate_email(email_validation_code):
 
 	q = user.User.all().filter("email_validation_code =", str(email_validation_code))
 
-	user = q.get()
+	u = q.get()
 
-	if not user:
+	if not u:
 		raise Exception("Validation Failed")
 		
-	if user.email_validated == True:
+	if u.email_validated == True:
 		raise Exception("Email already validated")
 
-	return
+	u.email_validated = True
+	u.put()
+
+	return True
 
 def user_update_password(user_object, new_password):
 	'''
