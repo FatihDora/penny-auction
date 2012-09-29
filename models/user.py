@@ -4,7 +4,6 @@
 from google.appengine.ext import db
 
 class User(db.Model):
-	id = db.IntegerProperty(required=True)
 	username = db.StringProperty(required=True)
 	email = db.EmailProperty(required=True)
 	hashed_password = db.StringProperty(required=True)
