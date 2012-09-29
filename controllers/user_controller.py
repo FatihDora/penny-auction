@@ -105,7 +105,7 @@ def user_register(username, email, password):
 	
 	user_object.put()
 
-	mail.send_mail('darinh@gmail.com', 'darinh@gmail.com', "Please Validate Your Account", "<a href='http://localhost:8081/user_validate_email?callback=test&code=" + str(email_validation_code) + "'>Validate Email</a>")
+	mail.send_mail('darinh@gmail.com', email, "Please Validate Your Account", "<a href='http://localhost:8081/user_validate_email?callback=test&code=" + str(email_validation_code) + "'>Validate Email</a>")
 
 
 	# return the new user instance
@@ -116,19 +116,15 @@ def user_validate_email(email_validation_code):
 		Attempts to validate a user's email with an email_validation_code
 	'''
 
-	try:
-		q = user.User.all().filter("email_validation_code =", str(email_validation_code))
+	q = user.User.all().filter("email_validation_code =", str(email_validation_code))
 
-		user = q.get()
+	user = q.get()
 
-		if not user:
-			raise Exception("Validation Failed")
+	if not user:
+		raise Exception("Validation Failed")
 		
-		if user.email_validated == True:
-			raise Exception("Email already validated")
-
-	except Exception as e:
-		pass
+	if user.email_validated == True:
+		raise Exception("Email already validated")
 
 	return
 

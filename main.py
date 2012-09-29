@@ -6,7 +6,8 @@ from __future__ import division
 
 from google.appengine.ext import db
 from lib import web
-import json, logging
+import simplejson as json
+import logging
 
 from controllers import user_controller
 import models.auction as auction
@@ -60,8 +61,6 @@ class list_auto_bidders_for_auction:
 	def GET(self):
 		return "list_auto_bidders_for_auction stub"
 
-
-
 class get_nonce:
 	def GET(self):
 		return user_controller.user_get_nonce()
@@ -71,10 +70,10 @@ class register:
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 		try:
-			result = {'result':user_controller.user_register(inputs.username, inputs.email, inputs.password)}
+			result = {'result':user_controller.user_register(inputs.username,inputs.email,inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-	
-		except Exception as e:
+
+		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 class validate_email:
@@ -85,7 +84,7 @@ class validate_email:
 			result = {'result':user_controller.user_validate_email(inputs.code)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
 
-		except Exception as e:
+		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 class authenticate:
@@ -96,7 +95,7 @@ class authenticate:
 			result ={'result':user_controller.user_authenticate(inputs.username, inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
 
-		except Exception as e:
+		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 class authenticate_cookie:
@@ -107,7 +106,7 @@ class authenticate_cookie:
 			result ={'result':user_controller.user_authenticate_cookie()}
 			return inputs.callback + "(" + json.dumps(result) + ");"
 
-		except Exception as e:
+		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 
@@ -122,7 +121,7 @@ class username_exists:
 			web.header('Content-Type', 'application/json')
 			result ={'result':user_controller.user_username_exists(inputs.username)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		except Exception as e:
+		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 class email_exists:
@@ -136,7 +135,7 @@ class email_exists:
 			web.header('Content-Type', 'application/json')
 			result ={'result':user_controller.user_email_exists(inputs.email)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		except Exception as e:
+		except Exception, e:
 			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 			return inputs.callback + "(" + json.dumps(result) + ");"
 
@@ -159,7 +158,7 @@ class reset_data:
 			result += 'Loading Data...' + br
 
 
-		except Exception as e:
+		except Exception, e:
 			result = result + str(e)
 
 		return result
