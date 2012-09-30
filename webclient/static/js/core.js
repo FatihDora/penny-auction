@@ -164,7 +164,7 @@
           return;
         }
         if (data.result) {
-          $("#leftcol").html("<div class='contact'><h1 class='red'>Almost Done!</h1><br/><br/><h2>An email has been dispatched to " + email + ".<br/>Please click the link in the email to verify your account.</h1></div>");
+          $("#leftcol").html("<div class='contact'><h1 class='red'>Almost Done!</h1><br/><br/><h2>An email has been dispatched to <strong>" + email + "</strong>.<br/>Please click the link in the email to verify your account.</h1></div>");
         }
       });
       return false;
