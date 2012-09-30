@@ -70,7 +70,7 @@ def user_authenticate_cookie():
 
 	return True
 
-def user_register(username, email, password):
+def user_register(first_name, last_name, username, email, password):
 	'''
 		Register a new account
 	'''
@@ -99,9 +99,15 @@ def user_register(username, email, password):
 	pass_hash = user_hash_password(username,password,salt)
 	logging.debug('pass_hash:' + str(pass_hash))
 
-	user_object = user.User(key_name=username,username=username,hashed_password=pass_hash,
-		password_salt=salt,email=email,email_validation_code=str(email_validation_code),
-		create_time=datetime.now())
+	user_object = user.User(key_name=username,
+							first_name=first_name,
+							last_name=last_name,
+							username=username,
+							hashed_password=pass_hash,
+							password_salt=salt,
+							email=email,
+							email_validation_code=str(email_validation_code),
+							create_time=datetime.now())
 	
 	user_object.put()
 
@@ -111,7 +117,7 @@ def user_register(username, email, password):
 	message.to = email # FirstName + " " + LastName + "<" + email + ">"
 
 	message.body = """
-	Dear <FIRST NAME>:
+	Dear """ + first_name + """:
 
 	Your Piso Auction account has been created, but we still need to
 	validate your email address.  Please click the following link
@@ -128,7 +134,7 @@ def user_register(username, email, password):
 
 	message.html = """
 	<html><head></head><body>
-	Dear FIRST NAME:<br/>
+	Dear """ + first_name + """<br/>
 	<br/>
 	Your Piso Auction account has been created, but we still need to<br/>
 	validate your email address.  Please click the following link<br/>

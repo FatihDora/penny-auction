@@ -70,7 +70,7 @@ class register:
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 		try:
-			result = {'result':user_controller.user_register(inputs.username,inputs.email,inputs.password)}
+			result = {'result':user_controller.user_register(inputs.first_name,inputs.last_name,inputs.username,inputs.email,inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
 
 		except Exception, e:

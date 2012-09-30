@@ -150,11 +150,40 @@
       return false;
     });
     $("#registration-form").submit(function(e) {
-      var email, password, username;
+      var email, error, first_name, last_name, password, termsaccepted, username;
+      error = "<ul style='clear: both'>";
+      first_name = $("#FirstName").val();
+      last_name = $("#LastName").val();
       username = $("#Username").val();
       email = $("#Email").val();
       password = $("#Password").val();
+      termsaccepted = $("#termsandconditions:checked").val();
+      if (first_name.length === 0) {
+        error += "<li>A First Name is required.<li/>";
+      }
+      if (last_name.length === 0) {
+        error += "<li>A Last Name is required.<li/>";
+      }
+      if (username.length === 0) {
+        error += "<li>A username is required.<li/>";
+      }
+      if (email.length === 0) {
+        error += "<li>An email address is required.<li/>";
+      }
+      if (password.length === 0) {
+        error += "<li>A password is required.<li/>";
+      }
+      if (!termsaccepted) {
+        error += "<li>You must accept our terms and conditions to register an account.<li/>";
+      }
+      error += "</ul>";
+      if (error !== "<ul style='clear: both'></ul>") {
+        showDialog("error", "Registration Error", error);
+        return false;
+      }
       callApi(USER_REGISTER, {
+        first_name: first_name,
+        last_name: last_name,
         username: username,
         email: email,
         password: password
