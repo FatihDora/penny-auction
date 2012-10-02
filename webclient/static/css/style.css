@@ -571,9 +571,11 @@ body {
 	opacity:0.7;
 	filter:alpha(opacity=7); /* For IE8 and earlier */
 }
+
 #header-right {
 	float:right;
 	position:relative;
+	overflow: hidden;
 }
 #header-right .cart {
 	min-width:133px;
@@ -4505,4 +4507,9 @@ table#cart.wish td:first-child + td + td + td + td + td + td {
 	line-height:180%;
 	margin-bottom:-8px;
 	margin-top:3px;
+}
+
+/* ----------------------------------- CUSTOM  -----------------------------------*/
+form#login-form .login-focus {
+	color: #000;
 }

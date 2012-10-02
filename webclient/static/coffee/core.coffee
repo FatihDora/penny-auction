@@ -1,5 +1,5 @@
 # API
-API = "http://pisoapi.appspot.com"
+API = "http://localhost:8081"
 
 # Autobidder
 CREATE_AUTO_BIDDER = "/create_auto_bidder"
@@ -17,7 +17,7 @@ USER_EMAIL_EXISTS = "/user_email_exists"
 
 # Auctions
 BID = "/bid"
-GET_AUCTION_INFO = "/get_auction_info"
+AUCTION_LIST_ACTIVE = "/auction_list_active"
 
 # Misc
 AJAX_KEYPRESS_DELAY = 500 # In milliseconds, how long to wait after a keypress before initiating ajax request.
@@ -38,54 +38,8 @@ $(document).ready ->
 			# called
 		error: (xhr, status, error) ->
 			# Error handler
-			showDialog "error", "Unexpected Error", error
-
-	# Bid Button Clicked 
-	$(".auction-bid-button").click ->
-		auction_id = $(this).parent().attr("id")
-		jQuery.ajax
-			url: API + BID
-			data:
-				id: auction_id
-			success: (data) ->
-				alert data
-
-	# validate cookie 
-	cookie = getCookie("pisoauction")
-	if cookie? and cookie isnt ""
-		return
-
-	# 1s Timer 
-	window.setInterval (->
-		$(".auction-time-remaining").each (i) ->
-			parts = @innerHTML.split(":")
-			d = new Date()
-			d.setHours parts[0]
-			d.setMinutes parts[1]
-			d.setSeconds parts[2]
-			oldHours = d.getHours()
-			d.setSeconds d.getSeconds() - 1
-			if oldHours >= d.getHours()
-				@innerHTML = padzero(d.getHours(), 2) + ":" + padzero(d.getMinutes(), 2) + ":" + padzero(d.getSeconds(), 2)
-				if @innerHTML is "00:00:00"
-					@style.backgroundColor = "#CC0000"
-					$(this).animate
-						backgroundColor: "#FFFFFF"
-					, "slow"
-			else
-				@innerHTML = "00:00:00"
-
-	), 1000
-
-	# Count auctions down 
-	$(".auction-time-remaining").each (i) ->
-		parts = @innerHTML.split(":")
-		d = new Date()
-		d.setHours parts[0]
-		d.setMinutes parts[1]
-		d.setSeconds parts[2]
-		oldHours = d.getHours()
-		@innerHTML = padzero(d.getHours(), 2) + ":" + padzero(d.getMinutes(), 2) + ":" + padzero(d.getSeconds(), 2)  if oldHours >= d.getHours()
+			if result.statusText isnt "abort"
+				showDialog "error", "Unexpected Error", error
 
 	$("#messageDialog").dialog
 		autoOpen: false
@@ -94,30 +48,37 @@ $(document).ready ->
 		height: 200
 		buttons:
 			Ok: ->
-				$(this).dialog "close"
+				$(@).dialog "close"
 
-# Login Stuff
+	#auctions.init()
+	login.init()
+	registration.init()
+	validate_email.init()
 
-	$("#login-username").focus ->
-  		if $(this).val() is "username"
-    		$(this).val ""
-    		$(this).css "color", "#000"
+	# END $(document).ready
 
-	$("#login-password").focus ->
- 		if $(this).val() is "password"
-    		$(this).val ""
-    		$(this).css "color", "#000"
+auctions = init: ->
+	#Get Auctions
 
-	$("#login-username").blur ->
-  		if $(this).val() is ""
-    		$(this).val "username"
-    		$(this).css "color", "#ddd"
+	# If the array arrAuctionIDs contains IDs, get auction data by id.
+	# Otherwise get active auctions
+	#if arrAuctionIDs?
+	
+	$.ajax
+		url: API + AUCTION_LIST_ACTIVE
+		success: (data) ->
+			$.map data, (auction) ->
+				$('#auction#{auction.id} span.winner').html '<a href="#">#{auction.winner}</a>'
+				$('#auction#{auction.id} span.price').text auction.current-price
+				$('#auction#{auction.id} span.timeleft').html auction.time-left
+		error: (data) ->
+			alert 'Well, no auctions yet.'
+	
 
-	$("#login-password").blur ->
-  		if $(this).val() is ""
-    		$(this).val "password"
-    		$(this).css "color", "#ddd"
 
+login = init: ->
+	$("#login-username").val "username"
+	$("#login-password").val "password"
 	$("#login-form").submit (e) ->
 		username = $("#login-username").val()
 		password = $("#login-password").val()
@@ -125,16 +86,33 @@ $(document).ready ->
 			username: username
 			password: password
 		, (data) ->
-			if data.exception
-				showDialog "error", "Login Error", data.exception
-				return
+	
+				if data.result?
+					# Hide the login form.
+					# TODO: We need to check if the user is logged in and hide it before the page loads.
+					# TODO: Determine how we will know when a user is logged in.  Cookie?
+					$('div#login-wrapper').animate marginRight: -400, 1000
 
-			if data.result
-				# Logged in
-				return
+				if data.exception
+						showDialog "error", "Login Error", data.exception
 
 		false
 
+	$("#login-form").delegate "#login-username, #login-password", "focus", ->
+		if $(@).val() is "username" or $(@).val() is "password"
+			$(@).val ""
+			$(@).addClass "login-focus"
+
+	$("#login-form").delegate "#login-username, #login-password", "blur", ->
+		if $(@).val() is ""
+			$(@).val $(@).attr("id").split("-")[1]
+			$(@).removeClass "login-focus"
+
+
+# Registration Stuff
+
+registration = init: ->
+	$("div#registration-complete").hide()
 	$("#registration-form").submit (e) ->
 		error = "<ul style='clear: both'>"
 		first_name = $("#FirstName").val()
@@ -144,23 +122,12 @@ $(document).ready ->
 		password = $("#Password").val()
 		termsaccepted = $("#termsandconditions:checked").val()
 
-		if first_name.length == 0
-			error += "<li>A First Name is required.<li/>"
-
-		if last_name.length == 0
-			error += "<li>A Last Name is required.<li/>"
-
-		if username.length == 0
-			error += "<li>A username is required.<li/>"
-
-		if email.length == 0
-			error += "<li>An email address is required.<li/>"
-
-		if password.length == 0
-			error += "<li>A password is required.<li/>"
-
-		if not termsaccepted
-			error += "<li>You must accept our terms and conditions to register an account.<li/>"
+		if first_name.length == 0 then error += "<li>A First Name is required.<li/>"
+		if last_name.length == 0 then error += "<li>A Last Name is required.<li/>"
+		if username.length == 0 then error += "<li>A username is required.<li/>"
+		if email.length == 0 then error += "<li>An email address is required.<li/>"
+		if password.length == 0 then error += "<li>A password is required.<li/>"
+		if not termsaccepted then error += "<li>You must accept our terms and conditions to register an account.<li/>"
 
 		error += "</ul>"
 
@@ -181,26 +148,91 @@ $(document).ready ->
 				return
 
 			if data.result
-				$("#leftcol").html("<div class='contact'><h1 class='red'>Almost Done!</h1><br/><br/><h2>An email has been dispatched to <strong>" + email + "</strong>.<br/>Please click the link in the email to verify your account.</h1></div>")
+				$("div#registration-form").hide();
+				$("div#registration-complete").fadeIn 1000
 				return
 
 		false
 
-	if $("#validate-email").length > 0
-		code = getParameterByName('code')
+
+validate_email = init: ->
+	$("#validation-error").hide()
+	$("#validation-success").hide()
+
+	# Find a better way to determine if we're on /validate_email page.
+	if $("div#validate-email")?
+		code = getParameterByName 'code'
 		callApi VALIDATE_EMAIL,
 			code: code
 		, (data) ->
+			$("div#validate-email div#please-wait").hide()
+
 			if data.exception
-				$("#validate-email").html("<h1 class='red'>Validation Error</h1><br/><br/><h2>" + data.exception + "</h2>")
+				$("#validation-error h2").text data.exception
+				$("#validation-error").fadeIn 1000
 				return
 
 			if data.result
-				$("#validate-email").html("<div class='contact'><h1 class='red'>Email Verified!</h1><br/><br/><h2>Your account has been validated.</h1></div>")
+				$("#validation-success").fadeIn 1000
 				return
 
 
-	# END $(document).ready
+# UNUSED STUFF
+###
+# Bid Button Clicked 
+$(".auction-bid-button").click ->
+	auction_id = $(@).parent().attr("id")
+	$.ajax
+		url: API + BID
+		data:
+			id: auction_id
+		success: (data) ->
+			alert data
+
+# validate cookie 
+cookie = getCookie("pisoauction")
+if cookie? and cookie isnt ""
+	return
+
+# 1s Timer 
+window.setInterval (->
+	$(".auction-time-remaining").each (i) ->
+		parts = @innerHTML.split(":")
+		d = new Date()
+		d.setHours parts[0]
+		d.setMinutes parts[1]
+		d.setSeconds parts[2]
+		oldHours = d.getHours()
+		d.setSeconds d.getSeconds() - 1
+		if oldHours >= d.getHours()
+			@innerHTML = padzero(d.getHours(), 2) + ":" + padzero(d.getMinutes(), 2) + ":" + padzero(d.getSeconds(), 2)
+			if @innerHTML is "00:00:00"
+				@style.backgroundColor = "#CC0000"
+				$(@).animate
+					backgroundColor: "#FFFFFF"
+				, "slow"
+		else
+			@innerHTML = "00:00:00"
+
+), 1000
+
+
+
+# Count auctions down 
+$(".auction-time-remaining").each (i) ->
+	parts = @innerHTML.split(":")
+	d = new Date()
+	d.setHours parts[0]
+	d.setMinutes parts[1]
+	d.setSeconds parts[2]
+	oldHours = d.getHours()
+	@innerHTML = padzero(d.getHours(), 2) + ":" + padzero(d.getMinutes(), 2) + ":" + padzero(d.getSeconds(), 2)  if oldHours >= d.getHours()
+
+###
+
+# ************************ #
+# FUNCTIONS                #
+# ************************ #
 
 typewatch = (->
 	timer = 0
@@ -254,12 +286,12 @@ callApi = (method, data, callback) ->
 
 # For getting parameters from the Query String
 getParameterByName = (name) ->
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]")
-  regexS = "[\\?&]" + name + "=([^&#]*)"
-  regex = new RegExp(regexS)
-  results = regex.exec(window.location.search)
-  unless results?
-    ""
-  else
-    decodeURIComponent results[1].replace(/\+/g, " ")
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]")
+	regexS = "[\\?&]" + name + "=([^&#]*)"
+	regex = new RegExp(regexS)
+	results = regex.exec(window.location.search)
+	unless results?
+		""
+	else
+		decodeURIComponent results[1].replace(/\+/g, " ")
 
