@@ -164,8 +164,10 @@
             return;
           }
           if (data.result) {
-            $("div#registration-form").hide();
-            $("div#registration-complete").fadeIn(1000);
+            $("div#registration-form").slideUp('slow', function() {
+              $("div#registration-complete strong").text(email);
+              return $("div#registration-complete").fadeIn(1000);
+            });
           }
         });
         return false;

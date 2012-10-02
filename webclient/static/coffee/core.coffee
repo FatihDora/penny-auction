@@ -148,8 +148,9 @@ registration = init: ->
 				return
 
 			if data.result
-				$("div#registration-form").hide();
-				$("div#registration-complete").fadeIn 1000
+				$("div#registration-form").slideUp 'slow', ->
+					$("div#registration-complete strong").text(email)
+					$("div#registration-complete").fadeIn 1000
 				return
 
 		false
