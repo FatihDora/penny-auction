@@ -58,21 +58,22 @@ $(document).ready ->
 	# END $(document).ready
 
 auctions = init: ->
+	auction_ids = []
 	#Get Auctions
 
 	# If the array arrAuctionIDs contains IDs, get auction data by id.
 	# Otherwise get active auctions
 	#if arrAuctionIDs?
-	
-	$.ajax
-		url: API + AUCTION_LIST_ACTIVE
-		success: (data) ->
-			$.map data, (auction) ->
-				$('#auction#{auction.id} span.winner').html '<a href="#">#{auction.winner}</a>'
-				$('#auction#{auction.id} span.price').text auction.current-price
-				$('#auction#{auction.id} span.timeleft').html auction.time-left
-		error: (data) ->
-			alert 'Well, no auctions yet.'
+	if auction_ids.length is 0
+		$.ajax
+			url: API + AUCTION_LIST_ACTIVE
+			success: (data) ->
+				$.map data, (auction) ->
+					$('#auction#{auction.id} span.winner').html '<a href="#">#{auction.winner}</a>'
+					$('#auction#{auction.id} span.price').text auction.current-price
+					$('#auction#{auction.id} span.timeleft').html auction.time-left
+			error: (data) ->
+				alert 'Well, no auctions yet.'
 	
 
 
