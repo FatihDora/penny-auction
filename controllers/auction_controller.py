@@ -5,6 +5,12 @@ import models.auction as auction
 
 from google.appengine.ext import db
 
+def auctions_by_id(ids):
+	'''
+		List the auctions specified
+	'''
+	pass
+
 def auctions_list_active():
 	'''
 		List the currently-running auctions
