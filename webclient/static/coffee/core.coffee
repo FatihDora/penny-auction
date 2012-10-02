@@ -1,5 +1,5 @@
 # API
-API = "http://localhost:8081"
+API = "http://pisoapi.appspot.com"
 
 # Autobidder
 CREATE_AUTO_BIDDER = "/create_auto_bidder"
@@ -77,6 +77,7 @@ auctions = init: ->
 
 
 login = init: ->
+	$("#top-account-info").hide()
 	$("#login-username").val "username"
 	$("#login-password").val "password"
 	$("#login-form").submit (e) ->
@@ -92,6 +93,7 @@ login = init: ->
 					# TODO: We need to check if the user is logged in and hide it before the page loads.
 					# TODO: Determine how we will know when a user is logged in.  Cookie?
 					$('div#login-wrapper').animate marginRight: -400, 1000
+					$('#top-account-info').fadeIn 1000
 
 				if data.exception
 						showDialog "error", "Login Error", data.exception

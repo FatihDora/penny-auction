@@ -2,7 +2,7 @@
 (function() {
   var AJAX_KEYPRESS_DELAY, API, AUCTION_LIST_ACTIVE, BID, CANCEL_AUTO_BIDDER, CREATE_AUTO_BIDDER, GET_AUTO_BIDDER_STATUS, LIST_AUTO_BIDDERS_FOR_AUCTION, LIST_AUTO_BIDDERS_FOR_USER, USER_AUTHENTICATE, USER_EMAIL_EXISTS, USER_REGISTER, USER_USERNAME_EXISTS, VALIDATE_EMAIL, auctions, callApi, getCookie, getParameterByName, login, padzero, registration, showDialog, typewatch, validate_email;
 
-  API = "http://localhost:8081";
+  API = "http://pisoapi.appspot.com";
 
   CREATE_AUTO_BIDDER = "/create_auto_bidder";
 
@@ -81,6 +81,7 @@
 
   login = {
     init: function() {
+      $("#top-account-info").hide();
       $("#login-username").val("username");
       $("#login-password").val("password");
       $("#login-form").submit(function(e) {
@@ -95,6 +96,7 @@
             $('div#login-wrapper').animate({
               marginRight: -400
             }, 1000);
+            $('#top-account-info').fadeIn(1000);
           }
           if (data.exception) {
             return showDialog("error", "Login Error", data.exception);
