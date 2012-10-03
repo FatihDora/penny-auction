@@ -15,6 +15,7 @@ class Auction(db.Model):
 	id = db.IntegerProperty(required=True)
 	name = db.StringProperty(required=True)
 	item = db.ReferenceProperty(item.Item, collection_name='auctions')
+	currentPrice = decimal.DecimalProperty(default='0.0')
 	currentWinner = db.ReferenceProperty(user.User, collection_name='auctions_won')
 	auctionEnd = db.DateTimeProperty()
 	# implicit property 'attached_autobidders' created by the Autobidder class
