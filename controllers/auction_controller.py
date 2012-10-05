@@ -2,14 +2,34 @@
 # -*- coding: utf-8 -*-
 
 import models.auction as auction
+from datetime import timedelta
 
 from google.appengine.ext import db
 
-def auctions_by_id(ids):
+def auctions_status_by_id(auction_ids):
 	'''
 		List the auctions specified
 	'''
-	pass
+	where = ""
+	ids = auction_ids.split(',')
+
+	for id in ids:
+		where += "'" +  id + "' or id = "
+
+	where = where[:-9] # get rid of the last " or id = "
+
+	q = db.gqlQuery("SELECT * FROM Auctions WHERE id = $1", where)
+	auctions = q.get()
+
+	result = "["
+	for auction in auctions
+	delta = datetime.now() - auction.auctionEnd
+		result += "{'i':'"+ auction.id + "',"
+				 + "'p':'" + auction.currentPrice + "',"
+				 + "'w':'" + auction.currentWinner + "',"
+				 + "'t':'" + delta.total_seconds() + "'},"
+
+	return result[:-1] + "]"
 
 def auctions_list_active():
 	'''
