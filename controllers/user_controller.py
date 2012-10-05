@@ -82,7 +82,7 @@ def user_authenticate_hash(authhash):
 
 	return username
 
-def user_register(username, email, password):
+def user_register(first_name, last_name, username, email, password):
 	'''
 		Register a new account
 	'''
@@ -93,7 +93,8 @@ def user_register(username, email, password):
 		raise Exception("Another account already exists with this email!")
 
 	# create a new user and hash their password
-	user_object = user.User(key_name=username, username=username, email=email,
+	user_object = user.User(key_name=username, first_name=first_name, last_name=last_name,
+			username=username, email=email, email_validation_code='12345',
 			hashed_password="TBD", password_salt="TBD",
 			create_time=datetime.now())
 	user_update_password(user_object, password)

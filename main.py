@@ -6,13 +6,14 @@ from __future__ import division
 from fixtures import dummy_users
 from fixtures import dummy_items
 from fixtures import dummy_bidtypes
+from fixtures import dummy_auctions
 
 from google.appengine.ext import db
 from lib import web
 import os
 import json
 
-from controllers import user_controller
+from controllers import user_controller, auction_controller
 import models.auction as auction
 import models.autobidder as autobidder
 import models.bid_history as bid_history
@@ -28,6 +29,7 @@ urls = (
 	'/cancel_auto_bidder', 'cancel_auto_bidder',
 	'/list_auto_bidders_for_user', 'list_auto_bidders_for_user',
 	'/list_auto_bidders_for_auction', 'list_auto_bidders_for_auction',
+	'/auctions_status_by_id', 'auctions_status_by_id',
 
 	'/get_nonce', 'get_nonce',
 	'/user_register', 'register',
@@ -62,6 +64,18 @@ class get_auto_bidder_status:
 class list_auto_bidders_for_auction:
 	def GET(self):
 		return "list_auto_bidders_for_auction stub"
+
+class auctions_status_by_id:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auctions_status_by_id(inputs.ids)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception as e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 
 
@@ -151,3 +165,4 @@ if (os.getenv("APPLICATION_ID").startswith("dev~")):
 	dummy_users.DummyUsers.setup()
 	dummy_items.DummyItems.setup()
 	dummy_bidtypes.DummyBidTypes.setup()
+	dummy_auctions.DummyAuctions.setup()

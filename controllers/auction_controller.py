@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import models.auction as auction
+from models import auction, item
 from datetime import timedelta
+import datetime
 
 from google.appengine.ext import db
 
@@ -10,26 +11,50 @@ def auctions_status_by_id(auction_ids):
 	'''
 		List the auctions specified
 	'''
-	where = ""
-	ids = auction_ids.split(',')
+	if not auction_ids:
+		return
 
-	for id in ids:
-		where += "'" +  id + "' or id = "
+	# Try to parse the IDs and create a list of ints.
+	try:
+		sids = auction_ids.split(',')
+	except Exception, e:
+		raise Exception("The list of IDs provided could not be parsed.")
+	ids = []
+	for sid in sids:
+		try:
+			ids.append(int(sid))
+		except Exception, e:
+			raise Exception("The list of IDs provided could not be parsed.")
 
-	where = where[:-9] # get rid of the last " or id = "
+	if len(ids) > 40:
+		raise Exception("Too many ids")
 
-	q = db.gqlQuery("SELECT * FROM Auctions WHERE id = $1", where)
-	auctions = q.get()
+	# Try to get some auctions from the list of IDs
+	auctions = auction.Auction.get_by_id(ids)
 
-	result = "["
-	for auction in auctions
-	delta = datetime.now() - auction.auctionEnd
-		result += "{'i':'"+ auction.id + "',"
-				 + "'p':'" + auction.currentPrice + "',"
-				 + "'w':'" + auction.currentWinner + "',"
-				 + "'t':'" + delta.total_seconds() + "'},"
+	if not auctions:
+		raise Exception("No auctions returned.")
 
-	return result[:-1] + "]"
+	# Build the JSON payload
+	result = []
+	delta = ""
+
+	for elem in auctions:
+		try:
+			if not elem:
+				continue
+			delta = datetime.datetime.now() - elem.auction_end
+
+			result.append({'i':str(elem.key().id()),'p':str(elem.current_price),'w':str(elem.current_winner.username),'t':str(delta.total_seconds())})
+		except Exception, e:
+			print e
+
+	if result is None:
+		raise Exception("There were no auctions for the IDs you provided.")
+
+
+	return result
+	
 
 def auctions_list_active():
 	'''
