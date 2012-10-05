@@ -36,7 +36,7 @@ class Auction(db.Model):
 		'''
 			Lists the top {count=10} active auctions
 		'''
-		return Auction.all().filter("active", True).order("auction_end")
+		return Auction.all().filter("active", True).order("auction_end").fetch(int(count))
 
 	#def __init__(self):
 
