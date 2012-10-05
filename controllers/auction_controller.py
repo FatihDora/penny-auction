@@ -75,7 +75,16 @@ def auctions_list_active(count=10):
 				continue
 			delta = datetime.datetime.now() - elem.auction_end
 
-			result.append({'i':str(elem.key().id()),'p':str(elem.current_price),'w':str(elem.current_winner.username),'t':str(delta.total_seconds())})
+			result.append({
+				'i':str(elem.key().id()), 					# ID
+				'n':str(elem.item.name),					# Name
+				'p':str(elem.item.base_price),				# Base Price
+				'u':str(elem.item.product_url),				# Product URL
+				'm':str(elem.item.image_url),				# Image URL
+				'p':str(elem.current_price),				# Current Price
+				'w':str(elem.current_winner.username),		# Current Winner Username
+				't':str(delta.total_seconds())				# Time Til End (TTE) in Seconds
+				})
 		except Exception, e:
 			print e
 
