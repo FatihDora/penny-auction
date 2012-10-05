@@ -1,0 +1,22 @@
+application: pisoadmin
+version: 1
+runtime: python
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /
+  script: controllers/index.py
+
+- url: /empty
+  script: controllers/empty.py
+
+- url: /scripts
+  static_dir: scripts
+
+- url: /styles
+  static_dir: styles
+
+- url: /images
+  static_dir: images
+
