@@ -56,11 +56,34 @@ def auctions_status_by_id(auction_ids):
 	return result
 	
 
-def auctions_list_active():
+def auctions_list_active(count=10):
 	'''
 		List the currently-running auctions
 	'''
-	pass
+	auctions = auction.Auction.get_active(count)
+
+	if not auctions:
+		raise Exception("No auctions returned.")
+
+	# Build the JSON payload
+	result = []
+	delta = ""
+
+	for elem in auctions:
+		try:
+			if not elem:
+				continue
+			delta = datetime.datetime.now() - elem.auction_end
+
+			result.append({'i':str(elem.key().id()),'p':str(elem.current_price),'w':str(elem.current_winner.username),'t':str(delta.total_seconds())})
+		except Exception, e:
+			print e
+
+	if result is None:
+		raise Exception("There were no auctions for the IDs you provided.")
+
+
+	return result
 
 def auctions_list_all():
 	'''

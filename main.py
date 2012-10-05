@@ -29,7 +29,9 @@ urls = (
 	'/cancel_auto_bidder', 'cancel_auto_bidder',
 	'/list_auto_bidders_for_user', 'list_auto_bidders_for_user',
 	'/list_auto_bidders_for_auction', 'list_auto_bidders_for_auction',
+	
 	'/auctions_status_by_id', 'auctions_status_by_id',
+	'/auctions_list_active', 'auctions_list_active',
 
 	'/get_nonce', 'get_nonce',
 	'/user_register', 'register',
@@ -65,6 +67,8 @@ class list_auto_bidders_for_auction:
 	def GET(self):
 		return "list_auto_bidders_for_auction stub"
 
+# AUCTIONS
+
 class auctions_status_by_id:
 	def GET(self):
 		inputs = web.input()
@@ -76,6 +80,19 @@ class auctions_status_by_id:
 
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class auctions_list_active:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auctions_list_active(inputs.count)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception as e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
 
 
 
