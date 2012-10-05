@@ -4,6 +4,7 @@
 from models import auction, item
 from datetime import timedelta
 import datetime
+import logging
 
 from google.appengine.ext import db
 
@@ -63,7 +64,7 @@ def auctions_list_active(count=10):
 	auctions = auction.Auction.get_active(count)
 
 	if not auctions:
-		raise Exception("No auctions returned.")
+		raise Exception("No active auctions.")
 
 	# Build the JSON payload
 	result = []
@@ -86,11 +87,7 @@ def auctions_list_active(count=10):
 				't':str(delta.total_seconds())				# Time Til End (TTE) in Seconds
 				})
 		except Exception, e:
-			print e
-
-	if result is None:
-		raise Exception("There were no auctions for the IDs you provided.")
-
+			logging.Error(e)
 
 	return result
 
@@ -98,11 +95,40 @@ def auctions_list_all():
 	'''
 		List all auctions (administrative only)
 	'''
-	pass
+	auctions = auction.Auction.get_all()
 
-def auction_create(item, scheduled_start_date):
+	if not auctions:
+		raise Exception("No auctions in the system.")
+
+	# Build the JSON payload
+	result = []
+	delta = ""
+
+	for elem in auctions:
+		try:
+			if not elem:
+				continue
+			delta = datetime.datetime.now() - elem.auction_end
+
+			result.append({
+				'i':str(elem.key().id()), 					# ID
+				'n':str(elem.item.name),					# Name
+				'p':str(elem.item.base_price),				# Base Price
+				'u':str(elem.item.product_url),				# Product URL
+				'm':str(elem.item.image_url),				# Image URL
+				'p':str(elem.current_price),				# Current Price
+				'w':str(elem.current_winner.username),		# Current Winner Username
+				't':str(delta.total_seconds())				# Time Til End (TTE) in Seconds
+				})
+		except Exception, e:
+			logging.Error(e)
+
+
+	return result
+
+def auction_create(item, scheduled_end_time):
 	'''
-		Schedule an auction for the specified item on the specified start date
+		Schedule an auction to run and end for the specified item at the specified time
 		(administrative only)
 	'''
 	pass

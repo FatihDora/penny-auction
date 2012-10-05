@@ -38,6 +38,15 @@ class Auction(db.Model):
 		'''
 		return Auction.all().filter("active", True).order("auction_end").fetch(int(count))
 
+	@staticmethod
+	def get_all():
+		'''
+			Lists all the auctions
+		'''
+
+		return Auction.all()
+
+
 	#def __init__(self):
 
 		# initialize the auction timer, but do not start it

@@ -32,6 +32,7 @@ urls = (
 	
 	'/auctions_status_by_id', 'auctions_status_by_id',
 	'/auctions_list_active', 'auctions_list_active',
+	'/auctions_list_all', 'auctions_list_all',
 
 	'/get_nonce', 'get_nonce',
 	'/user_register', 'register',
@@ -92,6 +93,20 @@ class auctions_list_active:
 
 		except Exception as e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+# TODO: MOVE THIS TO THE ADMIN / PRIVATE API! -- HERE FOR TESTING
+class auctions_list_all:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auctions_list_all()}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception as e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
 
 
 
