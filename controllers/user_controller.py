@@ -89,6 +89,7 @@ def user_register(first_name, last_name, username, email, password):
 	logging.debug('passed email check')
 
 	# create a new user and hash their password
+
 	salt = bcrypt.gensalt()
 
 	logging.debug('salt: ' + str(salt))
@@ -108,7 +109,6 @@ def user_register(first_name, last_name, username, email, password):
 							email=email,
 							email_validation_code=str(email_validation_code),
 							create_time=datetime.now())
-	
 	user_object.put()
 
 	message = mail.EmailMessage(sender="Darin Hoover <darinh@gmail.com>",

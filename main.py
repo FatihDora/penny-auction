@@ -3,13 +3,18 @@
 
 # make Python do floating-point division by default
 from __future__ import division
+from fixtures import dummy_users
+from fixtures import dummy_items
+from fixtures import dummy_bidtypes
+from fixtures import dummy_auctions
 
 from google.appengine.ext import db
 from lib import web
+import os
 import simplejson as json
 import logging
 
-from controllers import user_controller
+from controllers import user_controller, auction_controller
 import models.auction as auction
 import models.autobidder as autobidder
 import models.bid_history as bid_history
@@ -25,6 +30,10 @@ urls = (
 	'/cancel_auto_bidder', 'cancel_auto_bidder',
 	'/list_auto_bidders_for_user', 'list_auto_bidders_for_user',
 	'/list_auto_bidders_for_auction', 'list_auto_bidders_for_auction',
+	
+	'/auctions_status_by_id', 'auctions_status_by_id',
+	'/auctions_list_active', 'auctions_list_active',
+	'/auctions_list_all', 'auctions_list_all',
 
 	'/get_nonce', 'get_nonce',
 	'/user_register', 'register',
@@ -60,6 +69,48 @@ class get_auto_bidder_status:
 class list_auto_bidders_for_auction:
 	def GET(self):
 		return "list_auto_bidders_for_auction stub"
+
+# AUCTIONS
+
+class auctions_status_by_id:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auctions_status_by_id(inputs.ids)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class auctions_list_active:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auctions_list_active(inputs.count)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+# TODO: MOVE THIS TO THE ADMIN / PRIVATE API! -- HERE FOR TESTING
+class auctions_list_all:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auctions_list_all()}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+
+
 
 class get_nonce:
 	def GET(self):
@@ -163,10 +214,13 @@ class reset_data:
 
 		return result
 
-def main():
-	logging.getLogger().setLevel(logging.DEBUG)
-	app = web.application(urls, globals())
-	main = app.cgirun()
 
-if __name__ == '__main__':
-	main()
+app = web.application(urls, globals())
+main = app.cgirun()
+if (os.getenv("APPLICATION_ID").startswith("dev~")):
+	logging.getLogger().setLevel(logging.DEBUG)
+	dummy_users.DummyUsers.setup()
+	dummy_items.DummyItems.setup()
+	dummy_bidtypes.DummyBidTypes.setup()
+	dummy_auctions.DummyAuctions.setup()
+
