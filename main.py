@@ -12,6 +12,7 @@ from google.appengine.ext import db
 from lib import web
 import os
 import json
+import logging
 
 from controllers import user_controller, auction_controller
 import models.auction as auction
@@ -194,6 +195,7 @@ class reset_data:
 app = web.application(urls, globals())
 main = app.cgirun()
 if (os.getenv("APPLICATION_ID").startswith("dev~")):
+	logging.getLogger().setLevel(logging.DEBUG)
 	dummy_users.DummyUsers.setup()
 	dummy_items.DummyItems.setup()
 	dummy_bidtypes.DummyBidTypes.setup()

@@ -27,8 +27,6 @@ class Auction(db.Model):
 			Generates a list of auctions whose id is contained in the {ids} list
 		'''
 		ids = [map(int, x) for x in ids]
-
-		print ids[0]
 		return Auction.all().filter("id IN", ids).get()
 
 	@staticmethod
@@ -45,6 +43,13 @@ class Auction(db.Model):
 		'''
 
 		return Auction.all()
+
+	@staticmethod
+	def create(item, auction_end):
+		'''
+			Creates an auction
+		'''
+		Auction(item=item,auction_end=auction_end).put()
 
 
 	#def __init__(self):

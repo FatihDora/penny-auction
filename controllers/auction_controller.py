@@ -45,8 +45,11 @@ def auctions_status_by_id(auction_ids):
 			if not elem:
 				continue
 			delta = datetime.datetime.now() - elem.auction_end
+			username = ""
+			if elem.current_winner:
+				username = elem.current_winner.username
 
-			result.append({'i':str(elem.key().id()),'p':str(elem.current_price),'w':str(elem.current_winner.username),'t':str(delta.total_seconds())})
+			result.append({'i':str(elem.key().id()),'p':str(elem.current_price),'w':str(username),'t':str(delta.total_seconds())})
 		except Exception, e:
 			print e
 
@@ -76,6 +79,10 @@ def auctions_list_active(count=10):
 				continue
 			delta = datetime.datetime.now() - elem.auction_end
 
+			username = ""
+			if elem.current_winner:
+				username = elem.current_winner.username
+
 			result.append({
 				'i':str(elem.key().id()), 					# ID
 				'n':str(elem.item.name),					# Name
@@ -83,11 +90,11 @@ def auctions_list_active(count=10):
 				'u':str(elem.item.product_url),				# Product URL
 				'm':str(elem.item.image_url),				# Image URL
 				'p':str(elem.current_price),				# Current Price
-				'w':str(elem.current_winner.username),		# Current Winner Username
+				'w':str(username),		# Current Winner Username
 				't':str(delta.total_seconds())				# Time Til End (TTE) in Seconds
 				})
 		except Exception, e:
-			logging.Error(e)
+			logging.error(str(e))
 
 	return result
 
@@ -121,7 +128,7 @@ def auctions_list_all():
 				't':str(delta.total_seconds())				# Time Til End (TTE) in Seconds
 				})
 		except Exception, e:
-			logging.Error(e)
+			logging.error(str(e))
 
 
 	return result

@@ -20,9 +20,9 @@ class DummyAuctions(object):
 		brent = db.get(db.Key.from_path('User', 'brent'))
 		
 		# testing auctions
-		auction.Auction(id=1,item=item1,current_winner=darin,auction_end=datetime.datetime.now()+timedelta(seconds=20)).put()
-		auction.Auction(id=2,item=item2,current_winner=kevin,auction_end=datetime.datetime.now()+timedelta(seconds=33)).put()
-		auction.Auction(id=3,item=item3,current_winner=brent,auction_end=datetime.datetime.now()+timedelta(seconds=46)).put()
-		auction.Auction(id=4,item=item1,current_winner=kevin,auction_end=datetime.datetime.now()+timedelta(seconds=59)).put()
-		auction.Auction(id=5,item=item2,current_winner=brent,auction_end=datetime.datetime.now()+timedelta(seconds=62)).put()
-		auction.Auction(id=6,item=item3,current_winner=darin,auction_end=datetime.datetime.now()+timedelta(seconds=75)).put()
+		auction.Auction.create(item1,datetime.datetime.now()+timedelta(seconds=20))
+		auction.Auction.create(item2,datetime.datetime.now()+timedelta(seconds=33))
+		auction.Auction.create(item3,datetime.datetime.now()+timedelta(seconds=46))
+		auction.Auction.create(item1,datetime.datetime.now()+timedelta(seconds=59))
+		auction.Auction.create(item2,datetime.datetime.now()+timedelta(seconds=62))
+		auction.Auction.create(item3,datetime.datetime.now()+timedelta(seconds=75))
