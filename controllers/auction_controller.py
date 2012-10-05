@@ -44,7 +44,7 @@ def auctions_status_by_id(auction_ids):
 		try:
 			if not elem:
 				continue
-			delta = datetime.datetime.now() - elem.auction_end
+			delta = elem.auction_end - datetime.datetime.now()
 			username = ""
 			if elem.current_winner:
 				username = elem.current_winner.username
@@ -77,7 +77,7 @@ def auctions_list_active(count=10):
 		try:
 			if not elem:
 				continue
-			delta = datetime.datetime.now() - elem.auction_end
+			delta = elem.auction_end - datetime.datetime.now()
 
 			username = ""
 			if elem.current_winner:
@@ -115,7 +115,7 @@ def auctions_list_all():
 		try:
 			if not elem:
 				continue
-			delta = datetime.datetime.now() - elem.auction_end
+			delta = elem.auction_end - datetime.datetime.now()
 
 			result.append({
 				'i':str(elem.key().id()), 					# ID
