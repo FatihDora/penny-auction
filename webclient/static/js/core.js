@@ -2,7 +2,7 @@
 (function() {
   var AJAX_KEYPRESS_DELAY, API, AUCTIONS_LIST_ACTIVE, AUCTIONS_STATUS_BY_ID, BID, CANCEL_AUTO_BIDDER, CREATE_AUTO_BIDDER, GET_AUTO_BIDDER_STATUS, LIST_AUTO_BIDDERS_FOR_AUCTION, LIST_AUTO_BIDDERS_FOR_USER, USER_AUTHENTICATE, USER_EMAIL_EXISTS, USER_REGISTER, USER_USERNAME_EXISTS, VALIDATE_EMAIL, auction_ids, auctions, callApi, getCookie, getParameterByName, login, padzero, registration, secondsToHms, showDialog, typewatch, updateAuctions, validate_email;
 
-  API = "http://pisoapi.appspot.com";
+  API = "http://localhost:8081";
 
   CREATE_AUTO_BIDDER = "/create_auto_bidder";
 
@@ -115,7 +115,7 @@
         tmplAuction += '\t\t\t\t<span class="timeleft">{time-remaining}</span>\n';
         tmplAuction += '\t\t\t</div>\n';
         tmplAuction += '\t\t<!-- top block -->\n';
-        tmplAuction += '\t\t<div class="cart-button js-button"><a class="hov" href="javascript:void(0);"><span>BID NOW</span></a><a href="cart-page.html"><span>BID NOW</span></a></div>\n';
+        tmplAuction += '\t\t<div class="cart-button js-button"><a class="hov" href="javascript:void(0);"><span>BID NOW</span></a><a href="javascript:void(0);"><span>BID NOW</span></a></div>\n';
         tmplAuction += '\t</li>\n';
         tmplAuction = tmplAuction.replaceAll("{auction-id}", id);
         tmplAuction = tmplAuction.replaceAll("{url}", productUrl);
@@ -138,7 +138,7 @@
       jsonp: "callback",
       success: function(data) {
         return $.map(data, function(auction) {
-          var i, ix, p, t, w, _results;
+          var a, i, ix, p, soldOrEnded, t, w, _results;
           auctions = data.result;
           _results = [];
           for (ix in auctions) {
@@ -146,9 +146,21 @@
             p = auctions[ix].p;
             w = auctions[ix].w;
             t = secondsToHms(auctions[ix].t);
+            a = auctions[ix].a;
+            soldOrEnded = "";
+            if (w === "No Bidder") {
+              soldOrEnded = "SOLD";
+            } else {
+              soldOrEnded = "ENDED";
+            }
             $("#" + i + " span.winner").html("<a href=\"#\">" + w + "</a>");
-            $("#" + i + " span.price").text(p);
-            _results.push($("#" + i + " span.timeleft").html(t));
+            $("#" + i + " span.price").text("P " + p);
+            $("#" + i + " span.timeleft").html(t);
+            if (a === "False") {
+              _results.push($("#" + i + " div.cart-button").html('<a href="javascript:void(0);"><span>' + soldOrEnded + '</span></a>'));
+            } else {
+              _results.push(void 0);
+            }
           }
           return _results;
         });

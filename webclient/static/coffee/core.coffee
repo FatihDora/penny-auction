@@ -1,5 +1,5 @@
 # API
-API = "http://pisoapi.appspot.com"
+API = "http://localhost:8081"
 
 # Autobidder
 CREATE_AUTO_BIDDER = "/create_auto_bidder"
@@ -104,7 +104,7 @@ auctions =
 			tmplAuction += '\t\t\t\t<span class="timeleft">{time-remaining}</span>\n'
 			tmplAuction += '\t\t\t</div>\n'
 			tmplAuction += '\t\t<!-- top block -->\n'
-			tmplAuction += '\t\t<div class="cart-button js-button"><a class="hov" href="javascript:void(0);"><span>BID NOW</span></a><a href="cart-page.html"><span>BID NOW</span></a></div>\n'
+			tmplAuction += '\t\t<div class="cart-button js-button"><a class="hov" href="javascript:void(0);"><span>BID NOW</span></a><a href="javascript:void(0);"><span>BID NOW</span></a></div>\n'
 			tmplAuction += '\t</li>\n'
 			tmplAuction = tmplAuction.replaceAll("{auction-id}", id)
 			tmplAuction = tmplAuction.replaceAll("{url}", productUrl)
@@ -130,13 +130,18 @@ updateAuctions = ->
 					p = auctions[ix].p
 					w = auctions[ix].w
 					t = secondsToHms(auctions[ix].t)
+					a = auctions[ix].a
 					# IF WE NEED TO BLINK...
 					#if $("#" + i + " span.winner").text isnt w
 					#	$("#" + i + " span.winner").css "backgroundColor", "#CC0000"
 					#	$("#" + i + " span.winner").animate backgroundColor: "#FFFFFF"
+					soldOrEnded =""
+					if w is "No Bidder" then  soldOrEnded = "SOLD" else soldOrEnded = "ENDED"
 					$("#" + i + " span.winner").html "<a href=\"#\">" + w + "</a>"
-					$("#" + i + " span.price").text p
+					$("#" + i + " span.price").text "P " + p
 					$("#" + i + " span.timeleft").html(t)
+					if a is "False"
+						$("#" + i + " div.cart-button").html '<a href="javascript:void(0);"><span>' + soldOrEnded + '</span></a>'
 
 
 login = init: ->
