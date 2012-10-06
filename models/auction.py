@@ -32,9 +32,9 @@ class Auction(db.Model):
 	@staticmethod
 	def get_active(count):
 		'''
-			Lists the top {count=10} active auctions
+			Lists the top {count} active auctions
 		'''
-		return Auction.all().filter("active", True).order("auction_end").fetch(int(count))
+		return Auction.all().filter("active", True).filter("auction_end > ", datetime.datetime.now()).order("auction_end").fetch(int(count))
 
 	@staticmethod
 	def get_all():

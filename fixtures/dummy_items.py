@@ -17,7 +17,7 @@ class DummyItems(object):
 		item.Item(key_name="MacBook Pro", name="MacBook Pro",
 			quantity_in_stock=329, base_price="1499.99",
 			product_url="http://www.apple.com/macbook-pro/",
-			image_url="http://imgur.com/CUUWF").put()
+			image_url="http://i.imgur.com/CUUWF.jpg").put()
 		item.Item(key_name="Airport Express", name="Airport Express",
 			quantity_in_stock=53, base_price="69.99",
 			product_url="http://www.apple.com/airportexpress/",

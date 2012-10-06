@@ -61,10 +61,15 @@ def auctions_status_by_id(auction_ids):
 		try:
 			if not elem:
 				continue
+
 			delta = elem.auction_end - datetime.datetime.now()
-			username = ""
+			username = "No Bidders"
 			if elem.current_winner:
 				username = elem.current_winner.username
+
+			price = "0.00"
+			if elem.current_price:
+				price = elem.current_price
 
 			result.append({'i':str(elem.key().id()),'p':str(elem.current_price),'w':str(username),'t':str(delta.total_seconds())})
 		except Exception, e:
@@ -96,18 +101,22 @@ def auctions_list_active(count=10):
 				continue
 			delta = elem.auction_end - datetime.datetime.now()
 
-			username = ""
+			username = "No Bidders"
 			if elem.current_winner:
 				username = elem.current_winner.username
+
+			price = "0.00"
+			if elem.current_price:
+				price = elem.current_price
 
 			result.append({
 				'i':str(elem.key().id()), 					# ID
 				'n':str(elem.item.name),					# Name
-				'p':str(elem.item.base_price),				# Base Price
+				'b':str(elem.item.base_price),				# Base Price
 				'u':str(elem.item.product_url),				# Product URL
 				'm':str(elem.item.image_url),				# Image URL
-				'p':str(elem.current_price),				# Current Price
-				'w':str(username),		# Current Winner Username
+				'p':str(price),								# Current Price
+				'w':str(username),							# Current Winner Username
 				't':str(delta.total_seconds())				# Time Til End (TTE) in Seconds
 				})
 		except Exception, e:

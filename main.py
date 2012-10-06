@@ -207,6 +207,11 @@ class reset_data:
 			result += '... Done.' + br + br
 
 			result += 'Loading Data...' + br
+			dummy_users.DummyUsers.setup()
+			dummy_items.DummyItems.setup()
+			dummy_bidtypes.DummyBidTypes.setup()
+			dummy_auctions.DummyAuctions.setup()
+			result += 'Done...' + br
 
 
 		except Exception, e:
@@ -219,8 +224,4 @@ app = web.application(urls, globals())
 main = app.cgirun()
 if (os.getenv("APPLICATION_ID").startswith("dev~")):
 	logging.getLogger().setLevel(logging.DEBUG)
-	dummy_users.DummyUsers.setup()
-	dummy_items.DummyItems.setup()
-	dummy_bidtypes.DummyBidTypes.setup()
-	dummy_auctions.DummyAuctions.setup()
 
