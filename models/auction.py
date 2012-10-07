@@ -7,7 +7,7 @@ from __future__ import division
 from threading import Timer
 from google.appengine.ext import db
 from models import item, user, decimal_property
-import datetime
+import datetime, decimal
 from datetime import timedelta
 
 class Auction(db.Model):
@@ -51,6 +51,11 @@ class Auction(db.Model):
 		'''
 		Auction(item=item,auction_end=auction_end).put()
 
+	def increment_price(sender, amount=0.01):
+		'''
+			Increments the price of the auction by the amount
+		'''
+		sender.current_price = sender.current_price + decimal.Decimal(amount)
 
 	#def __init__(self):
 

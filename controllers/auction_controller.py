@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from models import auction, item
+from models import auction, item, user
+from controllers import user_controller
 from datetime import timedelta
 import datetime
 import logging
@@ -75,14 +76,14 @@ def auctions_status_by_id(auction_ids):
 
 			price = "0.00"
 			if elem.current_price:
-				price = elem.current_price
+				price = "{0:.2f}".format(elem.current_price)
 			# i: ID
 			# p: currentPrice
 			# w: currentWinner
 			# t: timeTilEnd
 			# a: active
 
-			result.append({'i':str(elem.key().id()),'p':str(elem.current_price),'w':str(username),'t':str(delta.total_seconds()),'a':str(elem.active)})
+			result.append({'i':str(elem.key().id()),'p':str(price),'w':str(username),'t':str(delta.total_seconds()),'a':str(elem.active)})
 		except Exception, e:
 			print e
 
@@ -118,7 +119,7 @@ def auctions_list_active(count=10):
 
 			price = "0.00"
 			if elem.current_price:
-				price = elem.current_price
+				price = "{0:.2f}".format(elem.current_price)
 
 			result.append({
 				'i':str(elem.key().id()), 					# ID
@@ -167,8 +168,44 @@ def auctions_list_all():
 		except Exception, e:
 			logging.error(str(e))
 
-
 	return result
+
+def auction_bid(auction_id):
+	'''
+		Performs a single bid on the given ID if the user has a valid cookie.
+	'''
+	username = user_controller.validate_cookie()
+
+	if username is None:
+		raise Exception("Not logged in!")
+
+	userInfo = user.User.get_by_username(username)
+
+	if userInfo is None:
+		raise Exception("Couldn't get info for " + username)
+
+	if userInfo.bid_count <= 0:
+		raise Exception("Out of bids!")
+
+	auctionInfo = auction.Auction.get_by_id(int(auction_id))
+
+	if auctionInfo is None or auctionInfo.active is False:
+		raise Exception("Auction does not exists.")
+
+	# Perform Bid:
+
+	userInfo.bid_count -= 1
+	userInfo.put()
+
+	auctionInfo.current_winner = userInfo
+
+	# If you ever need to change the time added to an auction when it's bid on
+	# THIS is the place to do it.
+	auctionInfo.auction_end = datetime.datetime.now() + timedelta(seconds=11)
+	auctionInfo.increment_price()
+	auctionInfo.put()
+
+
 
 def auction_create(item, scheduled_end_time):
 	'''

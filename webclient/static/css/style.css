@@ -342,6 +342,8 @@ body {
 .topbar {
 	width:100%;
 	height:37px;
+	position: fixed;
+	z-index: 9999;
 }
 .topnav {
 	width:550px;
@@ -541,7 +543,7 @@ body {
 /* header */
 #header {
 	width:100%;
-	padding:0 0 31px 0;
+	padding:37px 0 31px 0;
 }
 .logotable{
 	padding:48px 0 45px 0;
@@ -637,6 +639,7 @@ body {
 }
 .feature.number {
 	border:none;
+	width: 150px;
 }
 #menu-bar {
 	width:958px;

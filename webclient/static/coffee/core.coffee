@@ -8,19 +8,19 @@ CANCEL_AUTO_BIDDER = "/cancel_auto_bidder"
 LIST_AUTO_BIDDERS_FOR_USER = "/list_auto_bidders_for_user"
 LIST_AUTO_BIDDERS_FOR_AUCTION = "/list_auto_bidders_for_auction"
 
+#Auctions
 AUCTIONS_LIST_ACTIVE = "/auctions_list_active"
 AUCTIONS_STATUS_BY_ID = "/auctions_status_by_id"
+AUCTION_BID = "/auction_bid"
 
-
-# User Auth
+# User
 USER_REGISTER = "/user_register"
 USER_AUTHENTICATE = "/user_authenticate"
 VALIDATE_EMAIL = "/user_validate_email"
 USER_USERNAME_EXISTS = "/user_username_exists"
 USER_EMAIL_EXISTS = "/user_email_exists"
-
-# Auctions
-BID = "/bid"
+USER_INFO = "/user_info"
+USER_LOGOUT = "/user_logout"
 
 # Misc
 AJAX_KEYPRESS_DELAY = 500 # In milliseconds, how long to wait after a keypress before initiating ajax request.
@@ -57,11 +57,47 @@ $(document).ready ->
 	login.init()
 	registration.init()
 	validate_email.init()
+	user.init()
 
-	window.setInterval updateAuctions, 1000
-
+	if $("#auctions").length isnt 0
+		window.setInterval auctions.updateAuctions, 1000
 
 	# END $(document).ready
+
+user = 
+	username: null
+	bids: null
+	autobidders: null
+	init: ->
+		user.update()
+
+	update: ->
+		callApi USER_INFO,{},(data) ->
+
+			if data.result
+				user.username = data.result[0]['username']
+				user.bids = data.result[0]['bids']
+				user.autobidders = data.result[0]['auto-bidders']
+				$('div#login-wrapper').fadeOut 'fast', ->
+					newHtml = '<span class="heading">'
+					newHtml += '<img src="/images/ico_man.png" width="15" height="15" alt="man" />'
+					newHtml += 'Logged in as <a href="#"><strong>' + user.username + '</strong></a></span>'
+					newHtml += '<span class="logout"><a href="javascript:void(0);">Logout</a></span>'
+					$('span.logout a').live('click', (e) ->
+						e.preventDefault()
+						callApi USER_LOGOUT,{}, (data) ->
+							document.location.href='/'
+						)
+					$(@).html newHtml
+					$(@).fadeIn 'slow'
+					$('#top-account-info').fadeIn 1000
+
+
+				$('#topbar-bids').text user.bids
+				$('#topbar-autobidders').text user.autobidders
+
+
+
 auction_ids = []
 auctions =
 	init: ->
@@ -79,6 +115,12 @@ auctions =
 				t = secondsToHms(auctions[ix].t)
 				auction_ids.push i
 				$("#auctions").append(buildAuction(i, n, b, u, m, p, w, t))
+
+		# Bid Button Clicks
+		$("ul#auctions").delegate "div.cart-button a", "click", ->
+			auction_id = $(@).parent().parent().attr("id")
+			callApi AUCTION_BID,(id: auction_id), (data) ->
+				user.update()
 
 
 		buildAuction = (id, productName, basePrice, productUrl, imageUrl, currentPrice, currentWinner, timeTilEnd) ->
@@ -115,33 +157,42 @@ auctions =
 			tmplAuction = tmplAuction.replaceAll("{time-remaining}", timeTilEnd)
 			return tmplAuction
 	
-updateAuctions = ->
-	jQuery.ajax
-		url: API + AUCTIONS_STATUS_BY_ID
-		data:
-			ids: auction_ids.join()
+	updateAuctions: ->
+		jQuery.ajax
+			url: API + AUCTIONS_STATUS_BY_ID
+			data:
+				ids: auction_ids.join()
 
-		jsonp: "callback"
-		success: (data) ->
-			$.map data, (auction) ->
-				auctions = data.result
-				for ix of auctions
-					i = auctions[ix].i
-					p = auctions[ix].p
-					w = auctions[ix].w
-					t = secondsToHms(auctions[ix].t)
-					a = auctions[ix].a
-					# IF WE NEED TO BLINK...
-					#if $("#" + i + " span.winner").text isnt w
-					#	$("#" + i + " span.winner").css "backgroundColor", "#CC0000"
-					#	$("#" + i + " span.winner").animate backgroundColor: "#FFFFFF"
-					soldOrEnded =""
-					if w is "No Bidder" then  soldOrEnded = "SOLD" else soldOrEnded = "ENDED"
-					$("#" + i + " span.winner").html "<a href=\"#\">" + w + "</a>"
-					$("#" + i + " span.price").text "P " + p
-					$("#" + i + " span.timeleft").html(t)
-					if a is "False"
-						$("#" + i + " div.cart-button").html '<a href="javascript:void(0);"><span>' + soldOrEnded + '</span></a>'
+			jsonp: "callback"
+			success: (data) ->
+				$.map data, (auction) ->
+					auctions = data.result
+					for ix of auctions
+						i = auctions[ix].i
+						p = auctions[ix].p
+						w = auctions[ix].w
+						t = secondsToHms(auctions[ix].t)
+						a = auctions[ix].a
+						# IF WE NEED TO BLINK...
+						#if $("#" + i + " span.winner").text isnt w
+						#	$("#" + i + " span.winner").css "backgroundColor", "#CC0000"
+						#	$("#" + i + " span.winner").animate backgroundColor: "#FFFFFF"
+						buttonText =""
+						if t > 10
+							buttonText = "Starting Soon..."
+						else
+							if user.username?
+								buttonText = "BID NOW!"
+							else
+								buttonText = "REGISTER NOW!"
+
+						$("#" + i + " span.winner").html "<a href=\"#\">" + w + "</a>"
+						$("#" + i + " span.price").text "P " + p
+						$("#" + i + " span.timeleft").html(t)
+
+						if a is "False"
+							if w is "No Bidder" then  buttonText = "SOLD" else buttonText = "ENDED"
+							$("#" + i + " div.cart-button").html '<a href="javascript:void(0);"><span>' + buttonText + '</span></a>'
 
 
 login = init: ->
@@ -157,13 +208,9 @@ login = init: ->
 		, (data) ->
 	
 				if data.result?
-					# Hide the login form.
-					# TODO: We need to check if the user is logged in and hide it before the page loads.
-					# TODO: Determine how we will know when a user is logged in.	Cookie?
-					$('div#login-wrapper').animate marginRight: -400, 1000
-					$('#top-account-info').fadeIn 1000
+					user.update()
 
-				if data.exception
+				if data.exception?
 						showDialog "error", "Login Error", data.exception
 
 		false
@@ -226,60 +273,28 @@ registration = init: ->
 		false
 
 
-validate_email = init: ->
-	$("#validation-error").hide()
-	$("#validation-success").hide()
+validate_email =
+	init: ->
+		$("#validation-error").hide()
+		$("#validation-success").hide()
 
-	# Find a better way to determine if we're on /validate_email page.
-	if $("div#validate-email")?
-		code = getParameterByName 'code'
-		callApi VALIDATE_EMAIL,
-			code: code
-		, (data) ->
-			$("div#validate-email div#please-wait").hide()
+		# Find a better way to determine if we're on /validate_email page.
+		if $("div#validate-email")?
+			code = getParameterByName 'code'
+			callApi VALIDATE_EMAIL,
+				code: code
+			, (data) ->
+				$("div#validate-email div#please-wait").hide()
 
-			if data.exception
-				$("#validation-error h2").text data.exception
-				$("#validation-error").fadeIn 1000
-				return
+				if data.exception
+					$("#validation-error h2").text data.exception
+					$("#validation-error").fadeIn 1000
+					return
 
-			if data.result
-				$("#validation-success").fadeIn 1000
-				return
+				if data.result
+					$("#validation-success").fadeIn 1000
+					return
 
-
-# UNUSED STUFF
-###
-# Bid Button Clicked 
-$(".auction-bid-button").click ->
-	auction_id = $(@).parent().attr("id")
-	$.ajax
-		url: API + BID
-		data:
-			id: auction_id
-		success: (data) ->
-			alert data
-
-# validate cookie 
-cookie = getCookie("pisoauction")
-if cookie? and cookie isnt ""
-	return
-
-
-
-
-
-# Count auctions down 
-$(".auction-time-remaining").each (i) ->
-	parts = @innerHTML.split(":")
-	d = new Date()
-	d.setHours parts[0]
-	d.setMinutes parts[1]
-	d.setSeconds parts[2]
-	oldHours = d.getHours()
-	@innerHTML = padzero(d.getHours(), 2) + ":" + padzero(d.getMinutes(), 2) + ":" + padzero(d.getSeconds(), 2)	if oldHours >= d.getHours()
-
-###
 
 # ************************ #
 # FUNCTIONS								#

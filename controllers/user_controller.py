@@ -28,23 +28,21 @@ def user_authenticate(username, password):
 	'''
 
 	# Verify the user exists in the database
-	if not user_username_exists(username):
+	aUser = user.User.get_by_username(username)
+	if aUser is None:
 		raise Exception("Invalid username or password!")
-
-	user_key = db.Key.from_path("User", username)
-	u = db.get(user_key)
 
 	# Verify the username/password combination (including the user's password
 	# salt) matches the hashed password currently stored to the user object
-	hashed_password = user_hash_password(username, password, u.password_salt)
-	if hashed_password != u.hashed_password:
+	hashed_password = user_hash_password(username, password, aUser.password_salt)
+	if hashed_password != aUser.hashed_password:
 		raise Exception("Invalid username or password")
 
-	create_cookie(u.username)
+	create_cookie(aUser.username)
 
-	return u.username
+	return aUser.username
 
-def user_authenticate_cookie():
+def user_info():
 	'''
 		This will be used to authenticate a user's cookie information.
 	'''
@@ -52,64 +50,42 @@ def user_authenticate_cookie():
 	# TODO: We are currently using the user's username as the hash until a new
 	#		hashing method is built.
 
-	username = web.cookies().get('username')
-	token = web.cookies().get('token')
+	username = validate_cookie()
+	if username is None:
+		raise Exception("Not logged in.")
 
-	if (username == None or token == None):
-		raise Exception("Invalid cookie")
+	userInfo = user.User.get_by_username(username)
 
-	q = user_cookie.UserCookie.all().filter("username =", username).filter("token =", token)
+	if userInfo is None:
+		return None # maybe raise an exception. Why would a cookie exist but no user?
 
-	cookie = q.get()
+	numBids = userInfo.bid_count
+	AutoBidders = userInfo.active_autobidders.get()
+	
+	if AutoBidders is None:
+		numAutoBidders = 0
+	else:
+		numAutoBidders = AutoBidders.size()
 
-	if not cookie:
-		raise Exception("Invalid cookie")
 
-	cookie.delete() # cookie was used up, so delete it
-	create_cookie(username) # create new cookie
+	result = []
+	result.append({'username':username,'bids':numBids,'auto-bidders':numAutoBidders}) 
+	#'auto-bidders':user.active_autobidders.count()}
+	return result
 
-	return True
+def user_logout():
+	username = validate_cookie()
+	user_cookie.UserCookie.delete_all_cookies(username)
+	return username
 
 def user_register(first_name, last_name, username, email, password):
 	'''
 		Register a new account
 	'''
-	logging.debug('user_register(username, email, password) = (' + username + ',' + email + ',' + password + ')')
-
-	if user_username_exists(username):
-		logging.debug('username exists')
-		raise Exception("Another account already exists with this username!")
-
-	logging.debug('passed username check')
-
-	if user_email_exists(email):
-		logging.debug('email exists')
-		raise Exception("Another account already exists with this email!")
-
-	logging.debug('passed email check')
 
 	# create a new user and hash their password
 
-	salt = bcrypt.gensalt()
-
-	logging.debug('salt: ' + str(salt))
-	
-	email_validation_code = user_get_nonce()
-	logging.debug('email_validation_code:' + str(email_validation_code))
-	
-	pass_hash = user_hash_password(username,password,salt)
-	logging.debug('pass_hash:' + str(pass_hash))
-
-	user_object = user.User(key_name=username,
-							first_name=first_name,
-							last_name=last_name,
-							username=username,
-							hashed_password=pass_hash,
-							password_salt=salt,
-							email=email,
-							email_validation_code=str(email_validation_code),
-							create_time=datetime.now())
-	user_object.put()
+	userInfo = user.User.add(first_name,last_name,username,email,password)
 
 	message = mail.EmailMessage(sender="Darin Hoover <darinh@gmail.com>",
 								subject="Please Validate Your Account")
@@ -123,7 +99,7 @@ def user_register(first_name, last_name, username, email, password):
 	validate your email address.  Please click the following link
 	to verify your email account:
 
-	http://pisoauction.appspot.com/validate_email?code=""" + str(email_validation_code) + """
+	http://pisoauction.appspot.com/validate_email?code=""" + str(userInfo.email_validation_code) + """
 
 	Once your email has been validated, you will be able to login.
 
@@ -140,7 +116,7 @@ def user_register(first_name, last_name, username, email, password):
 	validate your email address.  Please click the following link<br/>
 	to verify your email account:<br/>
 	<br/>
-	<a href='http://pisoauction.appspot.com/validate_email?code=""" + str(email_validation_code) + """'>Validate Email</a><br/>
+	<a href='http://pisoauction.appspot.com/validate_email?code=""" + str(userInfo.email_validation_code) + """'>Validate Email</a><br/>
 	<br/>
 	Once your email has been validated, you will be able to login.<br/>
 	<br/>
@@ -154,7 +130,7 @@ def user_register(first_name, last_name, username, email, password):
 
 
 	# return the new user instance
-	return user_object.username
+	return userInfo.username
 
 def user_validate_email(email_validation_code):
 	'''
@@ -164,20 +140,7 @@ def user_validate_email(email_validation_code):
 	if not email_validation_code:
 		raise Exception("You must provide a validaton code.")
 
-	q = user.User.all().filter("email_validation_code =", str(email_validation_code))
-
-	u = q.get()
-
-	if not u:
-		raise Exception("Validation failed for code: " + str(email_validation_code))
-		
-	if u.email_validated == True:
-		raise Exception("Email already validated.")
-
-	u.email_validated = True
-	u.put()
-
-	return True
+	return user.User.validate_email(email_validation_code)
 
 def user_update_password(user_object, new_password):
 	'''
@@ -201,30 +164,6 @@ def user_hash_password(username, password, salt):
 	# compute the new password hash using the new salt
 	return bcrypt.hashpw(password + username, salt)
 
-def user_username_exists(username):
-	'''
-		Check to see if the given username exists in the database.
-	'''
-	q = user.User.all().filter('username = ', username)
-
-	#Verify the user exists in the database
-	if q.get() == None:
-		return False
-	else:
-		return True
-
-def user_email_exists(email):
-	'''
-		Check to see if the given email address exists in the database.
-	'''
-	q = user.User.all().filter('email =', email)
-
-	# Verify the email exists in the database
-	if q.get() == None:
-		return False
-	else:
-		return True
-
 def create_cookie(username):
 	'''
 		Creates a cookie in user_cookie and sends it to the browser.
@@ -234,10 +173,31 @@ def create_cookie(username):
 	# Cookie Syntax: http://webpy.org/cookbook/cookies
 
 	token = bcrypt.gensalt()
-	web.setcookie('username', username, 3600)
-	web.setcookie('token', token, 3600)
-	cookie = user_cookie.UserCookie(username=username,token=token)
-	cookie.put()
+	web.setcookie('PISOAUTH', token, 3600)
+	user_cookie.UserCookie.create_cookie(username,token)
 
 	return
+
+def validate_cookie():
+	'''
+		Validates the user's cookie
+		Deletes the old one
+		Creates a new one
+		Returns the username
+	'''
+
+	# Do they have a cookie?
+	token = web.cookies().get('PISOAUTH')
+	if token is None:
+		return None
+	# Validate.
+	aCookie = user_cookie.UserCookie.validate_cookie(token)
+
+	if aCookie.username is None:
+		return None
+	else:
+		username = aCookie.username
+		aCookie.delete()
+		create_cookie(username)
+		return username
 	
