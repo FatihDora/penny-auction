@@ -77,15 +77,15 @@
     bids: null,
     autobidders: null,
     init: function() {
-      return user.update();
+      return user.refresh();
     },
-    update: function() {
+    refresh: function() {
       return callApi(USER_INFO, {}, function(data) {
         if (data.result) {
           user.username = data.result[0]['username'];
           user.bids = data.result[0]['bids'];
           user.autobidders = data.result[0]['auto-bidders'];
-          $('div#login-wrapper').fadeOut('fast', function() {
+          return $('div#login-wrapper').fadeOut('fast', function() {
             var newHtml;
             newHtml = '<span class="heading">';
             newHtml += '<img src="/images/ico_man.png" width="15" height="15" alt="man" />';
@@ -99,12 +99,15 @@
             });
             $(this).html(newHtml);
             $(this).fadeIn('slow');
-            return $('#top-account-info').fadeIn(1000);
+            $('#top-account-info').fadeIn(1000);
+            return user.update();
           });
-          $('#topbar-bids').text(user.bids);
-          return $('#topbar-autobidders').text(user.autobidders);
         }
       });
+    },
+    update: function() {
+      $('#topbar-bids').text(user.bids);
+      return $('#topbar-autobidders').text(user.autobidders);
     }
   };
 
@@ -136,12 +139,15 @@
       });
       $("ul#auctions").delegate("div.cart-button a", "click", function() {
         var auction_id;
-        auction_id = $(this).parent().parent().attr("id");
-        return callApi(AUCTION_BID, {
-          id: auction_id
-        }, function(data) {
-          return user.update();
-        });
+        if (user.bids > 0) {
+          auction_id = $(this).parent().parent().attr("id");
+          return callApi(AUCTION_BID, {
+            id: auction_id
+          }, function(data) {
+            user.bids -= 1;
+            return user.update();
+          });
+        }
       });
       return buildAuction = function(id, productName, basePrice, productUrl, imageUrl, currentPrice, currentWinner, timeTilEnd) {
         var tmplAuction;
@@ -242,7 +248,7 @@
           password: password
         }, function(data) {
           if (data.result != null) {
-            user.update();
+            user.refresh();
           }
           if (data.exception != null) {
             return showDialog("error", "Login Error", data.exception);

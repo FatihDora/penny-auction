@@ -69,9 +69,9 @@ user =
 	bids: null
 	autobidders: null
 	init: ->
-		user.update()
+		user.refresh()
 
-	update: ->
+	refresh: ->
 		callApi USER_INFO,{},(data) ->
 
 			if data.result
@@ -91,10 +91,11 @@ user =
 					$(@).html newHtml
 					$(@).fadeIn 'slow'
 					$('#top-account-info').fadeIn 1000
+					user.update()
 
-
-				$('#topbar-bids').text user.bids
-				$('#topbar-autobidders').text user.autobidders
+	update: ->
+		$('#topbar-bids').text user.bids
+		$('#topbar-autobidders').text user.autobidders
 
 
 
@@ -118,9 +119,11 @@ auctions =
 
 		# Bid Button Clicks
 		$("ul#auctions").delegate "div.cart-button a", "click", ->
-			auction_id = $(@).parent().parent().attr("id")
-			callApi AUCTION_BID,(id: auction_id), (data) ->
-				user.update()
+			if user.bids > 0
+				auction_id = $(@).parent().parent().attr("id")
+				callApi AUCTION_BID,(id: auction_id), (data) ->
+					user.bids -= 1
+					user.update()
 
 
 		buildAuction = (id, productName, basePrice, productUrl, imageUrl, currentPrice, currentWinner, timeTilEnd) ->
@@ -208,7 +211,7 @@ login = init: ->
 		, (data) ->
 	
 				if data.result?
-					user.update()
+					user.refresh()
 
 				if data.exception?
 						showDialog "error", "Login Error", data.exception

@@ -252,5 +252,5 @@ class reset_data:
 app = web.application(urls, globals())
 main = app.cgirun()
 if (os.getenv("APPLICATION_ID").startswith("dev~")):
-	logging.getLogger().setLevel(logging.DEBUG)
+	logging.getLogger().setLevel(logging.ERROR)
 

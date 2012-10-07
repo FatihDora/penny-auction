@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 from google.appengine.ext import db
 
 class UserCookie(db.Model):
@@ -30,4 +31,4 @@ class UserCookie(db.Model):
 
 	@staticmethod
 	def delete_all_cookies(username):
-		db.delete_async(UserCookie.all().filter("username=",username))
+		db.delete(UserCookie.all().filter("username =", username)) #.filter("username =",username).fetch().delete()
