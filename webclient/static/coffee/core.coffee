@@ -1,5 +1,5 @@
 # API
-API = "http://localhost:8081"
+API = "http://pisoapi.appspot.com"
 
 # Autobidder
 CREATE_AUTO_BIDDER = "/create_auto_bidder"

@@ -11,7 +11,7 @@ from fixtures import dummy_auctions
 from google.appengine.ext import db
 from lib import web
 import os
-import simplejson as json
+from django.utils import simplejson as json
 import logging
 
 from controllers import user_controller, auction_controller

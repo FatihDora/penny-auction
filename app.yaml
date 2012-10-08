@@ -9,3 +9,7 @@ handlers:
   script: gaeunit.application
 - url: /.*
   script: main.application
+
+libraries:
+- name: django
+  version: "1.2"

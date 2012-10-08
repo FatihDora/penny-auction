@@ -2,7 +2,7 @@
 (function() {
   var AJAX_KEYPRESS_DELAY, API, AUCTIONS_LIST_ACTIVE, AUCTIONS_STATUS_BY_ID, AUCTION_BID, CANCEL_AUTO_BIDDER, CREATE_AUTO_BIDDER, GET_AUTO_BIDDER_STATUS, LIST_AUTO_BIDDERS_FOR_AUCTION, LIST_AUTO_BIDDERS_FOR_USER, USER_AUTHENTICATE, USER_EMAIL_EXISTS, USER_INFO, USER_LOGOUT, USER_REGISTER, USER_USERNAME_EXISTS, VALIDATE_EMAIL, auction_ids, auctions, callApi, getCookie, getParameterByName, login, padzero, registration, secondsToHms, showDialog, typewatch, user, validate_email;
 
-  API = "http://localhost:8081";
+  API = "http://pisoapi.appspot.com";
 
   CREATE_AUTO_BIDDER = "/create_auto_bidder";
 
