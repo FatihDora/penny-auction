@@ -9,8 +9,8 @@ handlers:
 - url: /
   script: controllers/index.py
 
-- url: /item/.*
-  script: controllers/item.py
+- url: /auction/.*
+  script: controllers/auction.py
 
 - url: /register
   script: controllers/register.py

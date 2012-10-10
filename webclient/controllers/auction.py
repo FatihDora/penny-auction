@@ -11,9 +11,13 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template        
 
 class HomeHandler(webapp.RequestHandler):
-	def get(self):					
+	def get(self):
+		auction_id = self.request.path.replace("/auction/","")
+		if not auction_id.isdigit():
+			self.redirect('/')
+
 		self.response.out.write(
-			template.render('../auction.html', {}))
+			template.render('../auction.html', {'id':auction_id}))
 	def post(self):
 		self.redirect('/')
 	
