@@ -123,6 +123,7 @@ def auctions_list_active(count=10):
 
 			result.append({
 				'i':str(elem.key().id()), 					# ID
+				'a':str(elem.active),						# Is Auction Active? "True" or "False"
 				'n':str(elem.item.name),					# Name
 				'b':str(elem.item.base_price),				# Base Price
 				'u':str(elem.item.product_url),				# Product URL
@@ -157,6 +158,7 @@ def auctions_list_all():
 
 			result.append({
 				'i':str(elem.key().id()), 					# ID
+				'a':str(elem.active),						# Is Auction Active? "True" or "False"
 				'n':str(elem.item.name),					# Name
 				'p':str(elem.item.base_price),				# Base Price
 				'u':str(elem.item.product_url),				# Product URL
@@ -191,6 +193,9 @@ def auction_bid(auction_id):
 
 	if auctionInfo is None or auctionInfo.active is False:
 		raise Exception("Auction does not exists.")
+
+	if (auctionInfo.auction_end - datetime.datetime.now()).total_seconds() > 10:
+		raise Exception("This auction has not yet started.")
 
 	# Perform Bid:
 

@@ -929,7 +929,7 @@ border: 0;
 }
 .gallery ul li .cart-button a span img {
 	float:left;
-	margin-right:11px;
+
 }
 .gallery ul li .cart-button align{
 	margin-top:-32px;
@@ -4515,4 +4515,8 @@ table#cart.wish td:first-child + td + td + td + td + td + td {
 /* ----------------------------------- CUSTOM  -----------------------------------*/
 form#login-form .login-focus {
 	color: #000;
+}
+
+div#registration-complete, #top-account-info, #validation-error, #validation-success {
+	display: none;
 }

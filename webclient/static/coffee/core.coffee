@@ -1,5 +1,5 @@
 # API
-API = "http://pisoapi.appspot.com"
+API = "http://localhost:8081"
 
 # Autobidder
 CREATE_AUTO_BIDDER = "/create_auto_bidder"
@@ -54,9 +54,7 @@ $(document).ready ->
 				$(@).dialog "close"
 
 	auctions.init()
-	login.init()
-	registration.init()
-	validate_email.init()
+	authentication.init()
 	user.init()
 
 	if $("#auctions").length isnt 0
@@ -68,6 +66,7 @@ user =
 	username: null
 	bids: null
 	autobidders: null
+	loggedIn: false
 	init: ->
 		user.refresh()
 
@@ -75,6 +74,7 @@ user =
 		callApi USER_INFO,{},(data) ->
 
 			if data.result
+				user.loggedIn = true
 				user.username = data.result[0]['username']
 				user.bids = data.result[0]['bids']
 				user.autobidders = data.result[0]['auto-bidders']
@@ -97,9 +97,12 @@ user =
 		$('#topbar-bids').text user.bids
 		$('#topbar-autobidders').text user.autobidders
 
-
+############################################
+# Auctions
+############################################
 
 auction_ids = []
+auction_list = []
 auctions =
 	init: ->
 		callApi AUCTIONS_LIST_ACTIVE,(count: 30), (data) ->
@@ -115,10 +118,18 @@ auctions =
 				w = auctions[ix].w
 				t = secondsToHms(auctions[ix].t)
 				auction_ids.push i
+				auction_list[i] = auctions[ix]
 				$("#auctions").append(buildAuction(i, n, b, u, m, p, w, t))
 
 		# Bid Button Clicks
-		$("ul#auctions").delegate "div.cart-button a", "click", ->
+		$("ul#auctions").delegate "div.cart-button", "click", ->
+			if not user.loggedIn
+				document.location.href = "/register"
+
+			id = $(@).closest('li').attr('id')
+			if auction_list[id].t > 10
+				document.location.href = "/auction/" + id
+
 			if user.bids > 0
 				auction_id = $(@).parent().parent().attr("id")
 				callApi AUCTION_BID,(id: auction_id), (data) ->
@@ -149,7 +160,7 @@ auctions =
 			tmplAuction += '\t\t\t\t<span class="timeleft">{time-remaining}</span>\n'
 			tmplAuction += '\t\t\t</div>\n'
 			tmplAuction += '\t\t<!-- top block -->\n'
-			tmplAuction += '\t\t<div class="cart-button js-button"><a class="hov" href="javascript:void(0);"><span>BID NOW</span></a><a href="javascript:void(0);"><span>BID NOW</span></a></div>\n'
+			tmplAuction += '\t\t<div class="cart-button"><a href="javascript:void(0);"><span>BID NOW</span></a></div>\n'
 			tmplAuction += '\t</li>\n'
 			tmplAuction = tmplAuction.replaceAll("{auction-id}", id)
 			tmplAuction = tmplAuction.replaceAll("{url}", productUrl)
@@ -161,6 +172,14 @@ auctions =
 			return tmplAuction
 	
 	updateAuctions: ->
+		tmplist = []
+		i = 0
+		while i < auction_ids.length
+			if auction_list[auction_ids[i]].t > 0.0
+				tmplist.push auction_ids[i]
+			i++
+
+		auction_ids = tmplist
 		jQuery.ajax
 			url: API + AUCTIONS_STATUS_BY_ID
 			data:
@@ -170,6 +189,7 @@ auctions =
 			success: (data) ->
 				$.map data, (auction) ->
 					auctions = data.result
+					auction_list = []
 					for ix of auctions
 						i = auctions[ix].i
 						p = auctions[ix].p
@@ -180,11 +200,12 @@ auctions =
 						#if $("#" + i + " span.winner").text isnt w
 						#	$("#" + i + " span.winner").css "backgroundColor", "#CC0000"
 						#	$("#" + i + " span.winner").animate backgroundColor: "#FFFFFF"
+						auction_list[i] = auctions[ix]
 						buttonText =""
-						if t > 10
+						if auctions[ix].t > 10
 							buttonText = "Starting Soon..."
 						else
-							if user.username?
+							if user.loggedIn?
 								buttonText = "BID NOW!"
 							else
 								buttonText = "REGISTER NOW!"
@@ -196,27 +217,30 @@ auctions =
 						if a is "False"
 							if w is "No Bidder" then  buttonText = "SOLD" else buttonText = "ENDED"
 							$("#" + i + " div.cart-button").html '<a href="javascript:void(0);"><span>' + buttonText + '</span></a>'
+						else
+							$("#" + i + " div.cart-button").html '<a href="javascript:void(0);"><span>' + buttonText + '</span></a>'
 
 
-login = init: ->
-	$("#top-account-info").hide()
-	$("#login-username").val "username"
-	$("#login-password").val "password"
+############################################
+# User
+############################################
+
+authentication = init: ->
+	
+	#------------#
+	# Login Form #
+	#------------#
+
 	$("#login-form").submit (e) ->
+		e.preventDefault()
 		username = $("#login-username").val()
 		password = $("#login-password").val()
 		callApi USER_AUTHENTICATE,
 			username: username
 			password: password
 		, (data) ->
-	
-				if data.result?
-					user.refresh()
-
-				if data.exception?
-						showDialog "error", "Login Error", data.exception
-
-		false
+				if data.result? then user.refresh()
+				if data.exception? then showDialog "error", "Login Error", data.exception
 
 	$("#login-form").delegate "#login-username, #login-password", "focus", ->
 		if $(@).val() is "username" or $(@).val() is "password"
@@ -228,12 +252,13 @@ login = init: ->
 			$(@).val $(@).attr("id").split("-")[1]
 			$(@).removeClass "login-focus"
 
+	#-------------------#
+	# Registration Form #
+	#-------------------#
 
-# Registration Stuff
-
-registration = init: ->
-	$("div#registration-complete").hide()
+	# Setup the registration form.
 	$("#registration-form").submit (e) ->
+		e.preventDefault()
 		error = "<ul style='clear: both'>"
 		first_name = $("#FirstName").val()
 		last_name = $("#LastName").val()
@@ -275,12 +300,10 @@ registration = init: ->
 
 		false
 
-
-validate_email =
-	init: ->
-		$("#validation-error").hide()
-		$("#validation-success").hide()
-
+		#------------------#
+		# Email Validation #
+		#------------------#
+		
 		# Find a better way to determine if we're on /validate_email page.
 		if $("div#validate-email")?
 			code = getParameterByName 'code'
@@ -298,9 +321,8 @@ validate_email =
 					$("#validation-success").fadeIn 1000
 					return
 
-
 # ************************ #
-# FUNCTIONS								#
+# FUNCTIONS                #
 # ************************ #
 
 typewatch = (->

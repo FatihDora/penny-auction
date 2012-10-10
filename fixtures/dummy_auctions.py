@@ -22,7 +22,7 @@ class DummyAuctions(object):
 		items.append(item3)
 		auction_end = datetime.datetime.now()
 		for x in range(0, 100):
-			auction_end += timedelta(seconds=random.randint(120, 180))
+			auction_end += timedelta(seconds=10) # timedelta(seconds=random.randint(120, 180))
 			item = items[random.randint(0,2)]
 			auction.Auction.create(item,auction_end)
 
