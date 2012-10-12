@@ -72,6 +72,7 @@ class autobidders_list_by_auction:
 	def GET(self):
 		return "autobidders_list_by_auction stub"
 
+
 # AUCTIONS
 
 class auctions_status_by_id:
