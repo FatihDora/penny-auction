@@ -25,52 +25,52 @@ import models.user as user
 
 urls = (
 	'/', 'index',
-	'/create_auto_bidder', 'create_auto_bidder',
-	'/get_auto_bidder_status', 'get_auto_bidder_status',
-	'/cancel_auto_bidder', 'cancel_auto_bidder',
-	'/list_auto_bidders_for_user', 'list_auto_bidders_for_user',
-	'/list_auto_bidders_for_auction', 'list_auto_bidders_for_auction',
+	'/reset_data', 'reset_data',
+
+	'/autobidder_create', 'autobidder_create',
+	'/autobidder_status', 'autobidder_status',
+	'/autobidder_cancel', 'autobidder_cancel',
+	'/autobidders_list', 'autobidders_list',
+	'/autobidders_list_by_auction', 'autobidders_list_by_auction',
 	
 	'/auctions_status_by_id', 'auctions_status_by_id',
 	'/auctions_list_active', 'auctions_list_active',
 	'/auctions_list_all', 'auctions_list_all',
 	'/auction_bid', 'auction_bid',
 
-	'/get_nonce', 'get_nonce',
-	'/user_register', 'register',
-	'/user_validate_email', 'validate_email',
-	'/user_authenticate', 'authenticate',
+	'/user_get_nonce', 'user_get_nonce',
+	'/user_register', 'user_register',
+	'/user_validate_email', 'user_validate_email',
+	'/user_authenticate', 'user_authenticate',
 	'/user_info', 'user_info',
-	'/user_username_exists', 'username_exists',
-	'/user_email_exists', 'email_exists',
-	'/user_logout', 'user_logout',
-
-	'/reset_data', 'reset_data'
+	'/user_username_exists', 'user_username_exists',
+	'/user_email_exists', 'user_email_exists',
+	'/user_logout', 'user_logout'
 )
 
 class index:
 	def GET(self):
 		return "index stub"
 
-class create_auto_bidder:
+class autobidder_create:
 	def GET(self):
-		return "create_auto_bidder stub"
+		return "autobidder_create stub"
 
-class cancel_auto_bidder:
+class autobidder_status:
 	def GET(self):
-		return "cancel_auto_bidder stub"
+		return "autobidder_status stub"
 
-class list_auto_bidders:
+class autobidder_cancel:
 	def GET(self):
-		return "list_auto_bidder stub"
+		return "autobidder_cancel stub"
 
-class get_auto_bidder_status:
+class autobidders_list:
 	def GET(self):
-		return "get_auto_bidder_status stub"
+		return "autobidders_list stub"
 
-class list_auto_bidders_for_auction:
+class autobidders_list_by_auction:
 	def GET(self):
-		return "list_auto_bidders_for_auction stub"
+		return "autobidders_list_by_auction stub"
 
 # AUCTIONS
 
@@ -155,7 +155,7 @@ class user_logout:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 
-class register:
+class user_register:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
@@ -166,7 +166,7 @@ class register:
 		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
-class validate_email:
+class user_validate_email:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
@@ -177,7 +177,7 @@ class validate_email:
 		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
-class authenticate:
+class user_authenticate:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
@@ -188,7 +188,7 @@ class authenticate:
 		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
-class authenticate_cookie:
+class user_authenticate_cookie:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
@@ -200,7 +200,7 @@ class authenticate_cookie:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 
-class username_exists:
+class user_username_exists:
 	def GET(self):
 		inputs = web.input()
 		try:
@@ -214,7 +214,7 @@ class username_exists:
 		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
-class email_exists:
+class user_email_exists:
 	def GET(self):
 		inputs = web.input()
 		try:
@@ -229,7 +229,7 @@ class email_exists:
 			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 			return inputs.callback + "(" + json.dumps(result) + ");"
 
-class reset_data:
+class user_reset_data:
 	def GET(self):
 		br = '<br/>'
 		result = ""

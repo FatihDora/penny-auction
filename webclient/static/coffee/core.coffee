@@ -7,11 +7,10 @@
 window.API = "http://localhost:8081"
 
 # Autobidder
-window.CREATE_AUTO_BIDDER = "/create_auto_bidder"
-window.GET_AUTO_BIDDER_STATUS = "/get_auto_bidder_status"
-window.CANCEL_AUTO_BIDDER = "/cancel_auto_bidder"
-window.LIST_AUTO_BIDDERS_FOR_USER = "/list_auto_bidders_for_user"
-window.LIST_AUTO_BIDDERS_FOR_AUCTION = "/list_auto_bidders_for_auction"
+window.AUTOBIDDER_CREATE = "/autobidder_create"
+window.AUTOBIDDER_STATUS = "/autobidder_status"
+window.AUTOBIDDER_CANCEL = "/autobidder_cancel"
+window.AUTOBIDDERS_LIST = "/autobidders_list"
 
 #Auctions
 window.AUCTIONS_LIST_ACTIVE = "/auctions_list_active"
