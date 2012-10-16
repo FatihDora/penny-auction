@@ -37,6 +37,7 @@ urls = (
 	'/auctions_list_active', 'auctions_list_active',
 	'/auctions_list_all', 'auctions_list_all',
 	'/auction_bid', 'auction_bid',
+	'/auction_detail', 'auction_detail',
 
 	'/user_get_nonce', 'user_get_nonce',
 	'/user_register', 'user_register',
@@ -119,6 +120,18 @@ class auction_bid:
 
 		try:
 			result = {'result':auction_controller.auction_bid(inputs.id)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class auction_detail:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auction_detail(inputs.id)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
 
 		except Exception, e:

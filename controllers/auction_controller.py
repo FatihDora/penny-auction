@@ -210,7 +210,11 @@ def auction_bid(auction_id):
 	auctionInfo.increment_price()
 	auctionInfo.put()
 
-
+def auction_detail(auction_id):
+	'''
+		Returns detailed auction information for the auction page.
+	'''
+	pass
 
 def auction_create(item, scheduled_end_time):
 	'''

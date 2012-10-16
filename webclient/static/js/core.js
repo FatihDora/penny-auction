@@ -17,6 +17,8 @@
 
   window.AUCTION_BID = "/auction_bid";
 
+  window.AUCTION_DETAIL = "/auction_detail";
+
   window.USER_REGISTER = "/user_register";
 
   window.USER_AUTHENTICATE = "/user_authenticate";
