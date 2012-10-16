@@ -75,7 +75,7 @@
         tmplAuction += '\t\t<div class="top-block">\n';
         tmplAuction += '\t\t\t<h3 class="nocufon"><a href="{url}" title="{item-name}">{item-name}</a></h3>\n';
         tmplAuction += '\t\t\t\t<div class="imgb thumbnail-zoom">\n';
-        tmplAuction += '\t\t\t\t\t<a href="{url}" class="fadeable">\n';
+        tmplAuction += '\t\t\t\t\t<a href="/auction/{auction-id}" class="fadeable">\n';
         tmplAuction += '\t\t\t\t\t\t<span class="light-background">\n';
         tmplAuction += '\t\t\t\t\t\t<span class="thumb-arrow">&#8594;</span>\n';
         tmplAuction += '\t\t\t\t\t\t</span>\n';
