@@ -230,7 +230,7 @@ class user_email_exists:
 			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 			return inputs.callback + "(" + json.dumps(result) + ");"
 
-class user_reset_data:
+class reset_data:
 	def GET(self):
 		br = '<br/>'
 		result = ""
