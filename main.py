@@ -18,8 +18,6 @@ from controllers import user_controller, auction_controller
 import models.auction as auction
 import models.autobidder as autobidder
 import models.bid_history as bid_history
-import models.bid_type as bid_type
-import models.bid_type_value as bid_type_value
 import models.item as item
 import models.user as user
 
@@ -32,7 +30,7 @@ urls = (
 	'/autobidder_cancel', 'autobidder_cancel',
 	'/autobidders_list', 'autobidders_list',
 	'/autobidders_list_by_auction', 'autobidders_list_by_auction',
-	
+
 	'/auctions_status_by_id', 'auctions_status_by_id',
 	'/auctions_list_active', 'auctions_list_active',
 	'/auctions_list_all', 'auctions_list_all',
