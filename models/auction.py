@@ -52,11 +52,11 @@ class Auction(db.Model):
 		'''
 		Auction(item=item, auction_end=auction_end).put()
 
-	def increment_price(sender, amount=0.01):
+	def increment_price(self, amount=0.01):
 		'''
 			Increments the price of the auction by the amount
 		'''
-		sender.current_price = sender.current_price + decimal.Decimal(amount)
+		self.current_price = self.current_price + decimal.Decimal(amount)
 
 	#def __init__(self):
 
