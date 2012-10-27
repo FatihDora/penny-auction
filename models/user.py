@@ -30,7 +30,7 @@ class User(db.Model):
 		return User.all().filter("username =", username).get()
 
 	@staticmethod
-	def add(first_name,last_name,username,email,password):
+	def create(first_name,last_name,username,email,password):
 		if first_name is None:
 			raise Exception("Arugment 'first_name' cannot be None")
 
@@ -95,7 +95,7 @@ class User(db.Model):
 
 		if result is None:
 			raise Exception("Validation failed for code: " + str(code))
-		
+
 		if result.email_validated is True:
 			raise Exception("Email already validated.")
 		else:

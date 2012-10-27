@@ -3,7 +3,7 @@
 
 from models import user, user_cookie
 import lib.bcrypt.bcrypt as bcrypt
-from lib import web 
+from lib import web
 import logging
 
 from google.appengine.ext import db
@@ -61,7 +61,7 @@ def user_info():
 
 	numBids = userInfo.bid_count
 	AutoBidders = userInfo.active_autobidders.get()
-	
+
 	if AutoBidders is None:
 		numAutoBidders = 0
 	else:
@@ -69,7 +69,7 @@ def user_info():
 
 
 	result = []
-	result.append({'username':username,'bids':numBids,'auto-bidders':numAutoBidders}) 
+	result.append({'username':username,'bids':numBids,'auto-bidders':numAutoBidders})
 	#'auto-bidders':user.active_autobidders.count()}
 	return result
 
@@ -85,7 +85,7 @@ def user_register(first_name, last_name, username, email, password):
 
 	# create a new user and hash their password
 
-	userInfo = user.User.add(first_name,last_name,username,email,password)
+	userInfo = user.User.create(first_name,last_name,username,email,password)
 
 	message = mail.EmailMessage(sender="Darin Hoover <darinh@gmail.com>",
 								subject="Please Validate Your Account")
@@ -200,4 +200,4 @@ def validate_cookie():
 		aCookie.delete()
 		create_cookie(username)
 		return username
-	
+
