@@ -9,13 +9,13 @@ def items_list():
 	'''
 		Get a list of all item names
 	'''
-	pass
+	Item.get_all()
 
 def item_add(name, quantity, price, url, image_url):
 	'''
 		Create a new item with the specified properties (administrative only)
 	'''
-	pass
+	Item.create(name, quantity, price, url, image_url)
 
 def item_get_info(name):
 	'''
