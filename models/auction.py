@@ -17,7 +17,7 @@ class Auction(db.Model):
 	current_winner = db.ReferenceProperty(user.User, collection_name='auctions_won')
 	auction_end = db.DateTimeProperty()
 	# Do we want to explicitly define an auction as active, or derive it from the end time?
-	active = db.BooleanProperty(default = True) 
+	active = db.BooleanProperty(default = True)
 	# implicit property 'attached_autobidders' created by the Autobidder class
 	# implicit property 'past_bids' created by the BidHistory class
 
@@ -34,7 +34,8 @@ class Auction(db.Model):
 		'''
 			Lists the top {count} active auctions
 		'''
-		return Auction.all().filter("active", True).filter("auction_end > ", datetime.datetime.now()).order("auction_end").fetch(int(count))
+		return Auction.all().filter("active", True).filter("auction_end > ",
+				datetime.datetime.now()).order("auction_end").fetch(int(count))
 
 	@staticmethod
 	def get_all():
@@ -49,7 +50,7 @@ class Auction(db.Model):
 		'''
 			Creates an auction
 		'''
-		Auction(item=item,auction_end=auction_end).put()
+		Auction(item=item, auction_end=auction_end).put()
 
 	def increment_price(sender, amount=0.01):
 		'''
