@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from google.appengine.ext import db
+import decimal
 
 class DecimalProperty(db.Property):
 	data_type = decimal.Decimal

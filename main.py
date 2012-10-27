@@ -3,109 +3,268 @@
 
 # make Python do floating-point division by default
 from __future__ import division
+from fixtures import dummy_users
+from fixtures import dummy_items
+from fixtures import dummy_bidtypes
+from fixtures import dummy_auctions
 
 from google.appengine.ext import db
 from lib import web
-import json
+import os
+from django.utils import simplejson as json
+import logging
 
-from controllers import user_controller
+from controllers import user_controller, auction_controller
+import models.auction as auction
+import models.autobidder as autobidder
+import models.bid_history as bid_history
+import models.bid_type as bid_type
+import models.bid_type_value as bid_type_value
+import models.item as item
+import models.user as user
 
 urls = (
 	'/', 'index',
-	'/create_auto_bidder', 'create_auto_bidder',
-	'/get_auto_bidder_status', 'get_auto_bidder_status',
-	'/cancel_auto_bidder', 'cancel_auto_bidder',
-	'/list_auto_bidders_for_user', 'list_auto_bidders_for_user',
-	'/list_auto_bidders_for_auction', 'list_auto_bidders_for_auction',
+	'/reset_data', 'reset_data',
 
-	'/get_nonce', 'get_nonce',
-	'/user_register', 'register',
-	'/user_authenticate', 'authenticate',
-	'/user_username_exists', 'username_exists',
-	'/user_email_exists', 'email_exists'
+	'/autobidder_create', 'autobidder_create',
+	'/autobidder_status', 'autobidder_status',
+	'/autobidder_cancel', 'autobidder_cancel',
+	'/autobidders_list', 'autobidders_list',
+	'/autobidders_list_by_auction', 'autobidders_list_by_auction',
+	
+	'/auctions_status_by_id', 'auctions_status_by_id',
+	'/auctions_list_active', 'auctions_list_active',
+	'/auctions_list_all', 'auctions_list_all',
+	'/auction_bid', 'auction_bid',
+	'/auction_detail', 'auction_detail',
+
+	'/user_get_nonce', 'user_get_nonce',
+	'/user_register', 'user_register',
+	'/user_validate_email', 'user_validate_email',
+	'/user_authenticate', 'user_authenticate',
+	'/user_info', 'user_info',
+	'/user_username_exists', 'user_username_exists',
+	'/user_email_exists', 'user_email_exists',
+	'/user_logout', 'user_logout'
 )
-
 
 class index:
 	def GET(self):
 		return "index stub"
 
-class create_auto_bidder:
+class autobidder_create:
 	def GET(self):
-		return "create_auto_bidder stub"
+		return "autobidder_create stub"
 
-class cancel_auto_bidder:
+class autobidder_status:
 	def GET(self):
-		return "cancel_auto_bidder stub"
+		return "autobidder_status stub"
 
-class list_auto_bidders:
+class autobidder_cancel:
 	def GET(self):
-		return "list_auto_bidder stub"
+		return "autobidder_cancel stub"
 
-class get_auto_bidder_status:
+class autobidders_list:
 	def GET(self):
-		return "get_auto_bidder_status stub"
+		return "autobidders_list stub"
 
-class list_auto_bidders_for_auction:
+class autobidders_list_by_auction:
 	def GET(self):
-		return "list_auto_bidders_for_auction stub"
+		return "autobidders_list_by_auction stub"
 
 
+# AUCTIONS
+
+class auctions_status_by_id:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auctions_status_by_id(inputs.ids)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class auctions_list_active:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auctions_list_active(inputs.count)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+# TODO: MOVE THIS TO THE ADMIN / PRIVATE API! -- HERE FOR TESTING
+class auctions_list_all:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auctions_list_all()}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class auction_bid:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auction_bid(inputs.id)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class auction_detail:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':auction_controller.auction_detail(inputs.id)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+
+# USER Stuff
 
 class get_nonce:
 	def GET(self):
 		return user_controller.user_get_nonce()
 
-class register:
+class user_info:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':user_controller.user_info()}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class user_logout:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = {'result':user_controller.user_logout()}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+
+class user_register:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 		try:
-			result = {'username',user_controller.user_register(inputs.username, inputs.email, inputs.password).username}
+			result = {'result':user_controller.user_register(inputs.first_name,inputs.last_name,inputs.username,inputs.email,inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		except Exception as e:
+
+		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
-class authenticate:
+class user_validate_email:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+		try:
+			result = {'result':user_controller.user_validate_email(inputs.code)}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+class user_authenticate:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 		try:
 			result ={'result':user_controller.user_authenticate(inputs.username, inputs.password)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		
-		except Exception as e:
+
+		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
-class username_exists:
+class user_authenticate_cookie:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+		try:
+			result ={'result':user_controller.user_authenticate_cookie()}
+			return inputs.callback + "(" + json.dumps(result) + ");"
+
+		except Exception, e:
+			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+
+
+class user_username_exists:
 	def GET(self):
 		inputs = web.input()
 		try:
 			if not inputs.username:
 				result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 				return inputs.callback + "(" + json.dumps(result) + ");"
-				
+
 			web.header('Content-Type', 'application/json')
 			result ={'result':user_controller.user_username_exists(inputs.username)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		except Exception as e:
+		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
-	
-class email_exists:
+
+class user_email_exists:
 	def GET(self):
 		inputs = web.input()
 		try:
 			if not inputs.email:
 				result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 				return inputs.callback + "(" + json.dumps(result) + ");"
-				
+
 			web.header('Content-Type', 'application/json')
 			result ={'result':user_controller.user_email_exists(inputs.email)}
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		except Exception as e:
+		except Exception, e:
 			result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
 			return inputs.callback + "(" + json.dumps(result) + ");"
-		
+
+class reset_data:
+	def GET(self):
+		br = '<br/>'
+		result = ""
+		try :
+
+			result += 'Loading Data...' + br
+			dummy_users.DummyUsers.setup()
+			dummy_items.DummyItems.setup()
+			dummy_bidtypes.DummyBidTypes.setup()
+			dummy_auctions.DummyAuctions.setup()
+			result += 'Done...' + br
+
+
+		except Exception, e:
+			return str(e)
+
+		return result
+
+
 app = web.application(urls, globals())
-main = app.cgirun()
+application = app.gaerun()
+if (os.getenv("APPLICATION_ID").startswith("dev~")):
+	logging.getLogger().setLevel(logging.ERROR)
 
