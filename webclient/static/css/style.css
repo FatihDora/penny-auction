@@ -1421,13 +1421,20 @@ border: 0;
 	position: relative;
 	width: 194px;
 }
+.thumbnail-zoom-small {
+	float: left;
+	height: 108px;
+	overflow: hidden;
+	position: relative;
+	width: 146px;
+}1
 /* This is so that the 2nd thumbnail in each row fits snugly. You will want to add a similar
    class to the last thumbnail in each row to get rid of the margin-right. */
 .no-margin {
 	margin-right: 0;
 }
 /* --- Link configuration that contains the image and label ----------------------------- */
-.thumbnail-zoom a {
+.thumbnail-zoom a, .thumbnail-zoom-small a {
 	display: block;
 	position: relative;
 }
@@ -1436,6 +1443,13 @@ border: 0;
 	position: relative;
 	width: 194px;
 }
+
+.thumbnail-zoom-small a img {
+	height: 108px;
+	position: relative;
+	width: 146px;
+}
+
 .thumbnail-zoom .sale-img {
 	width:50px;
 	height:36px;
@@ -4520,9 +4534,9 @@ div#registration-complete, #top-account-info, #validation-error, #validation-suc
 
 div#auction-detail {
 	font-size: 18px;
-	width: 300px;
+	width: 305px;
 	position: relative;
-	border: 1px solid #999;
+	border: 1px solid #ddd;
 	padding: 25px;
 }
 
@@ -4532,46 +4546,46 @@ div#auction-detail>div {
 	padding: 5px;
 }
 
-div.price {
+div#auction-detail .price {
 	font-size: 24px;
 }
 
-div.time-left {
+div#auction-detail .time-left {
 	font-size: 36px;
 	text-align: center;
 }
 
-div.controls {
+div#auction-detail .controls {
 	min-height: 40px;
 }
 
-div.bid-history {
+div#auction-detail .bid-history {
 	height: 180px;
 }
 
-div.bid-history ul li {
+div#auction-detail .bid-history ul li {
 	display: block;
 	list-style-type: none;
 	float: left;
 	height: 20px;
 }
 
-div.bid-history ul li.username {
+div#auction-detail .bid-history ul li.username {
 	float: left;
 	clear: left;
 }
 
-div .bid-history ul li.bid {
+div#auction-detail .bid-history ul li.bid {
 	width: 100px;
 	float: right;
 	font-weight: bold;
 }
 
-div .bid-history ul li.bid-time {
+div#auction-detail .bid-history ul li.bid-time {
 	float: right;
 }
 
-div.bid-history ul li.clear {
+div#auction-detail .bid-history ul li.clear {
 	display: block;
 	height: 0;
 }
@@ -4579,4 +4593,52 @@ div.bid-history ul li.clear {
 #tabs, #tabs ul{
 	border: 0;
 	background-color: transparent;
+}
+
+/* Right-Col Auctions */
+div#rightcol ul#auctions li {
+	float: left;
+	padding: 2px;
+	border: 1px solid #ddd;
+	width: 150px;
+	margin-bottom: 25px;
+}
+
+div#rightcol ul#auctions li .product-name {
+	display: block;
+	font-size: 16px;
+	border-bottom: 1px solid #ddd;
+}
+
+div#rightcol ul#auctions li .thumbnail-zoom-small {
+	padding: 5px 0 5px 0;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 10px;
+}
+
+div#rightcol ul#auctions li .winner, div#rightcol ul#auctions li .price, div#rightcol ul#auctions li .time-left {
+	text-align: center;
+}
+
+div#rightcol ul#auctions li .winner {
+	font-size: 12px;
+}
+
+div#rightcol ul#auctions li .price {
+	font-size: 16px;
+}
+
+div#rightcol ul#auctions li .time-left {
+	font-size: 14px;
+}
+
+
+
+div#rightcol ul#auctions li .bid {
+	height: 47px;
+}
+
+div#rightcol ul#auctions li .bid a {
+	width: 95%;
+	margin-top: 10px;
 }
