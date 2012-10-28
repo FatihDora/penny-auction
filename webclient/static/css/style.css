@@ -817,7 +817,7 @@ border: 0;
 	width:100%;
 }
 #leftcol {
-	width:744px;
+	width:690px;
 	float:left;
 	border-right-width:1px;
 	padding:44px 33px 0 0;
@@ -1115,8 +1115,8 @@ border: 0;
 }
 /* END FEATURED JCAROUSEL */
 #rightcol {
-	width:149px;
-	max-width:149px;
+	width:200px;
+	max-width:200px;
 	overflow:hidden;
 	float:left;
 	margin-left:-1px;
@@ -2189,7 +2189,7 @@ form.search2 .third .imgb4.active, form.search2 .third .imgb4.active:hover, form
 	float:left;
 }
 .detail-right {
-	width:411px;
+	width:350px;
 	float:left;
 }
 .detail-left .imgb {
@@ -2215,7 +2215,6 @@ form.search2 .third .imgb4.active, form.search2 .third .imgb4.active:hover, form
 }
 .detail-block ul.listline {
 	display:block;
-	background:url(/images/dottedbg.jpg) repeat-x bottom;
 	padding:0 0 19px 0;
 	margin:-2px 0 0 0;
 }
@@ -2243,7 +2242,6 @@ form.search2 .third .imgb4.active, form.search2 .third .imgb4.active:hover, form
 }
 .detail-block .quat-col {
 	width:100%;
-	background:url(/images/dottedbg.jpg) repeat-x bottom;
 	padding:33px 0 31px 0;
 	margin:0 0 32px 0;
 }
@@ -2317,7 +2315,6 @@ form.search2 .third .imgb4.active, form.search2 .third .imgb4.active:hover, form
 	margin-bottom:-10px;
 }
 .info-content {
-	width:692px;
 	border-width:1px;
 	padding:27px 25px 40px 25px;
 	display:inline-block;
@@ -4519,4 +4516,67 @@ form#login-form .login-focus {
 
 div#registration-complete, #top-account-info, #validation-error, #validation-success {
 	display: none;
+}
+
+div#auction-detail {
+	font-size: 18px;
+	width: 300px;
+	position: relative;
+	border: 1px solid #999;
+	padding: 25px;
+}
+
+div#auction-detail>div {
+	clear: both;
+	border-bottom: 1px dashed #999;
+	padding: 5px;
+}
+
+div.price {
+	font-size: 24px;
+}
+
+div.time-left {
+	font-size: 36px;
+	text-align: center;
+}
+
+div.controls {
+	min-height: 40px;
+}
+
+div.bid-history {
+	height: 180px;
+}
+
+div.bid-history ul li {
+	display: block;
+	list-style-type: none;
+	float: left;
+	height: 20px;
+}
+
+div.bid-history ul li.username {
+	float: left;
+	clear: left;
+}
+
+div .bid-history ul li.bid {
+	width: 100px;
+	float: right;
+	font-weight: bold;
+}
+
+div .bid-history ul li.bid-time {
+	float: right;
+}
+
+div.bid-history ul li.clear {
+	display: block;
+	height: 0;
+}
+
+#tabs, #tabs ul{
+	border: 0;
+	background-color: transparent;
 }

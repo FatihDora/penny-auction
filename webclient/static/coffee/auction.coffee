@@ -9,23 +9,22 @@ auction = init: ->
 
 	callApi AUCTION_DETAIL,(id: auction_id), (data) ->
 			if data.result
-				auctions = data.result
-				if not auctions?
+				auction = data.result
+				if not auction?
 					$("#onecol .gallery").html '<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>'
 					return
 
-				for ix of auctions
-					i = auctions[ix].i
-					n = auctions[ix].n
-					b = auctions[ix].b
-					u = auctions[ix].u
-					m = auctions[ix].m
-					p = auctions[ix].p
-					w = auctions[ix].w
-					t = secondsToHms(auctions[ix].t)
-					auction_ids.push i
-					auction_list[i] = auctions[ix]
-					$("#auctions").append(buildAuction(i, n, b, u, m, p, w, t))
+				i = auction.i # Image
+				n = auction.n # Name
+				b = auction.b # Base Price
+				u = auction.u # Manufacturer's URL
+				m = auction.m # Image Url
+				p = auction.p # Current Price
+				w = auction.w # Winner Username
+				t = secondsToHms(auctions[ix].t)
+
+				# Update the page with the data
+				$('#auction-image').html('<a href="' + auction.i + '" class="fancy-img fadeable"><img src="' + auction.i + '" alt="combo1" width="292" height="242" /></a>')
 
 	# Setup the registration form.
 	$("#registration-form").submit (e) ->
