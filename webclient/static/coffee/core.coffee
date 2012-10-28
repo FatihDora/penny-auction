@@ -117,7 +117,7 @@ window.login = init: ->
 			username: username
 			password: password
 		, (data) ->
-				if data.result? then document.location.href="/"
+				if data.result? then document.location.reload true
 				if data.exception? then showDialog "error", "Login Error", data.exception
 
 	$("#login-form").delegate "#login-username, #login-password", "focus", ->
