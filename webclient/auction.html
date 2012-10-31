@@ -119,8 +119,18 @@
 						<div class="time-left red">0:09</div>
 
 						<!-- quatcol -->
-						<div class="controls">
-							<div class="pro-right mod"><a href="javascript:void(0);" class="button-default cart"><span class="hover">BID NOW</span><span>BID NOW</span></a></div>
+						<div id="controls">
+							<div id="bid"><a href="javascript:void(0);" class="button-default cart"><span class="hover">BID NOW</span><span>BID NOW</span></a></div>
+							<div id="create-autobidder" class="autobidder-controls">
+								<input id="autobidder-new-bids" type="text" class="input"/>
+								<div id="start-autobidder"><a href="javascript:void(0);" class="button-default cart"><span class="hover">START AUTOBIDDER</span><span>START AUTOBIDDER</span></a></div>
+								<div class="description">Assign a number of bids to an auto-bidder to bid for you just before the auction ends.</div>
+							</div>
+							<div id="cancel-autobidder" class="autobidder-controls">
+								<input id="autobidder-bids" type="text" readonly="true" class="input"/>
+								<div id="stop-autobidder"><a href="javascript:void(0);" class="button-default cart"><span class="hover">STOP AUTOBIDDER</span><span>STOP AUTOBIDDER</span></a></div>
+								<div class="description">If you stop this auto-bidder, all remaining bids will be credited to your account.</div>
+							</div>
 						</div>
 					</div> <!-- Auction Detail -->
 					<!-- quatcol -->

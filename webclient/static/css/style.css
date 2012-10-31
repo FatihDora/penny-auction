@@ -154,7 +154,7 @@ input[type="text"], input[type="password"], textarea, .general-select .jquery-se
 /* END BORDER COLOR AND SHADOWS STYLE */
 
 /* TITLE STYLE */
-h1, h2, h3, h4, h5, h6, a:hover, input[type="text"], textarea, .general-select .jquery-selectbox .jquery-selectbox-currentItem,  .topnav ul:first-child > li.info:hover > a, .topnav li.info ul li a, .jquery-selectbox.selecthover .jquery-selectbox-currentItem, .jquery-selectbox .jquery-selectbox-item, form .error .jquery-selectbox, .cart, .cart h6 a, .feature .heading, .feature a, #navigation ul:first-child > li, #navigation ul:first-child > li > a, #navigation > ul:first-child > li > ul.sub > li > ul > li > a, #navigation ul li ul.sub2 li a, .gallery h3, .gallery h3 a, .gallery .view a, .subnav li, .subnav li a, .offer li .txtb .title, .offer li .txtb .title a, #cart-content ul li .txtb .title, #cart-content ul li .txtb .title a, #cart-content ul li .quantity, #cart-content .totalbox span strong, .nivo-caption a, .breadcrumb li a, .row span a.num, form.search2 label, .pro-left h4 a, .pro-right li a, .pagination2 li.previous, .pagination2 li.next a, .pagination2 li.previous a, .search2 .jquery-selectbox.selecthover .jquery-selectbox-currentItem, .search2 .jquery-selectbox .jquery-selectbox-item, .detail-block .quat-col label, .review-list li a, .ui-widget-content a, .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited, .ui-state-hover a, .ui-state-hover a:hover, .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited, .cloud-zoom-loading, #fancybox-error, .fancybox-title-inside, .customer-left p a:hover, .customer-form .forgot a:hover, .accordin-panel h5 a, .accordin-block .input, .accordin-block .listmenu, .accordin-block .select a:hover, .pro-col li, .pro-col li a, ul.catelist li, ul.catelist li a, .post-col .txtb h1 a:hover, table th, table#cart tr td.prod-col p, table#cart tr td.prod-col a, table#cart tr td.prod-col + td + td + td, table#cart tr td .input, table#cart tr td .input + span a, table#cart tr td span.orange a:hover, .shopping .right .col1, .shopping .right .total, .shopping .right .total, .shopping .button-default.cart span.hover, .shopping .button-default.cart.dark span.hover, .shopping .submit-review a.sub-hover, .contact h5 span, .fill-form .col1 .input, .fill-form .input2, .fill-form span.gray a:hover, .contact .accordin-block span.gray a:hover, .gallery ul li .cart-button a.hov, .gallery ul li .detail-button a.hov.gallery ul li .cart-button a.hov, .gallery ul li .detail-button a.hov, .error-page, .ui-tabs .ui-tabs-nav li a, .button-default.cart.light span.hover, .team strong{
+h1, h2, h3, h4, h5, h6, a:hover, input[type="text"], textarea, .general-select .jquery-selectbox .jquery-selectbox-currentItem,  .topnav ul:first-child > li.info:hover > a, .topnav li.info ul li a, .jquery-selectbox.selecthover .jquery-selectbox-currentItem, .jquery-selectbox .jquery-selectbox-item, form .error .jquery-selectbox, .cart, .cart h6 a, .feature .heading, .feature a, #navigation ul:first-child > li, #navigation ul:first-child > li > a, #navigation > ul:first-child > li > ul.sub > li > ul > li > a, #navigation ul li ul.sub2 li a, .gallery h3, .gallery h3 a, .gallery .view a, .subnav li, .subnav li a, .offer li .txtb .title, .offer li .txtb .title a, #cart-content ul li .txtb .title, #cart-content ul li .txtb .title a, #cart-content ul li .quantity, #cart-content .totalbox span strong, .nivo-caption a, .breadcrumb li a, .row span a.num, form.search2 label, .pro-left h4 a, .pro-right li a, .pagination2 li.previous, .pagination2 li.next a, .pagination2 li.previous a, .search2 .jquery-selectbox.selecthover .jquery-selectbox-currentItem, .search2 .jquery-selectbox .jquery-selectbox-item, .detail-block .quat-col label, .review-list li a, .ui-widget-content a, .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited, .ui-state-hover a, .ui-state-hover a:hover, .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited, .cloud-zoom-loading, #fancybox-error, .fancybox-title-inside, .customer-left p a:hover, .customer-form .forgot a:hover, .accordin-panel h5 a, .accordin-block .input, .accordin-block .listmenu, .accordin-block .select a:hover, .pro-col li, .pro-col li a, ul.catelist li, ul.catelist li a, .post-col .txtb h1 a:hover, table th, table#cart tr td.prod-col p, table#cart tr td.prod-col a, table#cart tr td.prod-col + td + td + td, table#cart tr td .input, table#cart tr td .input + span a, table#cart tr td span.orange a:hover, .shopping .right .col1, .shopping .right .total, .shopping .right .total, .shopping .button-default.cart span.hover, .shopping .button-default.cart.dark span.hover, .shopping .submit-review a.sub-hover, .contact h5 span, .fill-form .col1 .input, .fill-form .input2, .fill-form span.gray a:hover, .contact .accordin-block span.gray a:hover, .gallery ul li .cart-button a.hov, .gallery ul li .detail-button a.hov, .gallery ul li .cart-button a.hov, .gallery ul li .detail-button a.hov, .error-page, .ui-tabs .ui-tabs-nav li a, .button-default.cart.light span.hover, .team strong{
 	color:#333;/* edit the color here */
 }
 /* backgrounds and borders */
@@ -4532,6 +4532,13 @@ div#registration-complete, #top-account-info, #validation-error, #validation-suc
 	display: none;
 }
 
+ul#auctions div.bid a {
+	width: 94%;
+	margin: 1px 1px;
+}
+
+/* Auction Detail */
+
 div#auction-detail {
 	font-size: 18px;
 	width: 305px;
@@ -4590,6 +4597,39 @@ div#auction-detail .bid-history ul li.clear {
 	height: 0;
 }
 
+div#auction-detail #bid a {
+	width: 97%;
+}
+
+div#controls{
+	border: 0px !important;
+}
+
+div.autobidder-controls {
+	font-size: 12px;
+	margin-top: 40px;
+	padding: 20px;
+	border: 1px solid #ddd;
+}
+
+div.autobidder-controls input[type="text"] {
+	border: 1px solid #ddd;
+	padding: 5px;
+	width: 75px;
+}
+
+div#start-autobidder, div#stop-autobidder {
+	float: right;
+	clear:right;
+	overflow: hidden;
+}
+
+div.description {
+	padding-top: 15px;
+	font-size: 12px;
+	text-align: center;
+}
+
 #tabs, #tabs ul{
 	border: 0;
 	background-color: transparent;
@@ -4602,6 +4642,7 @@ div#rightcol ul#auctions li {
 	border: 1px solid #ddd;
 	width: 150px;
 	margin-bottom: 25px;
+	height: 235px;
 }
 
 div#rightcol ul#auctions li .product-name {
@@ -4632,10 +4673,8 @@ div#rightcol ul#auctions li .time-left {
 	font-size: 14px;
 }
 
-
-
 div#rightcol ul#auctions li .bid {
-	height: 47px;
+	/*height: 47px;*/
 }
 
 div#rightcol ul#auctions li .bid a {

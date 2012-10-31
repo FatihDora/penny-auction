@@ -25,7 +25,8 @@
           m = auction.m;
           p = auction.p;
           w = auction.w;
-          return t = secondsToHms(auctions[ix].t);
+          t = secondsToHms(auctions[ix].t);
+          return $('#auction-image').html('<a href="' + auction.i + '" class="fancy-img fadeable"><img src="' + auction.i + '" alt="combo1" width="292" height="242" /></a>');
         }
       });
       return $("#registration-form").submit(function(e) {

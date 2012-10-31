@@ -39,7 +39,7 @@ auctions =
 				$("#auctions").append(buildAuction(i, n, b, u, m, p, w, t))
 
 		# Bid Button Clicks
-		$("ul#auctions").delegate "div.cart-button", "click", ->
+		$("ul#auctions").delegate "div.bid", "click", ->
 			if user.loggedIn is false
 				document.location.href = "/register"
 				return
@@ -65,23 +65,24 @@ auctions =
 			tmplAuction += '\t\t<!-- top block -->\n'
 			tmplAuction += '\t\t<div class="top-block">\n'
 			tmplAuction += '\t\t\t<h3 class="nocufon"><a href="{url}" title="{item-name}">{item-name}</a></h3>\n'
-			tmplAuction += '\t\t\t\t<div class="imgb thumbnail-zoom">\n'
-			tmplAuction += '\t\t\t\t\t<a href="/auction/{auction-id}" class="fadeable">\n'
-			tmplAuction += '\t\t\t\t\t\t<span class="light-background">\n'
-			tmplAuction += '\t\t\t\t\t\t<span class="thumb-arrow">&#8594;</span>\n'
-			tmplAuction += '\t\t\t\t\t\t</span>\n'
+			tmplAuction += '\t\t\t<div class="imgb thumbnail-zoom">\n'
+			tmplAuction += '\t\t\t\t<a href="/auction/{auction-id}" class="fadeable">\n'
+			tmplAuction += '\t\t\t\t\t<span class="light-background">\n'
+			tmplAuction += '\t\t\t\t\t<span class="thumb-arrow">&#8594;</span>\n'
+			tmplAuction += '\t\t\t\t\t</span>\n'
 			tmplAuction += '\t\t\t\t\t\t<span>\n'
-			tmplAuction += '\t\t\t\t\t\t\t<img src="{image-url}" width="194" height="144" alt="{item-name}" />\n'
-			tmplAuction += '\t\t\t\t\t\t\t<!--<span class="sale-img">NEW<span>ITEM</span></span>-->\n'
-			tmplAuction += '\t\t\t\t\t\t</span>\n'
-			tmplAuction += '\t\t\t\t\t</a>\n'
-			tmplAuction += '\t\t\t\t</div>\n'
-			tmplAuction += '\t\t\t\t<span class="winner"><a href="#">{winner}</a></span>\n'
-			tmplAuction += '\t\t\t\t<span class="price">P {current-price}</span>\n'
-			tmplAuction += '\t\t\t\t<span class="timeleft">{time-remaining}</span>\n'
+			tmplAuction += '\t\t\t\t\t\t<img src="{image-url}" width="194" height="144" alt="{item-name}" />\n'
+			tmplAuction += '\t\t\t\t\t\t<!--<span class="sale-img">NEW<span>ITEM</span></span>-->\n'
+			tmplAuction += '\t\t\t\t\t</span>\n'
+			tmplAuction += '\t\t\t\t</a>\n'
 			tmplAuction += '\t\t\t</div>\n'
+			tmplAuction += '\t\t\t<span class="winner"><a href="#">{winner}</a></span>\n'
+			tmplAuction += '\t\t\t<span class="price">P {current-price}</span>\n'
+			tmplAuction += '\t\t\t<span class="timeleft">{time-remaining}</span>\n'
+			tmplAuction += '\t\t</div>\n'
 			tmplAuction += '\t\t<!-- top block -->\n'
-			tmplAuction += '\t\t<div class="cart-button"><a href="javascript:void(0);"><span>BID NOW</span></a></div>\n'
+			#tmplAuction += '\t\t<div class="bid"><a href="javascript:void(0);"><span>BID NOW</span></a></div>\n'
+			tmplAuction += '\t\t<div class="bid js-button"><a href="javascript:void(0);" class="button-default cart"><span class="hover">BID NOW</span><span>BID NOW</span></a></div>\n'
 			tmplAuction += '\t</li>\n'
 			tmplAuction = tmplAuction.replaceAll("{auction-id}", id)
 			tmplAuction = tmplAuction.replaceAll("{url}", productUrl)
@@ -138,6 +139,5 @@ auctions =
 
 						if a is "False"
 							if w is "No Bidder" then  buttonText = "SOLD" else buttonText = "ENDED"
-							$("#" + i + " div.cart-button").html '<a href="javascript:void(0);"><span>' + buttonText + '</span></a>'
-						else
-							$("#" + i + " div.cart-button").html '<a href="javascript:void(0);"><span>' + buttonText + '</span></a>'
+		
+						$("#" + i + " div.bid").html '<a href="javascript:void(0);" class="button-default cart"><span class="hover">' + buttonText + '</span><span>' + buttonText + '</span></a>'

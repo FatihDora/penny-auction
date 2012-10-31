@@ -6,7 +6,12 @@ $(document).ready ->
 auction = init: ->
 	# The page should be rendered with the ID in a javascript tag for us.
 	# Auction ID is stored in auction_id
-
+	# init will do the following:
+	# * Get the detail for the auction_id and display it in the page.
+	# * Get the top 3 auctions to put in the side bar.
+	# * Setup a timer to get the data for the main and 3 side auctions every 1 second.
+	# * The main auction should return the same data as the side auctions as well as
+	#   the previous 9 bidders (for a total of 10 bidders).
 	callApi AUCTION_DETAIL,(id: auction_id), (data) ->
 			if data.result
 				auction = data.result
