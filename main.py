@@ -50,9 +50,13 @@ urls = (
 # JSON objects passed back to the client use these keys
 JSON_KEY_ID = "i"
 JSON_KEY_PRICE = "p"
-JSON_KEY_WINNER = "u"
+JSON_KEY_WINNER = "w"
 JSON_KEY_REMAINING_TIME = "t"
 JSON_KEY_IS_ACTIVE = "a"
+JSON_KEY_ITEM_NAME = "n"
+JSON_KEY_BASE_PRICE = "b"
+JSON_KEY_PRODUCT_URL = "u"
+JSON_KEY_IMAGE_URL = "m"
 
 
 class index:
@@ -139,10 +143,43 @@ class auctions_list_active:
 		web.header('Content-Type', 'application/json')
 
 		try:
-			result = {'result':auction_controller.auctions_list_active(inputs.count)}
-			return inputs.callback + "(" + json.dumps(result) + ");"
+			# Build the JSON payload
+			result = []
+			delta = ""
+
+			for elem in auctions:
+				try:
+					if not elem:
+						continue
+					delta = elem.auction_end - datetime.datetime.now()
+
+					username = "No Bidders"
+					if elem.current_winner:
+						username = elem.current_winner.username
+
+					price = "0.00"
+					if elem.current_price:
+						price = "{0:.2f}".format(elem.current_price)
+
+					result.append({
+						JSON_KEY_ID: str(elem.key().id()),
+						JSON_KEY_IS_ACTIVE: str(elem.active),	# Is Auction Active? "True" or "False"
+						JSON_KEY_ITEM_NAME: str(elem.item.name),
+						JSON_KEY_BASE_PRICE: str(elem.item.base_price),
+						JSON_KEY_PRODUCT_URL: str(elem.item.product_url),
+						JSON_KEY_IMAGE_URL: str(elem.item.image_url),
+						JSON_KEY_PRICE: str(price),
+						JSON_KEY_WINNER: str(username),
+						JSON_KEY_TIME_REMAINING: str(delta.total_seconds())
+						})
+				except Exception, e:
+					logging.error(str(e))
+
+			result_json = json.dumps({'result':auction_controller.auctions_list_active(inputs.count)})
+			return inputs.callback + "(" + result_json + ");"
 
 		except Exception, e:
+			# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 # TODO: MOVE THIS TO THE ADMIN / PRIVATE API! -- HERE FOR TESTING

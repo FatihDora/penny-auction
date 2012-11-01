@@ -76,39 +76,7 @@ class AuctionController:
 		if not auctions:
 			raise Exception("No active auctions.")
 
-		# Build the JSON payload
-		result = []
-		delta = ""
-
-		for elem in auctions:
-			try:
-				if not elem:
-					continue
-				delta = elem.auction_end - datetime.datetime.now()
-
-				username = "No Bidders"
-				if elem.current_winner:
-					username = elem.current_winner.username
-
-				price = "0.00"
-				if elem.current_price:
-					price = "{0:.2f}".format(elem.current_price)
-
-				result.append({
-					'i':str(elem.key().id()), 					# ID
-					'a':str(elem.active),						# Is Auction Active? "True" or "False"
-					'n':str(elem.item.name),					# Name
-					'b':str(elem.item.base_price),				# Base Price
-					'u':str(elem.item.product_url),				# Product URL
-					'm':str(elem.item.image_url),				# Image URL
-					'p':str(price),								# Current Price
-					'w':str(username),							# Current Winner Username
-					't':str(delta.total_seconds())				# Time Til End (TTE) in Seconds
-					})
-			except Exception, e:
-				logging.error(str(e))
-
-		return result
+		return auctions
 
 	@staticmethod
 	def auctions_list_all():
