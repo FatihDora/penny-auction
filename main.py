@@ -47,6 +47,14 @@ urls = (
 	'/user_logout', 'user_logout'
 )
 
+# JSON objects passed back to the client use these keys
+JSON_KEY_ID = "i"
+JSON_KEY_PRICE = "p"
+JSON_KEY_WINNER = "u"
+JSON_KEY_REMAINING_TIME = "t"
+JSON_KEY_IS_ACTIVE = "a"
+
+
 class index:
 	def GET(self):
 		return "index stub"
