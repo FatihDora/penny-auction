@@ -142,6 +142,8 @@ class auctions_list_active:
 		web.header('Content-Type', 'application/json')
 
 		try:
+			auctions = auction_controller.auctions_list_active(inputs.count)
+
 			# Build the JSON payload
 			result = []
 			delta = ""
@@ -170,11 +172,11 @@ class auctions_list_active:
 						JSON_KEY_PRICE: str(price),
 						JSON_KEY_WINNER: str(username),
 						JSON_KEY_TIME_REMAINING: str(delta.total_seconds())
-						})
+					})
 				except Exception, e:
 					logging.error(str(e))
 
-			result_json = json.dumps({'result':auction_controller.auctions_list_active(inputs.count)})
+			result_json = json.dumps({'result': result})
 			return inputs.callback + "(" + result_json + ");"
 
 		except Exception, e:
