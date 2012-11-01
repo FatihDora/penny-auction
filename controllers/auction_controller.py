@@ -9,7 +9,7 @@ import logging
 
 from google.appengine.ext import db
 
-class AuctionController:
+class AuctionController(object):
 	''' This class manipulates auction models. '''
 
 	@staticmethod

@@ -5,7 +5,7 @@ import models.item as item
 
 from google.appengine.ext import db
 
-class ItemController(Object):
+class ItemController(object):
 
 	@staticmethod
 	def items_list():

@@ -14,7 +14,7 @@ import hashlib
 import random
 import sys
 
-class UserController(Object):
+class UserController(object):
 
 	@staticmethod
 	def user_get_nonce():
