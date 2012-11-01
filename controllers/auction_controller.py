@@ -12,6 +12,7 @@ from google.appengine.ext import db
 class AuctionController:
 	''' This class manipulates auction models. '''
 
+	@staticmethod
 	def invoke_auto_bidders(auction):
 		''' Pass an Auction object to have the next auto bidder attached to that
 		auction place a bid. If no auto bidders with remaining bids are
@@ -34,6 +35,7 @@ class AuctionController:
 
 		auction.place_bid(next_auto_bidder.owner)
 	
+	@staticmethod
 	def auctions_status_by_id(auction_ids):
 		'''
 			List the auctions specified
@@ -64,6 +66,7 @@ class AuctionController:
 		return auctions
 		
 
+	@staticmethod
 	def auctions_list_active(count=10):
 		'''
 			List the currently-running auctions
@@ -107,6 +110,7 @@ class AuctionController:
 
 		return result
 
+	@staticmethod
 	def auctions_list_all():
 		'''
 			List all auctions (administrative only)
@@ -142,6 +146,7 @@ class AuctionController:
 
 		return result
 
+	@staticmethod
 	def auction_bid(auction_id):
 		'''
 			Performs a single bid on the given ID if the user has a valid cookie.
@@ -180,12 +185,14 @@ class AuctionController:
 		auctionInfo.increment_price()
 		auctionInfo.put()
 
+	@staticmethod
 	def auction_detail(auction_id):
 		'''
 			Returns detailed auction information for the auction page.
 		'''
 		pass
 
+	@staticmethod
 	def auction_create(item, scheduled_end_time):
 		'''
 			Schedule an auction to run and end for the specified item at the specified time
@@ -193,24 +200,28 @@ class AuctionController:
 		'''
 		pass
 
+	@staticmethod
 	def auction_start(auction_id):
 		'''
 			Start the specified auction, effective immediately (administrative only)
 		'''
 		pass
 
+	@staticmethod
 	def auction_pause(auction_id):
 		'''
 			Pause the specified auction indefinitely (administrative only)
 		'''
 		pass
 
+	@staticmethod
 	def auction_end(auction_id):
 		'''
 			End the specified auction (administrative only)
 		'''
 		pass
 
+	@staticmethod
 	def auction_assign_winner(auction_id, username):
 		'''
 			Assign the specified user as the winner of the specified auction
