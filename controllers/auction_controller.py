@@ -91,14 +91,10 @@ class AuctionController:
 		return auctions
 
 	@staticmethod
-	def auction_bid(auction_id):
+	def auction_bid(auction_id, username):
 		'''
-			Performs a single bid on the given ID if the user has a valid cookie.
+			Performs a single bid on the given auction on behalf of the specified user.
 		'''
-		username = user_controller.validate_cookie()
-
-		if username is None:
-			raise Exception("Not logged in!")
 
 		userInfo = user.User.get_by_username(username)
 

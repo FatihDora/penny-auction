@@ -229,8 +229,15 @@ class auction_bid:
 		web.header('Content-Type', 'application/json')
 
 		try:
-			result = {'result':auction_controller.auction_bid(inputs.id)}
-			return inputs.callback + "(" + json.dumps(result) + ");"
+			username = user_controller.validate_cookie()
+
+			if username is None:
+				raise Exception("Not logged in!")
+
+			result = auction_controller.auction_bid(inputs.id, username)
+
+			result_json = json.dumps({'result': result})
+			return inputs.callback + "(" + result_json + ");"
 
 		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
