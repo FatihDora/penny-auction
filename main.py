@@ -127,8 +127,7 @@ class auctions_status_by_id:
 						JSON_KEY_IS_ACTIVE: str(elem.active)
 					})
 				except Exception, e:
-					# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
-					print e
+					logging.error(str(e))
 
 			result_json = json.dumps({'result':auction_controller.auctions_status_by_id(inputs.ids)})
 			return inputs.callback + "(" + result_json + ");"
