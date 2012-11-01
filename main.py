@@ -181,15 +181,42 @@ class auctions_list_active:
 			# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
-# TODO: MOVE THIS TO THE ADMIN / PRIVATE API! -- HERE FOR TESTING
 class auctions_list_all:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 
+		# TODO: check that an administrative user issued this request
+
 		try:
-			result = {'result':auction_controller.auctions_list_all()}
-			return inputs.callback + "(" + json.dumps(result) + ");"
+			auctions = auction_controller.auctions_list_all()
+
+			# Build the JSON payload
+			result = []
+			delta = ""
+
+			for elem in auctions:
+				try:
+					if not elem:
+						continue
+					delta = elem.auction_end - datetime.datetime.now()
+
+					result.append({
+						JSON_KEY_ID: str(elem.key().id()),
+						JSON_KEY_IS_ACTIVE: str(elem.active),	# Is Auction Active? "True" or "False"
+						JSON_KEY_ITEM_NAME: str(elem.item.name),
+						JSON_KEY_BASE_PRICE: str(elem.item.base_price),
+						JSON_KEY_PRODUCT_URL: str(elem.item.product_url),
+						JSON_KEY_IMAGE_URL: str(elem.item.image_url),
+						JSON_KEY_PRICE: str(elem.current_price),
+						JSON_KEY_WINNER: str(elem.current_winner.username),
+						JSON_KEY_TIME_REMAINING: str(delta.total_seconds())
+					})
+				except Exception, e:
+					logging.error(str(e))
+
+			result_json = json.dumps({'result': result})
+			return inputs.callback + "(" + result_json + ");"
 
 		except Exception, e:
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
