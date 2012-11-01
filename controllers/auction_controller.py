@@ -58,48 +58,10 @@ class AuctionController:
 
 		# Try to get some auctions from the list of IDs
 		auctions = auction.Auction.get_by_id(ids)
-
 		if not auctions:
-			raise Exception("No auctions returned.")
-
-		# Build the JSON payload
-		result = []
-		delta = ""
-
-		for elem in auctions:
-			try:
-				if not elem:
-					continue
-
-				delta = elem.auction_end - datetime.datetime.now()
-				if delta.total_seconds() <= 0:
-					delta = timedelta(seconds=0)
-					elem.active = False
-					elem.put()
-					# Do winner stuff here... apparently our daemon hasn't gotten to this one.
-
-				username = "No Bidders"
-				if elem.current_winner:
-					username = elem.current_winner.username
-
-				price = "0.00"
-				if elem.current_price:
-					price = "{0:.2f}".format(elem.current_price)
-				# i: ID
-				# p: currentPrice
-				# w: currentWinner
-				# t: timeTilEnd
-				# a: active
-
-				result.append({'i':str(elem.key().id()),'p':str(price),'w':str(username),'t':str(delta.total_seconds()),'a':str(elem.active)})
-			except Exception, e:
-				print e
-
-		if result is None:
 			raise Exception("There were no auctions for the IDs you provided.")
 
-
-		return result
+		return auctions
 		
 
 	def auctions_list_active(count=10):

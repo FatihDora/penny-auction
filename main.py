@@ -80,10 +80,49 @@ class auctions_status_by_id:
 		web.header('Content-Type', 'application/json')
 
 		try:
-			result = {'result':auction_controller.auctions_status_by_id(inputs.ids)}
-			return inputs.callback + "(" + json.dumps(result) + ");"
+			auctions = auction_controller.auctions_status_by_id(auction_ids)
+
+			# Build the JSON payload
+			result = []
+			delta = ""
+
+			for elem in auctions:
+				try:
+					if not elem:
+						continue
+
+					delta = elem.auction_end - datetime.datetime.now()
+					if delta.total_seconds() <= 0:
+						delta = timedelta(seconds=0)
+						elem.active = False
+						elem.put()
+						# TODO: Do winner stuff here... apparently our daemon hasn't gotten to this one.
+						# note from Brent: I don't think this is the right place to handle winning auctions
+
+					username = "No Bidders"
+					if elem.current_winner:
+						username = elem.current_winner.username
+
+					price = "0.00"
+					if elem.current_price:
+						price = "{0:.2f}".format(elem.current_price)
+
+					result.append({
+						JSON_KEY_ID: str(elem.key().id()),
+						JSON_KEY_PRICE: str(price),
+						JSON_KEY_WINNER: str(username),
+						JSON_KEY_REMAINING_TIME: str(delta.total_seconds()),
+						JSON_KEY_IS_ACTIVE: str(elem.active)
+					})
+				except Exception, e:
+					# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
+					print e
+
+			result_json = json.dumps({'result':auction_controller.auctions_status_by_id(inputs.ids)})
+			return inputs.callback + "(" + result_json + ");"
 
 		except Exception, e:
+			# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
 			return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
 
 class auctions_list_active:
