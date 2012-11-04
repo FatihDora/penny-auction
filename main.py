@@ -13,7 +13,7 @@ import os
 from django.utils import simplejson as json
 import logging
 
-from controllers import user_controller.UserController, auction_controller.AuctionController
+from controllers import user_controller, auction_controller
 import models.auction as auction
 import models.autobidder as autobidder
 import models.bid_history as bid_history
