@@ -16,9 +16,6 @@ class ItemControllerTestCase(unittest.TestCase):
 		self.testbed.activate()
 		self.testbed.init_datastore_v3_stub()
 
-		# make some fixture items
-		dummy_items.DummyItems.setup()
-
 	def tearDown(self):
 		self.testbed.deactivate()
 
@@ -97,13 +94,24 @@ class ItemControllerTestCase(unittest.TestCase):
 				"23.99")
 
 	def testItemAccessorsWhenItemDoesNotExist(self):
-		# test:
-		# - items_list
-		# - item_get_info
-		# - item_list_auctions ??
-		self.fail("implement me")
+		emptyItems = item_controller.ItemController.items_list().get()
+		if emptyItems is None:
+			self.fail("Expected empty list but was None")
+		self.assertEquals(0, len(emptyItems))
+
+		nilItem = item_controller.ItemController.item_get_info("asdf")
+		if nilItem is not None:
+			self.fail("Expected no item with name 'asdf'")
+
+		nilAuctions = item_controller.ItemController.item_list_auctions("asdf")
+		if nilAuctions is None:
+			self.fail("Expected empty list but was None")
+		self.assertEquals(0, len(nilAuctions))
 
 	def testItemAccessorsWhenItemExists(self):
+		# make some fixture items
+		dummy_items.DummyItems.setup()
+
 		# test:
 		# - items_list
 		# - item_get_info

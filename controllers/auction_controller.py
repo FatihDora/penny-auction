@@ -39,7 +39,7 @@ class AuctionController(object):
 			break
 
 		auction.place_bid(next_auto_bidder.owner)
-	
+
 	@staticmethod
 	def auctions_status_by_id(auction_ids):
 		'''
@@ -69,7 +69,7 @@ class AuctionController(object):
 			raise Exception("There were no auctions for the IDs you provided.")
 
 		return auctions
-		
+
 
 	@staticmethod
 	def auctions_list_active(count=10):
@@ -88,7 +88,7 @@ class AuctionController(object):
 		'''
 			List all auctions (administrative only)
 		'''
-		auctions = auction.Auction.get_all()
+		auctions = auction.Auction.all()
 
 		if not auctions:
 			raise Exception("No auctions in the system.")

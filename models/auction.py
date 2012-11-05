@@ -40,14 +40,6 @@ class Auction(db.Model):
 				datetime.datetime.now()).order("auction_end").fetch(int(count))
 
 	@staticmethod
-	def get_all():
-		'''
-			Lists all the auctions
-		'''
-
-		return Auction.all()
-
-	@staticmethod
 	def create(item, auction_end):
 		'''
 			Creates an auction
