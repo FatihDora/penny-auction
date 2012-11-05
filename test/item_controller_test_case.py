@@ -26,7 +26,6 @@ class ItemControllerTestCase(unittest.TestCase):
 			"http://thereisnoneed.com", "http://i.imgur.com/1jqAT.png")
 
 	def testCreateItem(self):
-
 		# verify the item doesn't exist
 		all_items = item_controller.ItemController.items_list()
 		for item in all_items:
@@ -47,12 +46,32 @@ class ItemControllerTestCase(unittest.TestCase):
 			self.fail("Failed to create item 'Gorilla Munch'")
 
 	def testCannotCreateDuplicateItems(self):
-		self.fail("implement me")
+		self.make_item()
+		try:
+			self.make_item()
+			self.fail("Duplicate item creation was permitted!")
+		except:
+			# expected behavior
+			pass
 
 	def testItemAccessorsWhenItemDoesNotExist(self):
+		# test:
+		# - items_list
+		# - item_get_info
+		# - item_list_auctions ??
 		self.fail("implement me")
 
 	def testItemAccessorsWhenItemExists(self):
+		# test:
+		# - items_list
+		# - item_get_info
+		# - item_list_auctions ??
 		self.fail("implement me")
 
+	def testItemUpdatePriceIsReasonable(self):
+		# test for negative prices, etc.
+		self.fail("implement me")
 
+	def testItemUpdateQuantityIsReasonable(self):
+		# test for negative quantities, etc.
+		self.fail("implement me")
