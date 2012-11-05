@@ -17,15 +17,16 @@ class UserControllerTestCase(unittest.TestCase):
 		self.testbed.deactivate()
 
 	def make_user(self):
-		user_controller.user_register("test", "user", "testUser", "testUser@me.com",
-				"testPassword")
+		user_controller.UserController.user_register("test", "user",
+			"testUser", "testUser@me.com", "testPassword")
 
 	def testUserAuthenticate(self):
 		self.make_user()
 
 		# bad username
 		try:
-			user_controller.user_authenticate("fakeUser", "doesn't matter")
+			user_controller.UserController.user_authenticate("fakeUser",
+				"doesn't matter")
 			self.fail("User permitted to login with bad username!")
 		except:
 			# expected behavior
@@ -33,7 +34,8 @@ class UserControllerTestCase(unittest.TestCase):
 
 		# bad password
 		try:
-			user_controller.user_authenticate("testUser", "bad password")
+			user_controller.UserController.user_authenticate("testUser",
+				"bad password")
 			self.fail("User permitted to login with bad password!")
 		except:
 			# expected behavior
@@ -43,17 +45,17 @@ class UserControllerTestCase(unittest.TestCase):
 # problems in web.py's setcookie function
 #
 #		# good login
-#		user_hash = user_controller.user_authenticate("testUser",
+#		user_hash = user_controller.UserController.user_authenticate("testUser",
 #			"testPassword")
 #		user_key = db.Key.from_path("User", "testUser")
 #		user_object = db.get(user_key)
-#		hashed_password = user_controller.user_hash_password("testUser",
-#			"testPassword", user_object.password_salt)
+#		hashed_password = user_controller.UserController.user_hash_password(
+#			"testUser", "testPassword", user_object.password_salt)
 #		self.assertEquals(hashed_password, user_hash)
 #		user_key = db.Key.from_path("User", "testUser")
 #		user_object = db.get(user_key)
-#		hashed_password = user_controller.user_hash_password("testUser",
-#			"testPassword", user_object.password_salt)
+#		hashed_password = user_controller.UserController.user_hash_password(
+#			"testUser", "testPassword", user_object.password_salt)
 
 	def testUserCannotRegisterTwice(self):
 		self.make_user()
@@ -70,16 +72,17 @@ class UserControllerTestCase(unittest.TestCase):
 		# validate the password hash
 		user_key = db.Key.from_path("User", "testUser")
 		user_object = db.get(user_key)
-		hashed_password = user_controller.user_hash_password("testUser",
-			"testPassword", user_object.password_salt)
+		hashed_password = user_controller.UserController.user_hash_password(
+			"testUser", "testPassword", user_object.password_salt)
 		self.assertEquals(hashed_password, user_object.hashed_password)
 
 		# change the password
-		user_controller.user_update_password(user_object, "testNewPassword")
+		user_controller.UserController.user_update_password(user_object,
+			"testNewPassword")
 
 		# validate the new password hash
-		new_hashed_password = user_controller.user_hash_password("testUser",
-			"testNewPassword", user_object.password_salt)
+		new_hashed_password = user_controller.UserController.user_hash_password(
+			"testUser", "testNewPassword", user_object.password_salt)
 		self.assertEquals(new_hashed_password, user_object.hashed_password)
 
 		# pull a new refrence to the user from the DB and re-validate the new
