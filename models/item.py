@@ -49,6 +49,11 @@ class Item(db.Model):
 		Item(name=name, quantity_in_stock=quantity, base_price=price,
 				product_url=url, image_url=image_url).put()
 
+		theItem = Item.all().filter("name =", name).get()
+		if theItem is None:
+			raise Exception("Failed to create new Item")
+		return theItem
+
 	@staticmethod
 	def get(name):
 		'''
