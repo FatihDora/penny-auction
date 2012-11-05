@@ -97,7 +97,8 @@ class UserController(object):
 
 		# create a new user and hash their password
 
-		userInfo = user.User.create(first_name,last_name,username,email,password)
+		userInfo = user.User.create(first_name, last_name, username, email,
+			password)
 
 		message = mail.EmailMessage(sender="Darin Hoover <darinh@gmail.com>",
 									subject="Please Validate Your Account")
@@ -165,8 +166,8 @@ class UserController(object):
 		new_salt = bcrypt.gensalt()
 
 		# compute the new password hash using the new salt
-		user_object.hashed_password = user_hash_password(user_object.username,
-				new_password, new_salt)
+		user_object.hashed_password = UserController.user_hash_password(
+			user_object.username, new_password, new_salt)
 		user_object.password_salt = new_salt
 		user_object.put()
 

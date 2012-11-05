@@ -17,14 +17,14 @@ class ItemController(object):
 		'''
 			Get a list of all item names
 		'''
-		Item.get_all()
+		return item.Item.get_all()
 
 	@staticmethod
 	def item_add(name, quantity, price, url, image_url):
 		'''
 			Create a new item with the specified properties (administrative only)
 		'''
-		Item.create(name, quantity, price, url, image_url)
+		return item.Item.create(name, quantity, price, url, image_url)
 
 	@staticmethod
 	def item_get_info(name):
