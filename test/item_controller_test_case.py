@@ -20,16 +20,16 @@ class ItemControllerTestCase(unittest.TestCase):
 	def tearDown(self):
 		self.testbed.deactivate()
 
-	def make_item(self):
+	def make_item(self, quantity=9001, price="14.99"):
 		# make an item
-		item_controller.ItemController.item_add("Gorilla Munch", 9001, "14.99",
-			"http://thereisnoneed.com", "http://i.imgur.com/1jqAT.png")
+		item_controller.ItemController.item_add("Gorilla Munch", quantity,
+			price, "http://thereisnoneed.com", "http://i.imgur.com/1jqAT.png")
 
 	def testCreateItem(self):
 		# verify the item doesn't exist
 		all_items = item_controller.ItemController.items_list()
 		for item in all_items:
-			if (item.name == "Gorilla Munch"):
+			if item.name == "Gorilla Munch":
 				self.fail("Impossible! Gorilla Munch already exists!")
 				return
 
@@ -40,7 +40,7 @@ class ItemControllerTestCase(unittest.TestCase):
 		found = False
 		all_items = item_controller.ItemController.items_list()
 		for item in all_items:
-			if (item.name == "Gorilla Munch"):
+			if item.name == "Gorilla Munch":
 				success = True
 		if not (success):
 			self.fail("Failed to create item 'Gorilla Munch'")
@@ -54,6 +54,30 @@ class ItemControllerTestCase(unittest.TestCase):
 			# expected behavior
 			pass
 
+	def testCannotCreateItemWithInsaneQuantity(self):
+		try:
+			self.make_item(-37, "14.99")
+			self.fail("Item creation with insane quantity was permitted!")
+		except:
+			# expected behavior
+			pass
+
+	def testItemUpdateQuantityIsSane(self):
+		# test for negative quantities, etc.
+		self.fail("implement me")
+
+	def testCannotCreateItemWithInsanePrice(self):
+		try:
+			self.make_item(9001, "-40000")
+			self.fail("Item creation with insane price was permitted!")
+		except:
+			# expected behavior
+			pass
+
+	def testItemUpdatePriceIsSane(self):
+		# test for negative prices, etc.
+		self.fail("implement me")
+
 	def testItemAccessorsWhenItemDoesNotExist(self):
 		# test:
 		# - items_list
@@ -66,12 +90,4 @@ class ItemControllerTestCase(unittest.TestCase):
 		# - items_list
 		# - item_get_info
 		# - item_list_auctions ??
-		self.fail("implement me")
-
-	def testItemUpdatePriceIsReasonable(self):
-		# test for negative prices, etc.
-		self.fail("implement me")
-
-	def testItemUpdateQuantityIsReasonable(self):
-		# test for negative quantities, etc.
 		self.fail("implement me")
