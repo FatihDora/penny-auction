@@ -22,13 +22,6 @@ class Item(db.Model):
 		return Item.all().filter("id IN", ids).get()
 
 	@staticmethod
-	def get_all():
-		'''
-			Lists all items
-		'''
-		return Item.all()
-
-	@staticmethod
 	def create(name, quantity, price, url, image_url):
 		'''
 			Creates an item
