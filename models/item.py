@@ -38,5 +38,42 @@ class Item(db.Model):
 		'''
 			Creates an item
 		'''
+		if quantity is None or quantity < 0:
+			raise Exception(
+				"Argument 'quantity' cannot be None or less than 0")
+
+		if price is None or price < 0:
+			raise Exception(
+				"Argument 'price' cannot be None or less than 0")
+
 		Item(name=name, quantity_in_stock=quantity, base_price=price,
 				product_url=url, image_url=image_url).put()
+
+	@staticmethod
+	def get(name):
+		'''
+			Get the specified item
+		'''
+		return Item.all().filter("name =", name).get()
+
+	def update_price(self, new_price):
+		'''
+			Update the price of the item
+		'''
+		if new_price is None or new_price < 0:
+			raise Exception(
+				"Argument 'new_price' cannot be None or less than 0")
+
+		self.base_price = new_price
+		self.put()
+
+	def update_quantity(self, new_quantity):
+		'''
+			Update the quantity of this item in stock
+		'''
+		if new_quantity is None or new_quantity < 0:
+			raise Exception(
+				"Argument 'new_quantity' cannot be None or less than 0")
+
+		self.quantity = new_quantity
+		self.put()

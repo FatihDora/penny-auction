@@ -32,21 +32,23 @@ class ItemController(object):
 			Get the quantity, base price, product url, and image url for the
 			specified item
 		'''
-		pass
+		return item.Item.get(name)
 
 	@staticmethod
-	def item_update_price(name, price):
+	def item_update_price(name, new_price):
 		'''
 			Update the price of the specified item (administrative only)
 		'''
-		pass
+		theItem = item.Item.get(name)
+		theItem.update_price(new_price)
 
 	@staticmethod
-	def item_update_quantity(name, quantity):
+	def item_update_quantity(name, new_quantity):
 		'''
 			Update the quantity of the specified item (administrative only)
 		'''
-		pass
+		theItem = item.Item.get(name)
+		theItem.update_quantity(new_quantity)
 
 	@staticmethod
 	def item_list_auctions(name):
