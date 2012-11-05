@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# make Python do floating-point division by default
+from __future__ import division
+# make string literals be Unicode strings
+from __future__ import unicode_literals
+
 from models import user, user_cookie
 import lib.bcrypt.bcrypt as bcrypt
 from lib import web
@@ -106,7 +111,7 @@ class UserController(object):
 		validate your email address.  Please click the following link
 		to verify your email account:
 
-		http://pisoauction.appspot.com/validate_email?code=""" + str(userInfo.email_validation_code) + """
+		http://pisoauction.appspot.com/validate_email?code=""" + unicode(userInfo.email_validation_code) + """
 
 		Once your email has been validated, you will be able to login.
 
@@ -123,7 +128,7 @@ class UserController(object):
 		validate your email address.  Please click the following link<br/>
 		to verify your email account:<br/>
 		<br/>
-		<a href='http://pisoauction.appspot.com/validate_email?code=""" + str(userInfo.email_validation_code) + """'>Validate Email</a><br/>
+		<a href='http://pisoauction.appspot.com/validate_email?code=""" + unicode(userInfo.email_validation_code) + """'>Validate Email</a><br/>
 		<br/>
 		Once your email has been validated, you will be able to login.<br/>
 		<br/>

@@ -3,6 +3,9 @@
 
 # make Python do floating-point division by default
 from __future__ import division
+# make string literals be Unicode strings
+from __future__ import unicode_literals
+
 from fixtures import dummy_users
 from fixtures import dummy_items
 from fixtures import dummy_auctions
@@ -119,21 +122,21 @@ class auctions_status_by_id:
                         price = "{0:.2f}".format(elem.current_price)
 
                     result.append({
-                        JSON_KEY_ID: str(elem.key().id()),
-                        JSON_KEY_PRICE: str(price),
-                        JSON_KEY_WINNER: str(username),
-                        JSON_KEY_REMAINING_TIME: str(delta.total_seconds()),
-                        JSON_KEY_IS_ACTIVE: str(elem.active)
+                        JSON_KEY_ID: unicode(elem.key().id()),
+                        JSON_KEY_PRICE: unicode(price),
+                        JSON_KEY_WINNER: unicode(username),
+                        JSON_KEY_REMAINING_TIME: unicode(delta.total_seconds()),
+                        JSON_KEY_IS_ACTIVE: unicode(elem.active)
                     })
                 except Exception, e:
-                    logging.error(str(e))
+                    logging.error(unicode(e))
 
             result_json = json.dumps({'result':auction_controller.auctions_status_by_id(inputs.ids)})
             return inputs.callback + "(" + result_json + ");"
 
         except Exception, e:
             # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class auctions_list_active:
     def GET(self):
@@ -162,25 +165,25 @@ class auctions_list_active:
                         price = "{0:.2f}".format(elem.current_price)
 
                     result.append({
-                        JSON_KEY_ID: str(elem.key().id()),
-                        JSON_KEY_IS_ACTIVE: str(elem.active),   # Is Auction Active? "True" or "False"
-                        JSON_KEY_ITEM_NAME: str(elem.item.name),
-                        JSON_KEY_BASE_PRICE: str(elem.item.base_price),
-                        JSON_KEY_PRODUCT_URL: str(elem.item.product_url),
-                        JSON_KEY_IMAGE_URL: str(elem.item.image_url),
-                        JSON_KEY_PRICE: str(price),
-                        JSON_KEY_WINNER: str(username),
-                        JSON_KEY_TIME_REMAINING: str(delta.total_seconds())
+                        JSON_KEY_ID: unicode(elem.key().id()),
+                        JSON_KEY_IS_ACTIVE: unicode(elem.active),   # Is Auction Active? "True" or "False"
+                        JSON_KEY_ITEM_NAME: unicode(elem.item.name),
+                        JSON_KEY_BASE_PRICE: unicode(elem.item.base_price),
+                        JSON_KEY_PRODUCT_URL: unicode(elem.item.product_url),
+                        JSON_KEY_IMAGE_URL: unicode(elem.item.image_url),
+                        JSON_KEY_PRICE: unicode(price),
+                        JSON_KEY_WINNER: unicode(username),
+                        JSON_KEY_TIME_REMAINING: unicode(delta.total_seconds())
                     })
                 except Exception, e:
-                    logging.error(str(e))
+                    logging.error(unicode(e))
 
             result_json = json.dumps({'result': result})
             return inputs.callback + "(" + result_json + ");"
 
         except Exception, e:
             # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class auctions_list_all:
     def GET(self):
@@ -203,24 +206,24 @@ class auctions_list_all:
                     delta = elem.auction_end - datetime.datetime.now()
 
                     result.append({
-                        JSON_KEY_ID: str(elem.key().id()),
-                        JSON_KEY_IS_ACTIVE: str(elem.active),   # Is Auction Active? "True" or "False"
-                        JSON_KEY_ITEM_NAME: str(elem.item.name),
-                        JSON_KEY_BASE_PRICE: str(elem.item.base_price),
-                        JSON_KEY_PRODUCT_URL: str(elem.item.product_url),
-                        JSON_KEY_IMAGE_URL: str(elem.item.image_url),
-                        JSON_KEY_PRICE: str(elem.current_price),
-                        JSON_KEY_WINNER: str(elem.current_winner.username),
-                        JSON_KEY_TIME_REMAINING: str(delta.total_seconds())
+                        JSON_KEY_ID: unicode(elem.key().id()),
+                        JSON_KEY_IS_ACTIVE: unicode(elem.active),   # Is Auction Active? "True" or "False"
+                        JSON_KEY_ITEM_NAME: unicode(elem.item.name),
+                        JSON_KEY_BASE_PRICE: unicode(elem.item.base_price),
+                        JSON_KEY_PRODUCT_URL: unicode(elem.item.product_url),
+                        JSON_KEY_IMAGE_URL: unicode(elem.item.image_url),
+                        JSON_KEY_PRICE: unicode(elem.current_price),
+                        JSON_KEY_WINNER: unicode(elem.current_winner.username),
+                        JSON_KEY_TIME_REMAINING: unicode(delta.total_seconds())
                     })
                 except Exception, e:
-                    logging.error(str(e))
+                    logging.error(unicode(e))
 
             result_json = json.dumps({'result': result})
             return inputs.callback + "(" + result_json + ");"
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class auction_bid:
     def GET(self):
@@ -239,7 +242,7 @@ class auction_bid:
             return inputs.callback + "(" + result_json + ");"
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class auction_detail:
     def GET(self):
@@ -251,7 +254,7 @@ class auction_detail:
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 
 # USER Stuff
@@ -270,7 +273,7 @@ class user_info:
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class user_logout:
     def GET(self):
@@ -282,7 +285,7 @@ class user_logout:
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 
 class user_register:
@@ -294,7 +297,7 @@ class user_register:
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class user_validate_email:
     def GET(self):
@@ -305,7 +308,7 @@ class user_validate_email:
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class user_authenticate:
     def GET(self):
@@ -316,7 +319,7 @@ class user_authenticate:
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class user_authenticate_cookie:
     def GET(self):
@@ -327,7 +330,7 @@ class user_authenticate_cookie:
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 
 class user_username_exists:
@@ -342,7 +345,7 @@ class user_username_exists:
             result ={'result':user_controller.user_username_exists(inputs.username)}
             return inputs.callback + "(" + json.dumps(result) + ");"
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':str(e)}) + ");"
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class user_email_exists:
     def GET(self):
@@ -373,7 +376,7 @@ class reset_data:
 
 
         except Exception, e:
-            return str(e)
+            return unicode(e)
 
         return result
 

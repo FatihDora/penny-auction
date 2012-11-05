@@ -3,6 +3,8 @@
 
 # make Python do floating-point division by default
 from __future__ import division
+# make string literals be Unicode strings
+from __future__ import unicode_literals
 
 from google.appengine.ext import db
 import models.user as user

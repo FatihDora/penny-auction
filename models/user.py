@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# make Python do floating-point division by default
+from __future__ import division
+# make string literals be Unicode strings
+from __future__ import unicode_literals
+
 from google.appengine.ext import db
 import lib.bcrypt.bcrypt as bcrypt
 import random
@@ -62,7 +67,7 @@ class User(db.Model):
 							hashed_password=pass_hash,
 							password_salt=salt,
 							email=email,
-							email_validation_code=str(email_validation_code))
+							email_validation_code=unicode(email_validation_code))
 		user_object.put()
 		return user_object
 
@@ -91,10 +96,10 @@ class User(db.Model):
 		if code is None:
 			raise Exception ("Argument 'code' cannot be None")
 
-		result = User.all().filter("email_validation_code =", str(code)).get()
+		result = User.all().filter("email_validation_code =", unicode(code)).get()
 
 		if result is None:
-			raise Exception("Validation failed for code: " + str(code))
+			raise Exception("Validation failed for code: " + unicode(code))
 
 		if result.email_validated is True:
 			raise Exception("Email already validated.")

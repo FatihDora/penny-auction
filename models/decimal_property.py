@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# make Python do floating-point division by default
+from __future__ import division
+# make string literals be Unicode strings
+from __future__ import unicode_literals
+
 from google.appengine.ext import db
 import decimal
 
@@ -8,7 +13,7 @@ class DecimalProperty(db.Property):
 	data_type = decimal.Decimal
 
 	def get_value_for_datastore(self, model_instance):
-		return str(super(DecimalProperty, self).
+		return unicode(super(DecimalProperty, self).
 				get_value_for_datastore(model_instance))
 
 	def make_value_from_datastore(self, value):
