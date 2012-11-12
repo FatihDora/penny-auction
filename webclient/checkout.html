@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Piso Auction - Checkout</title>
+  <link href="/css/jquery-ui-1.8.23.custom.css" rel="stylesheet" type="text/css" />
+  <link href="/css/style.css" rel="stylesheet" type="text/css" />
+  <!--[if IE]>
+  <link href="css/ie.css" rel="stylesheet" type="text/css" />
+  <![endif]-->
+  <!--[if IE 8]>
+  <link href="css/ie8.css" rel="stylesheet" type="text/css" />
+  <![endif]-->
+  <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/js/jquery-ui-1.8.23.custom.min.js"></script>
+  <script type="text/javascript" src="/js/cufon/cufon-yui.js"></script>
+  <script type="text/javascript" src="/js/cufon/open-sans-latin.js"></script>
+  <script type="text/javascript" src="/js/common.js"></script>
+  <script type="text/javascript" src="/js/core.js"></script>
+  <script type="text/javascript" src="/js/index.js"></script>
+</head>
+
+<body class="hideall">
+{% include '_messageDialog.html' %}
+<!-- Facebook code -->
+<div id="fb-root"></div>
+<script type="text/javascript">(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/it_IT/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script> 
+
+<!-- end Facebook code --> 
+{% include '_topbar.html' %}
+<!-- start header -->
+  <div id="header">
+    <div class="box"> 
+      {% include '_logo.html' %}
+      {% include '_menubar.html' %}
+    </div>
+  </div>
+<!-- end header --> 
+<!-- start container -->
+<div id="container"> 
+  <!-- start breadcrumb -->
+  <div class="breadcrumb"> 
+    <!-- start box -->
+    <div class="box"> <span>You are here:</span>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="checkout-page.html">Checkout</a></li>
+      </ul>
+    </div>
+    <!-- end box -->
+    <div class="clear"></div>
+  </div>
+  <!-- end breadcrumb --> 
+  <!-- start box -->
+  <div class="box"> 
+    <!-- start leftcol -->
+    <div id="leftcol" class="medium"> 
+      <!-- start accordinpanel -->
+      <div class="accordin-panel" id="checkout">
+        <h1>Checkout</h1>
+          <h5><span>Confirm Order</span></h5>
+          <!-- block -->
+          <div>
+            <form  action="" method="post">
+              <div class="shopping"> 
+                <!-- start table -->
+                <table id="checkout-tab">
+                  <thead>
+                    <tr>
+                      <th><span>Product</span></th>
+                      <th><span>Model</span></th>
+                      <th><span>Quantity</span></th>
+                      <th><span>Price</span></th>
+                      <th><span>Total</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="padding">
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Donec Nunc</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td><div>$87.34</div></td>
+                      <td><div>$87.34</div></td>
+                    </tr>
+                    <tr class="padding bot">
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr class="padding">
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Urna Accumsan</td>
+                      <td>#104234 black</td>
+                      <td>1</td>
+                      <td><div>$56.99</div></td>
+                      <td><div>$56.99</div></td>
+                    </tr>
+                    <tr class="padding bot">
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- end table --> 
+                <!-- left -->
+                <div class="left"> </div>
+                <!-- left --> 
+                <!-- right -->
+                <div class="right">
+                  <div class="col1"> <span>Sub-Total</span> <span>VAT 15%</span>
+                    <div class="total">Total</div>
+                  </div>
+                  <div class="col2"> <span>$144.33</span> <span>$21.65</span>
+                    <div class="total">$165.98</div>
+                  </div>
+                  <div class="submit-review"> <a class="sub-hover">CONFIRM ORDER</a><a>CONFIRM ORDER</a> </div>
+                </div>
+                <!-- right --> 
+              </div>
+              <div class="clear"></div>
+            </form>
+          </div>
+          <!-- block -->  
+        </div>
+      <div class="clear"></div>
+    </div>
+    <!-- end leftcol --> 
+    <!-- start rightcol -->
+    <div id="rightcol"> 
+      <!-- widget -->
+      <div class="widget support rightcol-block">
+        <h4 class="red">Need Support?</h4>
+        <p>Donec tristique quam sit amet dolor aliquet vitae tempor <strong>libero ornare</strong>. In sit amet lorem in eros ullamcorper tincidunt. Proin vulputate mauris quis. <a href="contact-page.html"><span>more</span> →</a></p>
+      </div>
+      <!-- widget --> 
+    </div>
+    <!-- end rightcol -->
+    <div class="clear"></div>
+  </div>
+  <!-- end box --> 
+  <!-- start category -->
+  <div class="category">
+    <div class="box"> 
+      <!-- start common -->
+      <div class="common2 first">
+        <h3 class="red">Linear Theme</h3>
+        <p>Integer interdum pretium leo, venenatis commodo male uada sit amet. Suspe disse ut neque neque. <strong>Aenean tincidunt</strong> ullamcorper nibh sit amet singur lopsem egestas. Fermentum erat <strong>condimentum</strong> ac. Sed liget Morbi por ta eget ferment.</p>
+      </div>
+      <!-- end common --> 
+      <!-- start twitter -->
+      <div class="common2 twitter">
+        <h3 class="red">Twitter</h3>
+        <ul id="twitter_update_list">
+          <li></li>
+        </ul>
+        <script type="text/javascript" src="http://twitter.com/statuses/user_timeline/WPNewsStation.json?callback=twitterCallback2&amp;count=2"></script> 
+      </div>
+      <!-- end twitter --> 
+      <!-- start facebook -->
+      <div class="common2 last facebook">
+        <h3 class="red">Facebook</h3>
+        <div class="fb-box"> 
+          <script type="text/javascript" src="js/facebook-box.js"></script> 
+        </div>
+        <!-- the css needs an absolute path to work properly --> 
+      </div>
+      <!-- end facebook -->
+      <div class="clear"></div>
+    </div>
+  </div>
+  <!-- end category --> 
+</div>
+<!-- end container --> 
+{% include '_footer.html' %}
+
+</body>
+</html>
