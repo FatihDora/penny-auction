@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import controllers.item_controller as item_controller
-import fixtures.dummy_items as dummy_items
 import unittest
+from decimal import Decimal
 
 from google.appengine.ext import db
 from google.appengine.ext import testbed
@@ -60,8 +60,25 @@ class ItemControllerTestCase(unittest.TestCase):
 			pass
 
 	def testItemUpdateQuantityIsSane(self):
-		# test for negative quantities, etc.
-		self.fail("implement me")
+		self.make_item(25, "14.99")
+		theItem = item_controller.ItemController.item_get_info("Gorilla Munch")
+
+		try:
+			item_controller.ItemController.item_update_quantity("Gorilla Munch",
+				-37)
+			self.fail("Item update with insane quantity was permitted!")
+		except:
+			# expected behavior
+			item_controller.ItemController.item_update_quantity("Gorilla Munch",
+				41)
+
+			# the old item reference quantity will still be the same
+			self.assertEquals(25, theItem.quantity_in_stock)
+
+			# new references to the item will have the new quantity
+			theItem = item_controller.ItemController.item_get_info(
+				"Gorilla Munch")
+			self.assertAlmostEqual(41, theItem.quantity_in_stock)
 
 	def testCannotCreateItemWithInsanePrice(self):
 		try:
@@ -72,8 +89,25 @@ class ItemControllerTestCase(unittest.TestCase):
 			pass
 
 	def testItemUpdatePriceIsSane(self):
-		# test for negative prices, etc.
-		self.fail("implement me")
+		self.make_item(9001, "14.99")
+		theItem = item_controller.ItemController.item_get_info("Gorilla Munch")
+
+		try:
+			item_controller.ItemController.item_update_price("Gorilla Munch",
+				"-40000")
+			self.fail("Item update with insane price was permitted!")
+		except:
+			# expected behavior
+			item_controller.ItemController.item_update_price("Gorilla Munch",
+				"12.99")
+
+			# the old item reference price will still be the same
+			self.assertAlmostEqual(Decimal(14.99), theItem.base_price)
+
+			# new references to the item will have the new price
+			theItem = item_controller.ItemController.item_get_info(
+				"Gorilla Munch")
+			self.assertAlmostEqual(Decimal(12.99), theItem.base_price)
 
 	def testItemAccessorsWhenItemDoesNotExist(self):
 		emptyItems = item_controller.ItemController.items_list()
@@ -91,8 +125,6 @@ class ItemControllerTestCase(unittest.TestCase):
 		self.assertEquals(0, len(nilAuctions))
 
 	def testItemAccessorsWhenItemExists(self):
-		# make some fixture items
-		dummy_items.DummyItems.setup()
 
 		# test:
 		# - items_list
