@@ -17,7 +17,7 @@ class ItemController(object):
 		'''
 			Get a list of all item names
 		'''
-		return item.Item.all()
+		return item.Item.all().fetch(None)
 
 	@staticmethod
 	def item_add(name, quantity, price, url, image_url):
