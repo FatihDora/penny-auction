@@ -75,3 +75,16 @@ class Item(db.Model):
 
 		self.quantity_in_stock = new_quantity
 		self.put()
+
+	def __eq__(self, other):
+		'''
+			Equality tester
+		'''
+		return (isinstance(other, self.__class__)
+				and self.name == other.name)
+
+	def __neq__(self, other):
+		'''
+			Inequality tester
+		'''
+		return not self.__eq__(other)

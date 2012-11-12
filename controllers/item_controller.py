@@ -55,5 +55,6 @@ class ItemController(object):
 		'''
 			List all auctions that have occurred for the specified item
 		'''
-		pass
+		theItem = item.Item.get(name)
+		return theItem.auctions
 
