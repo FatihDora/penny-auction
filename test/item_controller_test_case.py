@@ -110,24 +110,48 @@ class ItemControllerTestCase(unittest.TestCase):
 			self.assertAlmostEqual(Decimal(12.99), theItem.base_price)
 
 	def testItemAccessorsWhenItemDoesNotExist(self):
+		# - item_get_info
+		nilItem = item_controller.ItemController.item_get_info("asdf")
+		if nilItem is not None:
+			self.fail("Expected no item with name 'asdf'")
+
+		# - items_list
 		emptyItems = item_controller.ItemController.items_list()
 		if emptyItems is None:
 			self.fail("Expected empty list of items, but was None")
 		self.assertEquals(0, len(emptyItems))
 
-		nilItem = item_controller.ItemController.item_get_info("asdf")
-		if nilItem is not None:
-			self.fail("Expected no item with name 'asdf'")
-
-		nilAuctions = item_controller.ItemController.item_list_auctions("asdf")
-		if nilAuctions is None:
-			self.fail("Expected empty list of auctions, but was None")
-		self.assertEquals(0, len(nilAuctions))
+		# - item_list_auctions
+		try:
+			nilAuctions = item_controller.ItemController.item_list_auctions(
+				"asdf")
+		except:
+			# expected behavior
+			pass
 
 	def testItemAccessorsWhenItemExists(self):
+		self.make_item()
 
-		# test:
-		# - items_list
 		# - item_get_info
-		# - item_list_auctions ??
-		self.fail("implement me")
+		oneItem = item_controller.ItemController.item_get_info("Gorilla Munch")
+		if oneItem is None:
+			self.fail("Expected item with name 'Gorilla Munch'")
+		self.assertEquals("Gorilla Munch", oneItem.name)
+
+		# - items_list
+		oneItemList = item_controller.ItemController.items_list()
+		if oneItemList is None:
+			self.fail("Expected list of one item, but was None")
+		self.assertEquals(1, len(oneItemList))
+		self.assertEquals(oneItem, oneItemList[0])
+
+		# - item_list_auctions
+		try:
+			nilAuctions = item_controller.ItemController.item_list_auctions(
+				"Gorilla Munch")
+			if nilAuctions is None:
+				self.fail("Expected empty list of auctions, but was None")
+			self.assertEquals(0, len(nilAuctions))
+		except:
+			# expected behavior
+			pass
