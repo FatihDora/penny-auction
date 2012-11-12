@@ -2,15 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import controllers.item_controller as item_controller
-import fixtures.dummy_items as dummy_items
 import unittest
+from decimal import Decimal
 
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 
 class ItemControllerTestCase(unittest.TestCase):
-	itemName = "Gorilla Munch"
-
 	def setUp(self):
 		self.testbed = testbed.Testbed()
 		self.testbed.activate()
@@ -20,15 +18,15 @@ class ItemControllerTestCase(unittest.TestCase):
 		self.testbed.deactivate()
 
 	def make_item(self, quantity=9001, price="14.99"):
-		item_controller.ItemController.item_add(self.itemName,
-			quantity, price, "http://thereisnoneed.com",
-			"http://i.imgur.com/1jqAT.png")
+		# make an item
+		item_controller.ItemController.item_add("Gorilla Munch", quantity,
+			price, "http://thereisnoneed.com", "http://i.imgur.com/1jqAT.png")
 
 	def testCreateItem(self):
 		# verify the item doesn't exist
 		all_items = item_controller.ItemController.items_list()
 		for item in all_items:
-			if item.name == self.itemName:
+			if item.name == "Gorilla Munch":
 				self.fail("Impossible! Gorilla Munch already exists!")
 				return
 
@@ -39,7 +37,7 @@ class ItemControllerTestCase(unittest.TestCase):
 		found = False
 		all_items = item_controller.ItemController.items_list()
 		for item in all_items:
-			if item.name == self.itemName:
+			if item.name == "Gorilla Munch":
 				success = True
 		if not (success):
 			self.fail("Failed to create item 'Gorilla Munch'")
@@ -62,16 +60,25 @@ class ItemControllerTestCase(unittest.TestCase):
 			pass
 
 	def testItemUpdateQuantityIsSane(self):
-		self.make_item()
+		self.make_item(25, "14.99")
+		theItem = item_controller.ItemController.item_get_info("Gorilla Munch")
 
 		try:
-			item_controller.ItemController.item_update_quantity(self.itemName,
+			item_controller.ItemController.item_update_quantity("Gorilla Munch",
 				-37)
-			self.fail("Item update to insane quality was permitted!")
-		except Exception, e:
+			self.fail("Item update with insane quantity was permitted!")
+		except:
 			# expected behavior
-			item_controller.ItemController.item_update_quantity(self.itemName,
-				21)
+			item_controller.ItemController.item_update_quantity("Gorilla Munch",
+				41)
+
+			# the old item reference quantity will still be the same
+			self.assertEquals(25, theItem.quantity_in_stock)
+
+			# new references to the item will have the new quantity
+			theItem = item_controller.ItemController.item_get_info(
+				"Gorilla Munch")
+			self.assertAlmostEqual(41, theItem.quantity_in_stock)
 
 	def testCannotCreateItemWithInsanePrice(self):
 		try:
@@ -82,21 +89,30 @@ class ItemControllerTestCase(unittest.TestCase):
 			pass
 
 	def testItemUpdatePriceIsSane(self):
-		self.make_item()
+		self.make_item(9001, "14.99")
+		theItem = item_controller.ItemController.item_get_info("Gorilla Munch")
 
 		try:
-			item_controller.ItemController.item_update_price(self.itemName,
+			item_controller.ItemController.item_update_price("Gorilla Munch",
 				"-40000")
-			self.fail("Item update to insane price was permitted!")
-		except Exception, e:
+			self.fail("Item update with insane price was permitted!")
+		except:
 			# expected behavior
-			item_controller.ItemController.item_update_price(self.itemName,
-				"23.99")
+			item_controller.ItemController.item_update_price("Gorilla Munch",
+				"12.99")
+
+			# the old item reference price will still be the same
+			self.assertAlmostEqual(Decimal(14.99), theItem.base_price)
+
+			# new references to the item will have the new price
+			theItem = item_controller.ItemController.item_get_info(
+				"Gorilla Munch")
+			self.assertAlmostEqual(Decimal(12.99), theItem.base_price)
 
 	def testItemAccessorsWhenItemDoesNotExist(self):
-		emptyItems = item_controller.ItemController.items_list().get()
+		emptyItems = item_controller.ItemController.items_list()
 		if emptyItems is None:
-			self.fail("Expected empty list but was None")
+			self.fail("Expected empty list of items, but was None")
 		self.assertEquals(0, len(emptyItems))
 
 		nilItem = item_controller.ItemController.item_get_info("asdf")
@@ -105,12 +121,10 @@ class ItemControllerTestCase(unittest.TestCase):
 
 		nilAuctions = item_controller.ItemController.item_list_auctions("asdf")
 		if nilAuctions is None:
-			self.fail("Expected empty list but was None")
+			self.fail("Expected empty list of auctions, but was None")
 		self.assertEquals(0, len(nilAuctions))
 
 	def testItemAccessorsWhenItemExists(self):
-		# make some fixture items
-		dummy_items.DummyItems.setup()
 
 		# test:
 		# - items_list
