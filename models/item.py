@@ -73,5 +73,5 @@ class Item(db.Model):
 			raise Exception(
 				"Argument 'new_quantity' cannot be None or less than 0")
 
-		self.quantity = new_quantity
+		self.quantity_in_stock = new_quantity
 		self.put()
