@@ -76,9 +76,9 @@ class ItemControllerTestCase(unittest.TestCase):
 		self.fail("implement me")
 
 	def testItemAccessorsWhenItemDoesNotExist(self):
-		emptyItems = item_controller.ItemController.items_list().get()
+		emptyItems = item_controller.ItemController.items_list()
 		if emptyItems is None:
-			self.fail("Expected empty list but was None")
+			self.fail("Expected empty list of items, but was None")
 		self.assertEquals(0, len(emptyItems))
 
 		nilItem = item_controller.ItemController.item_get_info("asdf")
@@ -87,7 +87,7 @@ class ItemControllerTestCase(unittest.TestCase):
 
 		nilAuctions = item_controller.ItemController.item_list_auctions("asdf")
 		if nilAuctions is None:
-			self.fail("Expected empty list but was None")
+			self.fail("Expected empty list of auctions, but was None")
 		self.assertEquals(0, len(nilAuctions))
 
 	def testItemAccessorsWhenItemExists(self):
