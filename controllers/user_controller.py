@@ -219,3 +219,11 @@ class UserController(object):
 			create_cookie(username)
 			return username
 
+	@staticmethod
+	def create(first_name,last_name,username,email,password):
+		'''
+			Define a new user in the database.
+		'''
+
+		user.User(first_name,last_name,username,email,password)
+
