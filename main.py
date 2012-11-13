@@ -386,28 +386,28 @@ class user_authenticate_cookie:
 class user_username_exists:
     def GET(self):
         inputs = web.input()
+        web.header('Content-Type', 'application/json')
+
         try:
             if not inputs.username:
-                result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
-                return json.dumps(result)
+                raise Exception('required string parameter "username" was not passed to the server, or was an empty string')
 
-            web.header('Content-Type', 'application/json')
-            result ={'result':user_controller.UserController.user_username_exists(inputs.username)}
-            return json.dumps(result)
+            result = user_controller.UserController.user_username_exists(inputs.username)
+			return json.dumps({'result': result})
         except Exception, e:
             return json.dumps({'exception':unicode(e)})
 
 class user_email_exists:
     def GET(self):
         inputs = web.input()
+        web.header('Content-Type', 'application/json')
+
         try:
             if not inputs.email:
-                result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
-                return json.dumps(result)
+                raise Exception('required string parameter "email" was not passed to the server, or was an empty string')
 
-            web.header('Content-Type', 'application/json')
-            result ={'result':user_controller.UserController.user_email_exists(inputs.email)}
-            return json.dumps(result)
+            result = user_controller.UserController.user_email_exists(inputs.email)
+			return json.dumps({'result': result})
         except Exception, e:
             result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
             return json.dumps(result)
