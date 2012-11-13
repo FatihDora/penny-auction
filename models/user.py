@@ -36,20 +36,24 @@ class User(db.Model):
 
 	@staticmethod
 	def create(first_name,last_name,username,email,password):
-		if first_name is None:
-			raise Exception("Arugment 'first_name' cannot be None")
+		'''
+			Define a new user in the database.
+		'''
 
-		if last_name is None:
-			raise Exception("Arugment 'last_name' cannot be None")
+		if not first_name:
+			raise Exception("Argument 'first_name' was missing or empty")
 
-		if username is None:
-			raise Exception("Arugment 'username' cannot be None")
+		if not last_name:
+			raise Exception("Argument 'last_name' was missing or empty")
 
-		if email is None:
-			raise Exception("Arugment 'email' cannot be None")
+		if not username:
+			raise Exception("Argument 'username' was missing or empty")
 
-		if password is None:
-			raise Exception("Arugment 'password' cannot be None")
+		if not email:
+			raise Exception("Argument 'email' was missing or empty")
+
+		if not password:
+			raise Exception("Argument 'password' was missing or empty")
 
 		if User.username_exists(username):
 			raise Exception("An account with this username already exists")
