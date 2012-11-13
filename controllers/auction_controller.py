@@ -18,6 +18,16 @@ class AuctionController(object):
 	''' This class manipulates auction models. '''
 
 	@staticmethod
+	def create(item_name, start_delay, bid_pushback_time):
+		'''
+			Creates an auction using the following parameters:
+				item_name: the name of the item being auctioned
+				start_delay: the number of seconds to wait before opening the auction to bidding
+				bid_pushback_time: the number of seconds added to an active auction when a bid is placed
+		'''
+		Auction(item=Item.get(item_name), start_delay=start_delay, bid_pushback_time=bid_pushback_time)
+
+	@staticmethod
 	def invoke_auto_bidders(auction):
 		''' Pass an Auction object to have the next auto bidder attached to that
 		auction place a bid. If no auto bidders with remaining bids are
@@ -134,43 +144,6 @@ class AuctionController(object):
 	def auction_detail(auction_id):
 		'''
 			Returns detailed auction information for the auction page.
-		'''
-		pass
-
-	@staticmethod
-	def auction_create(item, scheduled_end_time):
-		'''
-			Schedule an auction to run and end for the specified item at the specified time
-			(administrative only)
-		'''
-		pass
-
-	@staticmethod
-	def auction_start(auction_id):
-		'''
-			Start the specified auction, effective immediately (administrative only)
-		'''
-		pass
-
-	@staticmethod
-	def auction_pause(auction_id):
-		'''
-			Pause the specified auction indefinitely (administrative only)
-		'''
-		pass
-
-	@staticmethod
-	def auction_end(auction_id):
-		'''
-			End the specified auction (administrative only)
-		'''
-		pass
-
-	@staticmethod
-	def auction_assign_winner(auction_id, username):
-		'''
-			Assign the specified user as the winner of the specified auction
-			(administrative only)
 		'''
 		pass
 
