@@ -122,7 +122,7 @@
           password: password
         }, function(data) {
           if (data.result != null) {
-            document.location.href = "/";
+            document.location.reload(true);
           }
           if (data.exception != null) {
             return showDialog("error", "Login Error", data.exception);

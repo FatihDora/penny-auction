@@ -154,7 +154,7 @@ input[type="text"], input[type="password"], textarea, .general-select .jquery-se
 /* END BORDER COLOR AND SHADOWS STYLE */
 
 /* TITLE STYLE */
-h1, h2, h3, h4, h5, h6, a:hover, input[type="text"], textarea, .general-select .jquery-selectbox .jquery-selectbox-currentItem,  .topnav ul:first-child > li.info:hover > a, .topnav li.info ul li a, .jquery-selectbox.selecthover .jquery-selectbox-currentItem, .jquery-selectbox .jquery-selectbox-item, form .error .jquery-selectbox, .cart, .cart h6 a, .feature .heading, .feature a, #navigation ul:first-child > li, #navigation ul:first-child > li > a, #navigation > ul:first-child > li > ul.sub > li > ul > li > a, #navigation ul li ul.sub2 li a, .gallery h3, .gallery h3 a, .gallery .view a, .subnav li, .subnav li a, .offer li .txtb .title, .offer li .txtb .title a, #cart-content ul li .txtb .title, #cart-content ul li .txtb .title a, #cart-content ul li .quantity, #cart-content .totalbox span strong, .nivo-caption a, .breadcrumb li a, .row span a.num, form.search2 label, .pro-left h4 a, .pro-right li a, .pagination2 li.previous, .pagination2 li.next a, .pagination2 li.previous a, .search2 .jquery-selectbox.selecthover .jquery-selectbox-currentItem, .search2 .jquery-selectbox .jquery-selectbox-item, .detail-block .quat-col label, .review-list li a, .ui-widget-content a, .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited, .ui-state-hover a, .ui-state-hover a:hover, .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited, .cloud-zoom-loading, #fancybox-error, .fancybox-title-inside, .customer-left p a:hover, .customer-form .forgot a:hover, .accordin-panel h5 a, .accordin-block .input, .accordin-block .listmenu, .accordin-block .select a:hover, .pro-col li, .pro-col li a, ul.catelist li, ul.catelist li a, .post-col .txtb h1 a:hover, table th, table#cart tr td.prod-col p, table#cart tr td.prod-col a, table#cart tr td.prod-col + td + td + td, table#cart tr td .input, table#cart tr td .input + span a, table#cart tr td span.orange a:hover, .shopping .right .col1, .shopping .right .total, .shopping .right .total, .shopping .button-default.cart span.hover, .shopping .button-default.cart.dark span.hover, .shopping .submit-review a.sub-hover, .contact h5 span, .fill-form .col1 .input, .fill-form .input2, .fill-form span.gray a:hover, .contact .accordin-block span.gray a:hover, .gallery ul li .cart-button a.hov, .gallery ul li .detail-button a.hov.gallery ul li .cart-button a.hov, .gallery ul li .detail-button a.hov, .error-page, .ui-tabs .ui-tabs-nav li a, .button-default.cart.light span.hover, .team strong{
+h1, h2, h3, h4, h5, h6, a:hover, input[type="text"], textarea, .general-select .jquery-selectbox .jquery-selectbox-currentItem,  .topnav ul:first-child > li.info:hover > a, .topnav li.info ul li a, .jquery-selectbox.selecthover .jquery-selectbox-currentItem, .jquery-selectbox .jquery-selectbox-item, form .error .jquery-selectbox, .cart, .cart h6 a, .feature .heading, .feature a, #navigation ul:first-child > li, #navigation ul:first-child > li > a, #navigation > ul:first-child > li > ul.sub > li > ul > li > a, #navigation ul li ul.sub2 li a, .gallery h3, .gallery h3 a, .gallery .view a, .subnav li, .subnav li a, .offer li .txtb .title, .offer li .txtb .title a, #cart-content ul li .txtb .title, #cart-content ul li .txtb .title a, #cart-content ul li .quantity, #cart-content .totalbox span strong, .nivo-caption a, .breadcrumb li a, .row span a.num, form.search2 label, .pro-left h4 a, .pro-right li a, .pagination2 li.previous, .pagination2 li.next a, .pagination2 li.previous a, .search2 .jquery-selectbox.selecthover .jquery-selectbox-currentItem, .search2 .jquery-selectbox .jquery-selectbox-item, .detail-block .quat-col label, .review-list li a, .ui-widget-content a, .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited, .ui-state-hover a, .ui-state-hover a:hover, .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited, .cloud-zoom-loading, #fancybox-error, .fancybox-title-inside, .customer-left p a:hover, .customer-form .forgot a:hover, .accordin-panel h5 a, .accordin-block .input, .accordin-block .listmenu, .accordin-block .select a:hover, .pro-col li, .pro-col li a, ul.catelist li, ul.catelist li a, .post-col .txtb h1 a:hover, table th, table#cart tr td.prod-col p, table#cart tr td.prod-col a, table#cart tr td.prod-col + td + td + td, table#cart tr td .input, table#cart tr td .input + span a, table#cart tr td span.orange a:hover, .shopping .right .col1, .shopping .right .total, .shopping .right .total, .shopping .button-default.cart span.hover, .shopping .button-default.cart.dark span.hover, .shopping .submit-review a.sub-hover, .contact h5 span, .fill-form .col1 .input, .fill-form .input2, .fill-form span.gray a:hover, .contact .accordin-block span.gray a:hover, .gallery ul li .cart-button a.hov, .gallery ul li .detail-button a.hov, .gallery ul li .cart-button a.hov, .gallery ul li .detail-button a.hov, .error-page, .ui-tabs .ui-tabs-nav li a, .button-default.cart.light span.hover, .team strong{
 	color:#333;/* edit the color here */
 }
 /* backgrounds and borders */
@@ -817,7 +817,7 @@ border: 0;
 	width:100%;
 }
 #leftcol {
-	width:744px;
+	width:690px;
 	float:left;
 	border-right-width:1px;
 	padding:44px 33px 0 0;
@@ -1115,8 +1115,8 @@ border: 0;
 }
 /* END FEATURED JCAROUSEL */
 #rightcol {
-	width:149px;
-	max-width:149px;
+	width:200px;
+	max-width:200px;
 	overflow:hidden;
 	float:left;
 	margin-left:-1px;
@@ -1421,13 +1421,20 @@ border: 0;
 	position: relative;
 	width: 194px;
 }
+.thumbnail-zoom-small {
+	float: left;
+	height: 108px;
+	overflow: hidden;
+	position: relative;
+	width: 146px;
+}1
 /* This is so that the 2nd thumbnail in each row fits snugly. You will want to add a similar
    class to the last thumbnail in each row to get rid of the margin-right. */
 .no-margin {
 	margin-right: 0;
 }
 /* --- Link configuration that contains the image and label ----------------------------- */
-.thumbnail-zoom a {
+.thumbnail-zoom a, .thumbnail-zoom-small a {
 	display: block;
 	position: relative;
 }
@@ -1436,6 +1443,13 @@ border: 0;
 	position: relative;
 	width: 194px;
 }
+
+.thumbnail-zoom-small a img {
+	height: 108px;
+	position: relative;
+	width: 146px;
+}
+
 .thumbnail-zoom .sale-img {
 	width:50px;
 	height:36px;
@@ -2189,7 +2203,7 @@ form.search2 .third .imgb4.active, form.search2 .third .imgb4.active:hover, form
 	float:left;
 }
 .detail-right {
-	width:411px;
+	width:350px;
 	float:left;
 }
 .detail-left .imgb {
@@ -2215,7 +2229,6 @@ form.search2 .third .imgb4.active, form.search2 .third .imgb4.active:hover, form
 }
 .detail-block ul.listline {
 	display:block;
-	background:url(/images/dottedbg.jpg) repeat-x bottom;
 	padding:0 0 19px 0;
 	margin:-2px 0 0 0;
 }
@@ -2243,7 +2256,6 @@ form.search2 .third .imgb4.active, form.search2 .third .imgb4.active:hover, form
 }
 .detail-block .quat-col {
 	width:100%;
-	background:url(/images/dottedbg.jpg) repeat-x bottom;
 	padding:33px 0 31px 0;
 	margin:0 0 32px 0;
 }
@@ -2317,7 +2329,6 @@ form.search2 .third .imgb4.active, form.search2 .third .imgb4.active:hover, form
 	margin-bottom:-10px;
 }
 .info-content {
-	width:692px;
 	border-width:1px;
 	padding:27px 25px 40px 25px;
 	display:inline-block;
@@ -3791,7 +3802,7 @@ table#checkout-tab tr td.last-child {
 }
 .Featured .block1st {
 	background:#fff;
-	width:736px;
+	width:681px;
 	border-width:1px;
 	padding:3px 3px 2px 3px;
 	margin:0 0 33px 0;
@@ -3802,7 +3813,7 @@ table#checkout-tab tr td.last-child {
 .block1st .graycol {
 	display:inline-block;
 	padding:27px 20px 11px 20px;
-	width:696px;
+	width:641px;
 }
 .block1st h4 {
 	border-bottom-width:1px;
@@ -4519,4 +4530,154 @@ form#login-form .login-focus {
 
 div#registration-complete, #top-account-info, #validation-error, #validation-success {
 	display: none;
+}
+
+ul#auctions div.bid a {
+	width: 94%;
+	margin: 1px 1px;
+}
+
+/* Auction Detail */
+
+div#auction-detail {
+	font-size: 18px;
+	width: 305px;
+	position: relative;
+	border: 1px solid #ddd;
+	padding: 25px;
+}
+
+div#auction-detail>div {
+	clear: both;
+	border-bottom: 1px dashed #999;
+	padding: 5px;
+}
+
+div#auction-detail .price {
+	font-size: 24px;
+}
+
+div#auction-detail .time-left {
+	font-size: 36px;
+	text-align: center;
+}
+
+div#auction-detail .controls {
+	min-height: 40px;
+}
+
+div#auction-detail .bid-history {
+	height: 180px;
+}
+
+div#auction-detail .bid-history ul li {
+	display: block;
+	list-style-type: none;
+	float: left;
+	height: 20px;
+}
+
+div#auction-detail .bid-history ul li.username {
+	float: left;
+	clear: left;
+}
+
+div#auction-detail .bid-history ul li.bid {
+	width: 100px;
+	float: right;
+	font-weight: bold;
+}
+
+div#auction-detail .bid-history ul li.bid-time {
+	float: right;
+}
+
+div#auction-detail .bid-history ul li.clear {
+	display: block;
+	height: 0;
+}
+
+div#auction-detail #bid a {
+	width: 97%;
+}
+
+div#controls{
+	border: 0px !important;
+}
+
+div.autobidder-controls {
+	font-size: 12px;
+	margin-top: 40px;
+	padding: 20px;
+	border: 1px solid #ddd;
+}
+
+div.autobidder-controls input[type="text"] {
+	border: 1px solid #ddd;
+	padding: 5px;
+	width: 75px;
+}
+
+div#start-autobidder, div#stop-autobidder {
+	float: right;
+	clear:right;
+	overflow: hidden;
+}
+
+div.description {
+	padding-top: 15px;
+	font-size: 12px;
+	text-align: center;
+}
+
+#tabs, #tabs ul{
+	border: 0;
+	background-color: transparent;
+}
+
+/* Right-Col Auctions */
+div#rightcol ul#auctions li {
+	float: left;
+	padding: 2px;
+	border: 1px solid #ddd;
+	width: 150px;
+	margin-bottom: 25px;
+	height: 235px;
+}
+
+div#rightcol ul#auctions li .product-name {
+	display: block;
+	font-size: 16px;
+	border-bottom: 1px solid #ddd;
+}
+
+div#rightcol ul#auctions li .thumbnail-zoom-small {
+	padding: 5px 0 5px 0;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 10px;
+}
+
+div#rightcol ul#auctions li .winner, div#rightcol ul#auctions li .price, div#rightcol ul#auctions li .time-left {
+	text-align: center;
+}
+
+div#rightcol ul#auctions li .winner {
+	font-size: 12px;
+}
+
+div#rightcol ul#auctions li .price {
+	font-size: 16px;
+}
+
+div#rightcol ul#auctions li .time-left {
+	font-size: 14px;
+}
+
+div#rightcol ul#auctions li .bid {
+	/*height: 47px;*/
+}
+
+div#rightcol ul#auctions li .bid a {
+	width: 95%;
+	margin-top: 10px;
 }

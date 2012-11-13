@@ -9,14 +9,23 @@ handlers:
 - url: /
   script: controllers/index.py
 
+- url: /account
+  script: controllers/account.py
+
 - url: /auction/.*
   script: controllers/auction.py
+
+- url: /checkout
+  script: controllers/checkout.py
 
 - url: /register
   script: controllers/register.py
 
 - url: /validate_email
   script: controllers/validate_email.py
+
+- url: /bid_packs
+  script: controllers/bid_packs.py
 
 - url: /images
   static_dir: static/images

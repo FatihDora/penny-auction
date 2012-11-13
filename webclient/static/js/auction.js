@@ -11,28 +11,22 @@
       callApi(AUCTION_DETAIL, {
         id: auction_id
       }, function(data) {
-        var auctions, b, i, ix, m, n, p, t, u, w, _results;
+        var b, i, m, n, p, t, u, w;
         if (data.result) {
-          auctions = data.result;
-          if (!(auctions != null)) {
+          auction = data.result;
+          if (!(auction != null)) {
             $("#onecol .gallery").html('<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>');
             return;
           }
-          _results = [];
-          for (ix in auctions) {
-            i = auctions[ix].i;
-            n = auctions[ix].n;
-            b = auctions[ix].b;
-            u = auctions[ix].u;
-            m = auctions[ix].m;
-            p = auctions[ix].p;
-            w = auctions[ix].w;
-            t = secondsToHms(auctions[ix].t);
-            auction_ids.push(i);
-            auction_list[i] = auctions[ix];
-            _results.push($("#auctions").append(buildAuction(i, n, b, u, m, p, w, t)));
-          }
-          return _results;
+          i = auction.i;
+          n = auction.n;
+          b = auction.b;
+          u = auction.u;
+          m = auction.m;
+          p = auction.p;
+          w = auction.w;
+          t = secondsToHms(auctions[ix].t);
+          return $('#auction-image').html('<a href="' + auction.i + '" class="fancy-img fadeable"><img src="' + auction.i + '" alt="combo1" width="292" height="242" /></a>');
         }
       });
       return $("#registration-form").submit(function(e) {
