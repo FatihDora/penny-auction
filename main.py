@@ -313,10 +313,6 @@ class auction_detail:
 
 # USER Stuff
 
-class get_nonce:
-    def GET(self):
-        return user_controller.UserController.user_get_nonce()
-
 class user_info:
     def GET(self):
         inputs = web.input()
