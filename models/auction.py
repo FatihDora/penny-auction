@@ -14,14 +14,30 @@ from datetime import timedelta
 
 class Auction(db.Model):
 	''' This class represents a single auction. '''
+
 	item = db.ReferenceProperty(item.Item, collection_name='auctions')
 	current_price = decimal_property.DecimalProperty(default="0.00")
-	current_winner = db.ReferenceProperty(user.User, collection_name='auctions_won')
-	auction_end = db.DateTimeProperty()
-	# Do we want to explicitly define an auction as active, or derive it from the end time?
-	active = db.BooleanProperty(default = True)
+	current_winner = db.ReferenceProperty(user.User, collection_name='auctions_won', default=None)
+
+	# the time, in seconds, added to an auction when a bid is placed
+	# also used for how long an auction with no bids should stay open
+	bid_pushback_time = db.IntegerProperty(default=10)
+
+	# the time at which the auction is set to end; this will be initially unset and will be updated as
+	# bidding progresses
+	auction_end = db.DateTimeProperty(default=None)
+
+	# whether the auction is currently running and accepting bids
+	# an auction is inactive if either it hasn't been started yet, or has completed already
+	active = db.BooleanProperty(default = False)
+
 	# implicit property 'attached_autobidders' created by the Autobidder class
 	# implicit property 'past_bids' created by the BidHistory class
+
+
+	# the amount an auction's price increases when a bid is placed, in centavos
+	PRICE_INCREASE_FROM_BID = 0.01 
+
 
 	@staticmethod
 	def get_by_ids(ids):
@@ -36,31 +52,69 @@ class Auction(db.Model):
 		'''
 			Lists the top {count} active auctions
 		'''
-		return Auction.all().filter("active", True).filter("auction_end > ",
-				datetime.datetime.now()).order("auction_end").fetch(int(count))
+		return db.Query(model_class=Auction, keys_only=True).filter("active", True).filter("auction_end > ",
+				datetime.datetime.now()).order("auction_end").run(limit=count)
 
-	@staticmethod
-	def create(item, auction_end):
+	def __init__(self, item, start_delay, bid_pushback_time):
 		'''
-			Creates an auction
+			Create a new auction with the following properties:
+				item: an item object representing the item being auctioned
+				start_delay: the number of seconds to wait before opening the auction to bidding
+				bid_pushback_time: the number of seconds added to an active auction when a bid is placed
+		'''	
+
+		if item is None:
+			raise Exception("Auction creation failed: the item for this auction cannot be None")
+
+		self.item = item
+		if bid_pushback_time is not None:
+			self.bid_pushback_time = bid_pushback_time
+
+		# the heartbeat timer will be used when the auction is active, for now it will be set to None
+		self.heartbeat_timer = None
+
+		# initialize the timer counting down to auction start
+		self.start_timer = Timer(
+			start_delay,
+			self.heartbeat,
+			()
+		).start()
+
+		self.put()
+
+	def heartbeat(self):
 		'''
-		Auction(item=item, auction_end=auction_end).put()
-
-	def increment_price(self, amount=0.01):
+			Called when an auction first becomes active, and when the end time for an auction is reached,
+			and then takes actions to maintain the state of the auction properly.
 		'''
-			Increments the price of the auction by the amount
-		'''
-		self.current_price = self.current_price + decimal.Decimal(amount)
 
-	#def __init__(self):
+		# if this is the first heartbeat, take care of activating the auction
+		if not self.active:
+			self.active = True
+			self.auction_end = datetime.now() + datetime.timedelta(seconds=bid_pushback_time)
+			self.start_timer = None
 
-		# initialize the auction timer, but do not start it
-		#self.countdown_timer = Timer(
-		#	AppSettings().AUCTION_INITIAL_DURATION,
-		#	AuctionController.invoke_auto_bidding,
-		#	(self)
-		#)
+		else:
+			# check if there are any available autobidders and if so, place a bid
+			if self.attached_autobidders:
+				self.bid(...)
+			else:
+				# if there are no autobidders, close the auction
+				self.active = False
+				self.auction_end = datetime.now()
+				return
 
-	#def begin(self):
-		#''' Begins this auction. '''
-		#self.countdown_timer.start()
+
+		# set up the next heartbeat
+		self.heartbeat_timer = Timer(
+			bid_pushback_time,
+			self.heartbeat,
+			()
+		).start()
+	
+	def bid(self, user):
+		''' Place a bid on this auction. '''
+		self.current_price += PRICE_INCREASE_FROM_BID
+		self.auction_end += datetime.timedelta(seconds=bid_pushback_time)
+		self.current_winner = user
+
