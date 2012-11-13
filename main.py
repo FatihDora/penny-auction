@@ -122,10 +122,10 @@ class autobidder_create:
 
         try:
             result = {'result':auction_controller.attach_autobidder(inputs.auction_id, user_name, num_bids)}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class autobidder_status:
     def GET(self):
@@ -189,12 +189,12 @@ class auctions_status_by_id:
                 except Exception, e:
                     logging.error(unicode(e))
 
-            result_json = json.dumps({'result':auction_controller.AuctionController.auctions_status_by_id(inputs.ids)})
-            return inputs.callback + "(" + result_json + ");"
+			result = auction_controller.AuctionController.auctions_status_by_id(inputs.ids)
+            return json.dumps({'result': result})
 
         except Exception, e:
             # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class auctions_list_active:
     def GET(self):
@@ -236,12 +236,11 @@ class auctions_list_active:
                 except Exception, e:
                     logging.error(unicode(e))
 
-            result_json = json.dumps({'result': result})
-            return inputs.callback + "(" + result_json + ");"
+            return json.dumps({'result': result})
 
         except Exception, e:
             # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class auctions_list_all:
     def GET(self):
@@ -277,11 +276,10 @@ class auctions_list_all:
                 except Exception, e:
                     logging.error(unicode(e))
 
-            result_json = json.dumps({'result': result})
-            return inputs.callback + "(" + result_json + ");"
+            return json.dumps({'result': result})
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class auction_bid:
     def GET(self):
@@ -296,11 +294,10 @@ class auction_bid:
 
             result = auction_controller.AuctionController.auction_bid(inputs.id, username)
 
-            result_json = json.dumps({'result': result})
-            return inputs.callback + "(" + result_json + ");"
+            return json.dumps({'result': result})
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class auction_detail:
     def GET(self):
@@ -309,10 +306,10 @@ class auction_detail:
 
         try:
             result = {'result':auction_controller.AuctionController.auction_detail(inputs.id)}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 # USER Stuff
 
@@ -327,10 +324,10 @@ class user_info:
 
         try:
             result = {'result':user_controller.UserController.user_info()}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class user_logout:
     def GET(self):
@@ -339,10 +336,10 @@ class user_logout:
 
         try:
             result = {'result':user_controller.UserController.user_logout()}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 
 class user_register:
@@ -351,10 +348,10 @@ class user_register:
         web.header('Content-Type', 'application/json')
         try:
             result = {'result':user_controller.UserController.user_register(inputs.first_name,inputs.last_name,inputs.username,inputs.email,inputs.password)}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class user_validate_email:
     def GET(self):
@@ -362,10 +359,10 @@ class user_validate_email:
         web.header('Content-Type', 'application/json')
         try:
             result = {'result':user_controller.UserController.user_validate_email(inputs.code)}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class user_authenticate:
     def GET(self):
@@ -373,10 +370,10 @@ class user_authenticate:
         web.header('Content-Type', 'application/json')
         try:
             result ={'result':user_controller.UserController.user_authenticate(inputs.username, inputs.password)}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class user_authenticate_cookie:
     def GET(self):
@@ -384,10 +381,10 @@ class user_authenticate_cookie:
         web.header('Content-Type', 'application/json')
         try:
             result ={'result':user_controller.UserController.user_authenticate_cookie()}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
 
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 
 class user_username_exists:
@@ -396,13 +393,13 @@ class user_username_exists:
         try:
             if not inputs.username:
                 result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
-                return inputs.callback + "(" + json.dumps(result) + ");"
+                return json.dumps(result)
 
             web.header('Content-Type', 'application/json')
             result ={'result':user_controller.UserController.user_username_exists(inputs.username)}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
         except Exception, e:
-            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
+            return json.dumps({'exception':unicode(e)})
 
 class user_email_exists:
     def GET(self):
@@ -410,14 +407,14 @@ class user_email_exists:
         try:
             if not inputs.email:
                 result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
-                return inputs.callback + "(" + json.dumps(result) + ");"
+                return json.dumps(result)
 
             web.header('Content-Type', 'application/json')
             result ={'result':user_controller.UserController.user_email_exists(inputs.email)}
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
         except Exception, e:
             result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
-            return inputs.callback + "(" + json.dumps(result) + ");"
+            return json.dumps(result)
 
 class reset_data:
     def GET(self):
