@@ -11,6 +11,7 @@ from fixtures import dummy_items
 from fixtures import dummy_auctions
 
 from google.appengine.ext import db
+from google.appengine.ext.webapp import template
 from lib import web
 import os
 from django.utils import simplejson as json
@@ -24,9 +25,17 @@ import models.item as item
 import models.user as user
 
 urls = (
-    '/', 'index',
     '/reset_data', 'reset_data',
 
+    '/', 'index',
+    '/account','account',
+    '/auction','auction',
+    '/checkout','checkout',
+    '/register','register',
+    '/validate_email','validate_email',
+    '/bid_packs','bid_packs',
+
+    
     '/autobidder_create', 'autobidder_create',
     '/autobidder_status', 'autobidder_status',
     '/autobidder_cancel', 'autobidder_cancel',
@@ -61,9 +70,44 @@ JSON_KEY_PRODUCT_URL = "u"
 JSON_KEY_IMAGE_URL = "m"
 
 
+'''
+    Webclient
+'''
 class index:
     def GET(self):
-        return "index stub"
+        path = os.path.join(os.path.dirname(__file__), 'webclient/index.html')
+        return template.render(path, {})
+
+class account:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/account.html')
+        return template.render(path, {})
+
+class auction:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/auction.html')
+        return template.render(path, {})
+
+class checkout:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/checkout.html')
+        return template.render(path, {})
+
+class register:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/register.html')
+        return template.render(path, {})
+
+class validate_email:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/validate_email.html')
+        return template.render(path, {})
+
+class bid_packs:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/bid_packs.html')
+        return template.render(path, {})
+        
 
 class autobidder_create:
     def GET(self):

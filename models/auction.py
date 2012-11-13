@@ -87,7 +87,8 @@ class Auction(db.Model):
 			Called when an auction first becomes active, and when the end time for an auction is reached,
 			and then takes actions to maintain the state of the auction properly.
 		'''
-
+		pass
+		'''
 		# if this is the first heartbeat, take care of activating the auction
 		if not self.active:
 			self.active = True
@@ -111,7 +112,8 @@ class Auction(db.Model):
 			self.heartbeat,
 			()
 		).start()
-	
+		'''
+		
 	def bid(self, user):
 		''' Place a bid on this auction. '''
 		self.current_price += PRICE_INCREASE_FROM_BID

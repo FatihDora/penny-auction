@@ -4,7 +4,7 @@
 ######################
 
 # API
-window.API = "http://localhost:8081"
+window.API = "http://localhost:8080"
 
 # Autobidder
 window.AUTOBIDDER_CREATE = "/autobidder_create"
