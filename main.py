@@ -189,12 +189,12 @@ class auctions_status_by_id:
                 except Exception, e:
                     logging.error(unicode(e))
 
-			result = auction_controller.AuctionController.auctions_status_by_id(inputs.ids)
-            return json.dumps({'result': result})
+		result = auction_controller.AuctionController.auctions_status_by_id(inputs.ids)
+		return json.dumps({'result': result})
 
-        except Exception, e:
-            # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
-            return json.dumps({'exception':unicode(e)})
+	except Exception, e:
+		# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
+		return json.dumps({'exception':unicode(e)})
 
 class auctions_list_active:
     def GET(self):
@@ -389,28 +389,27 @@ class user_username_exists:
         web.header('Content-Type', 'application/json')
 
         try:
-            if not inputs.username:
-                raise Exception('required string parameter "username" was not passed to the server, or was an empty string')
+			if not inputs.username:
+				raise Exception('required string parameter "username" was not passed to the server, or was an empty string')
 
-            result = user_controller.UserController.user_username_exists(inputs.username)
+			result = user_controller.UserController.user_username_exists(inputs.username)
 			return json.dumps({'result': result})
         except Exception, e:
             return json.dumps({'exception':unicode(e)})
 
 class user_email_exists:
     def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
 
-        try:
-            if not inputs.email:
-                raise Exception('required string parameter "email" was not passed to the server, or was an empty string')
+		try:
+			if not inputs.email:
+				raise Exception('required string parameter "email" was not passed to the server, or was an empty string')
 
-            result = user_controller.UserController.user_email_exists(inputs.email)
+			result = user_controller.UserController.user_email_exists(inputs.email)
 			return json.dumps({'result': result})
-        except Exception, e:
-            result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
-            return json.dumps(result)
+		except Exception, e:
+			return json.dumps({'exception':unicode(e)})
 
 class reset_data:
     def GET(self):
