@@ -17,4 +17,6 @@ PisoAuction.test ->
 		"Email": "sumd00d@hotmail.com"
 		"Password": "asdf123"
 		"termsandconditions": true
-
+	casper.then ->
+		casper.test.assertVisible "#registration-complete",
+			"Check registration successful"
