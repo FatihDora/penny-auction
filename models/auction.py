@@ -10,7 +10,6 @@ from threading import Timer
 from google.appengine.ext import db
 from models import item, user, decimal_property
 import datetime, decimal
-from datetime import timedelta
 
 class Auction(db.Model):
 	''' This class represents a single auction. '''
