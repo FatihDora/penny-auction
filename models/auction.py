@@ -115,7 +115,8 @@ class Auction(db.Model):
 	def bid(self, user):
 		'''
 			Places a bid on this auction on behalf of the specified user, where
-			user is the object corresponding to the user placing the bid.
+			user is the object corresponding to the user placing the bid. Note
+			that this method does not modify the user object.
 			Raises an Exception if the user parameter is None.
 		'''
 
@@ -154,7 +155,7 @@ class Auction(db.Model):
 				if bids_remaining < 1:
 					del next_autobidder
 				break
-			except NoBidsRemainingException as exception:
+			except InsufficientBidsException as exception:
 				del auction.attached_autobidders[this_autobidder_index]
 
 		return bid_placed

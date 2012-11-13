@@ -111,3 +111,17 @@ class User(db.Model):
 	def add_bids(sender, num):
 		sender.bid_count += num
 		sender.put()
+	
+	def use_bid(self, number):
+		'''
+			Uses up an amount of this user's bids specified by the number
+			parameter. Raises a InsufficientBidsException if the user doesn't
+			have enough bids to use.
+		'''
+
+		if self.bid_count >= number:
+			self.bid_count -= number
+			self.put()
+		else:
+			raise InsufficientBidsException(self, number)
+
