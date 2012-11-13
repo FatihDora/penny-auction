@@ -43,7 +43,7 @@ class Autobidder(db.Model):
 			self.remaining_bids -= 1
 			self.put()
 		else:
-			raise NoBidsRemainingException(self)
+			raise NoBidsRemainingException(self.user, self)
 
 		return self.remaining_bids
 

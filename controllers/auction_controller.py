@@ -88,34 +88,24 @@ class AuctionController(object):
 			Performs a single bid on the given auction on behalf of the specified user.
 		'''
 
+		# TODO: perform some kind of user authentication
+
 		userInfo = user.User.get_by_username(username)
 
 		if userInfo is None:
 			raise Exception("Couldn't get info for " + username)
 
-		if userInfo.bid_count <= 0:
-			raise Exception("Out of bids!")
+		auctionInfo = auction.Auction.get_by_id(auction_id)
 
-		auctionInfo = auction.Auction.get_by_id(int(auction_id))
+		if auctionInfo is None:
+			raise Exception("Auction does not exist.")
 
-		if auctionInfo is None or auctionInfo.active is False:
-			raise Exception("Auction does not exists.")
-
-		if (auctionInfo.auction_end - datetime.datetime.now()).total_seconds() > 10:
-			raise Exception("This auction has not yet started.")
+		if not auctionInfo.active:
+			raise Exception("This auction is not currently accepting bids.")
 
 		# Perform Bid:
-
-		userInfo.bid_count -= 1
-		userInfo.put()
-
-		auctionInfo.current_winner = userInfo
-
-		# If you ever need to change the time added to an auction when it's bid on
-		# THIS is the place to do it.
-		auctionInfo.auction_end = datetime.datetime.now() + timedelta(seconds=11)
-		auctionInfo.increment_price()
-		auctionInfo.put()
+		userInfo.use_bids(1)
+		auctionInfo.bid(userInfo)
 
 	@staticmethod
 	def auction_detail(auction_id):
@@ -123,4 +113,29 @@ class AuctionController(object):
 			Returns detailed auction information for the auction page.
 		'''
 		pass
+
+	@staticmethod
+	def attach_autobidder(auction_id, user_name, num_bids):
+		'''
+			Creates a new autobidder on the specified auction on behalf of the
+			specified user with the specified number of bids.
+		'''
+
+		# TODO: perform some kind of user authentication
+
+		auction_info = auction.Auction.get_by_id(auction_id)
+
+		if auction_info is None:
+			raise Exception("Auction does not exist.")
+
+		if not auction_info.active and auction_info.auction_end_time < datetime.now():
+			raise Exception("Auction has closed.")
+
+		user_info = user.User.get_by_username(user_name)
+
+		if user_info is None:
+			raise Exception("Couldn't get info for " + user_name)
+
+		user_info.use_bids(num_bids)
+		auction_info.attach_autobidder(user_info, num_bids)
 
