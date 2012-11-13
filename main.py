@@ -117,7 +117,15 @@ class bid_packs:
 
 class autobidder_create:
     def GET(self):
-        return "autobidder_create stub"
+        inputs = web.input()
+        web.header('Content-Type', 'application/json')
+
+        try:
+            result = {'result':auction_controller.attach_autobidder(inputs.auction_id, user_name, num_bids)}
+            return inputs.callback + "(" + json.dumps(result) + ");"
+
+        except Exception, e:
+            return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
 
 class autobidder_status:
     def GET(self):
@@ -305,7 +313,6 @@ class auction_detail:
 
         except Exception, e:
             return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
-
 
 # USER Stuff
 
