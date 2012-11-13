@@ -29,7 +29,7 @@ urls = (
 
     '/', 'index',
     '/account','account',
-    '/auction','auction',
+    '/auction/.*','auction',
     '/checkout','checkout',
     '/register','register',
     '/validate_email','validate_email',
@@ -71,7 +71,7 @@ JSON_KEY_IMAGE_URL = "m"
 
 
 '''
-    Webclient
+    begin Webclient
 '''
 class index:
     def GET(self):
@@ -85,8 +85,9 @@ class account:
 
 class auction:
     def GET(self):
+        auction_id = web.ctx.path.replace("/auction/","")
         path = os.path.join(os.path.dirname(__file__), 'webclient/auction.html')
-        return template.render(path, {})
+        return template.render(path, {'id':auction_id})
 
 class checkout:
     def GET(self):
@@ -108,6 +109,11 @@ class bid_packs:
         path = os.path.join(os.path.dirname(__file__), 'webclient/bid_packs.html')
         return template.render(path, {})
         
+
+'''
+    end Webclient
+'''
+
 
 class autobidder_create:
     def GET(self):
@@ -138,7 +144,7 @@ class auctions_status_by_id:
         web.header('Content-Type', 'application/json')
 
         try:
-            auctions = auction_controller.auctions_status_by_id(auction_ids)
+            auctions = auction_controller.AuctionController.auctions_status_by_id(auction_ids)
 
             # Build the JSON payload
             result = []
@@ -175,7 +181,7 @@ class auctions_status_by_id:
                 except Exception, e:
                     logging.error(unicode(e))
 
-            result_json = json.dumps({'result':auction_controller.auctions_status_by_id(inputs.ids)})
+            result_json = json.dumps({'result':auction_controller.AuctionController.auctions_status_by_id(inputs.ids)})
             return inputs.callback + "(" + result_json + ");"
 
         except Exception, e:
@@ -188,7 +194,7 @@ class auctions_list_active:
         web.header('Content-Type', 'application/json')
 
         try:
-            auctions = auction_controller.auctions_list_active(inputs.count)
+            auctions = auction_controller.AuctionController.auctions_list_active(inputs.count)
 
             # Build the JSON payload
             result = []
@@ -237,7 +243,7 @@ class auctions_list_all:
         # TODO: check that an administrative user issued this request
 
         try:
-            auctions = auction_controller.auctions_list_all()
+            auctions = auction_controller.AuctionController.auctions_list_all()
 
             # Build the JSON payload
             result = []
@@ -275,12 +281,12 @@ class auction_bid:
         web.header('Content-Type', 'application/json')
 
         try:
-            username = user_controller.validate_cookie()
+            username = user_controller.UserController.validate_cookie()
 
             if username is None:
                 raise Exception("Not logged in!")
 
-            result = auction_controller.auction_bid(inputs.id, username)
+            result = auction_controller.AuctionController.auction_bid(inputs.id, username)
 
             result_json = json.dumps({'result': result})
             return inputs.callback + "(" + result_json + ");"
@@ -294,7 +300,7 @@ class auction_detail:
         web.header('Content-Type', 'application/json')
 
         try:
-            result = {'result':auction_controller.auction_detail(inputs.id)}
+            result = {'result':auction_controller.AuctionController.auction_detail(inputs.id)}
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
@@ -305,7 +311,7 @@ class auction_detail:
 
 class get_nonce:
     def GET(self):
-        return user_controller.user_get_nonce()
+        return user_controller.UserController.user_get_nonce()
 
 class user_info:
     def GET(self):
@@ -313,7 +319,7 @@ class user_info:
         web.header('Content-Type', 'application/json')
 
         try:
-            result = {'result':user_controller.user_info()}
+            result = {'result':user_controller.UserController.user_info()}
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
@@ -325,7 +331,7 @@ class user_logout:
         web.header('Content-Type', 'application/json')
 
         try:
-            result = {'result':user_controller.user_logout()}
+            result = {'result':user_controller.UserController.user_logout()}
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
@@ -337,7 +343,7 @@ class user_register:
         inputs = web.input()
         web.header('Content-Type', 'application/json')
         try:
-            result = {'result':user_controller.user_register(inputs.first_name,inputs.last_name,inputs.username,inputs.email,inputs.password)}
+            result = {'result':user_controller.UserController.user_register(inputs.first_name,inputs.last_name,inputs.username,inputs.email,inputs.password)}
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
@@ -348,7 +354,7 @@ class user_validate_email:
         inputs = web.input()
         web.header('Content-Type', 'application/json')
         try:
-            result = {'result':user_controller.user_validate_email(inputs.code)}
+            result = {'result':user_controller.UserController.user_validate_email(inputs.code)}
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
@@ -359,7 +365,7 @@ class user_authenticate:
         inputs = web.input()
         web.header('Content-Type', 'application/json')
         try:
-            result ={'result':user_controller.user_authenticate(inputs.username, inputs.password)}
+            result ={'result':user_controller.UserController.user_authenticate(inputs.username, inputs.password)}
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
@@ -370,7 +376,7 @@ class user_authenticate_cookie:
         inputs = web.input()
         web.header('Content-Type', 'application/json')
         try:
-            result ={'result':user_controller.user_authenticate_cookie()}
+            result ={'result':user_controller.UserController.user_authenticate_cookie()}
             return inputs.callback + "(" + json.dumps(result) + ");"
 
         except Exception, e:
@@ -386,7 +392,7 @@ class user_username_exists:
                 return inputs.callback + "(" + json.dumps(result) + ");"
 
             web.header('Content-Type', 'application/json')
-            result ={'result':user_controller.user_username_exists(inputs.username)}
+            result ={'result':user_controller.UserController.user_username_exists(inputs.username)}
             return inputs.callback + "(" + json.dumps(result) + ");"
         except Exception, e:
             return inputs.callback + "(" + json.dumps({'exception':unicode(e)}) + ");"
@@ -400,7 +406,7 @@ class user_email_exists:
                 return inputs.callback + "(" + json.dumps(result) + ");"
 
             web.header('Content-Type', 'application/json')
-            result ={'result':user_controller.user_email_exists(inputs.email)}
+            result ={'result':user_controller.UserController.user_email_exists(inputs.email)}
             return inputs.callback + "(" + json.dumps(result) + ");"
         except Exception, e:
             result = {'exception':'empty'} # Figure out a nicer way to handle exceptions
