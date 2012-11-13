@@ -51,8 +51,7 @@ class Auction(db.Model):
 		'''
 			Lists the top {count} active auctions
 		'''
-		return db.Query(model_class=Auction, keys_only=True).filter("active", True).filter("auction_end > ",
-				datetime.datetime.now()).order("auction_end").run(limit=count)
+		return db.Query(model_class=Auction, keys_only=True).filter("active", True).order("auction_end").run(limit=count)
 
 	def __init__(self, item, start_delay, bid_pushback_time):
 		'''
