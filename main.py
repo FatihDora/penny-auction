@@ -413,21 +413,15 @@ class user_email_exists:
 
 class reset_data:
     def GET(self):
-        br = '<br/>'
-        result = ""
-        try :
+		br = '<br/>'
+		result = ""
+		result += 'Loading Data...' + br
+		dummy_users.DummyUsers.setup()
+		dummy_items.DummyItems.setup()
+		dummy_auctions.DummyAuctions.setup()
+		result += 'Done...' + br
 
-            result += 'Loading Data...' + br
-            dummy_users.DummyUsers.setup()
-            dummy_items.DummyItems.setup()
-            dummy_auctions.DummyAuctions.setup()
-            result += 'Done...' + br
-
-
-        except Exception, e:
-            return unicode(e)
-
-        return result
+		return result
 
 
 app = web.application(urls, globals())
