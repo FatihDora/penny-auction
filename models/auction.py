@@ -91,11 +91,12 @@ class Auction(db.Model):
 			self.active = True
 			self.auction_end = datetime.now() + datetime.timedelta(seconds=bid_pushback_time)
 			self.start_timer = None
+			self.put()
 
 		else:
 			# check if there are any available autobidders and if so, place a bid
 			if self.attached_autobidders:
-				self.bid(...)
+				self.invoke_autobidders()
 			else:
 				# if there are no autobidders, close the auction
 				self.active = False
@@ -103,16 +104,83 @@ class Auction(db.Model):
 				return
 
 
-		# set up the next heartbeat
-		self.heartbeat_timer = Timer(
-			bid_pushback_time,
-			self.heartbeat,
-			()
-		).start()
+		# set up the next heartbeat if this auction is still live
+		if self.active:
+			self.heartbeat_timer = Timer(
+				bid_pushback_time,
+				self.heartbeat,
+				()
+			).start()
 	
 	def bid(self, user):
-		''' Place a bid on this auction. '''
+		'''
+			Places a bid on this auction on behalf of the specified user, where
+			user is the object corresponding to the user placing the bid.
+			Raises an Exception if the user parameter is None.
+		'''
+
+		if user is None:
+			raise Exception("The user passed to Auction.bid() cannot be None.")
+
 		self.current_price += PRICE_INCREASE_FROM_BID
 		self.auction_end += datetime.timedelta(seconds=bid_pushback_time)
 		self.current_winner = user
+		self.put()
+
+	def invoke_autobidders(self):
+		'''
+			Make the next auto bidder attached to this auction place a bid.
+			Returns a boolean indicating whether any bids were placed (no bids
+			would be placed if either no auto bidders with remaining bids are
+			attached or there simply are no attached autobidders to this
+			auction).
+		'''
+
+		# shortcut out if there are no autobidders on this auction
+		if not auction.attached_autobidders:
+			return false
+
+		# sort autobidders by last bid time, oldest to youngest, with autobidders that haven't bid yet
+		# sorted at the very front of the list
+		auction.attached_autobidders.sort(key=lambda this_autobidder: this_autobidder.last_bid_time
+				if(this_autobidder.last_bid_time)
+				else datetime.datetime(datetime.MINYEAR))
+
+		bid_placed = False
+		for next_autobidder in auction.attached_autobidders:
+			try:
+				bids_remaining = next_auto_bidder.use_bid()
+				bid_placed = True
+				if bids_remaining < 1:
+					del next_autobidder
+				break
+			except NoBidsRemainingException as exception:
+				del auction.attached_autobidders[this_autobidder_index]
+
+		return bid_placed
+	
+	def attach_autobidder(self, user, bids):
+		'''
+			Attaches an autobidder to this auction, where user is the user
+			model object for the user this autobidder belongs to and bids is
+			the number of bids to place in the newly created autobidder. Raises
+			an Exception if user is None, if the number of bids is less than 1,
+			or if another autobidder on this auction belongs to the same user
+			owning the new autobidder.
+		'''
+
+		if user is None:
+			raise Exception("The user passed to Auction.attach_autobidder() cannot be None.")
+
+		if bids < 1:
+			raise Exception("The number of bids passed to Auction.attach_autobidder() must be at least 1.")
+
+		user_list = ()
+		for autobidder in self.attached_autobidders:
+			user_list.append(autobidder.user)
+		if user in user_list:
+			raise Exception("The user passed to Auction.attached_autobidder() already owns an autobidder on this auction.")
+		
+		self.attached_autobidders.append(Autobidder(user, self, bids))
+		self.put()
 
