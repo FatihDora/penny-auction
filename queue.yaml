@@ -1,0 +1,7 @@
+total_storage_limit: 100M
+
+queue:
+- name: auction-heartbeat
+  rate: 50/s
+  bucket_size: 50
+
