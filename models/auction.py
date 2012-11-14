@@ -6,8 +6,7 @@ from __future__ import division
 # make string literals be Unicode strings
 from __future__ import unicode_literals
 
-from threading import Timer
-from google.appengine.ext import db
+from google.appengine.ext import db, deferred
 from models import item, user, decimal_property
 import datetime, decimal
 
@@ -17,6 +16,9 @@ class Auction(db.Model):
 	item = db.ReferenceProperty(item.Item, collection_name='auctions')
 	current_price = decimal_property.DecimalProperty(default="0.00")
 	current_winner = db.ReferenceProperty(user.User, collection_name='auctions_won', default=None)
+
+	# the time at which this auction began accepting bids, NOT the time the auction was created
+	start_time = db.DateTimeProperty(default=None)
 
 	# the time, in seconds, added to an auction when a bid is placed
 	# also used for how long an auction with no bids should stay open
@@ -44,7 +46,7 @@ class Auction(db.Model):
 			Generates a list of auctions whose id is contained in the {ids} list
 		'''
 		ids = [map(int, x) for x in ids]
-		return Auction.all().filter("id IN", ids).get()
+		return Auction.all().filter("id IN", ids).run()
 
 	@staticmethod
 	def get_active(count):
@@ -61,18 +63,11 @@ class Auction(db.Model):
 			until this method is called.
 		'''
 
-		self.start_timer = None
-		self.heartbeat_timer = None
-
 		if delay > 0:
 			# initialize the timer counting down to auction start
-			self.start_timer = Timer(
-				delay,
-				self._heartbeat,
-				()
-			).start()
+			deferred.defer(self._heartbeat, _countdown=delay, _queue="auction-heartbeat")
 		else:
-			self._heartbeat()
+			self.heartbeat()
 
 	def _heartbeat(self):
 		'''
@@ -83,9 +78,8 @@ class Auction(db.Model):
 		# if this is the first heartbeat, take care of activating the auction
 		if not self.active:
 			self.active = True
+			self.start_time - datetime.datetime.now()
 			self.auction_end = datetime.datetime.now() + datetime.timedelta(seconds=self.bid_pushback_time)
-			self.start_timer = None
-			self.put()
 
 		else:
 			# check if there are any available autobidders and if so, place a bid
@@ -95,15 +89,12 @@ class Auction(db.Model):
 				# if there are no autobidders, close the auction
 				self.active = False
 				self.auction_end = datetime.datetime.now()
-				return
 
 		# set up the next heartbeat if this auction is still live
 		if self.active:
-			self.heartbeat_timer = Timer(
-				self.bid_pushback_time,
-				self._heartbeat,
-				()
-			).start()
+			deferred.defer(self._heartbeat, _countdown=self.bid_pushback_time, _queue="auction-heartbeat")
+
+		self.put()
 
 	def bid(self, user):
 		'''

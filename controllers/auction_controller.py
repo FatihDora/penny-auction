@@ -32,8 +32,7 @@ class AuctionController(object):
 			raise Exception('No item exists named "{}"'.format(item_name))
 		new_auction = auction.Auction(item=item_object, start_delay=start_delay, bid_pushback_time=bid_pushback_time)
 		new_auction.put()
-		# TODO: re-enable starting auctions once they have been fixed to not hang the whole application
-		# new_auction.start_countdown(start_delay)
+		new_auction.start_countdown(start_delay)
 		return new_auction
 
 	@staticmethod
