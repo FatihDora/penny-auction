@@ -222,8 +222,20 @@ class UserController(object):
 	@staticmethod
 	def create(first_name,last_name,username,email,password):
 		'''
-			Define a new user in the database.
+			Define a new user in the database. Returns the model object for the
+			new user to allow method chaining.
 		'''
 
-		user.User(first_name,last_name,username,email,password)
+		secure_hashes = user.User.compute_secure_hashes(username, password)
+		new_user = user.User(
+				first_name=first_name,
+				last_name=last_name,
+				username=username,
+				email=email,
+				hashed_password=secure_hashes["hashed_password"],
+				password_salt=secure_hashes["password_salt"],
+				email_validation_code=secure_hashes["email_validation_code"]
+		)
+		new_user.put()
+		return new_user
 
