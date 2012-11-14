@@ -36,8 +36,6 @@
   $(document).ready(function() {
     $.ajaxSetup({
       async: true,
-      dataType: "jsonp",
-      jsonp: false,
       cache: false,
       type: "GET",
       beforeSend: function(xhr, settings) {},
@@ -195,7 +193,6 @@
     return jQuery.ajax({
       url: API + method,
       data: data,
-      jsonp: "callback",
       success: callback
     });
   };
