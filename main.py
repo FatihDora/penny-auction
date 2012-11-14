@@ -35,6 +35,7 @@ urls = (
     '/forgot_credentials','forgot_credentials',
     '/register','register',
     '/validate_email','validate_email',
+    '/winners','winners',
     
 
     
@@ -114,6 +115,11 @@ class register:
 class validate_email:
     def GET(self):
         path = os.path.join(os.path.dirname(__file__), 'webclient/validate_email.html')
+        return template.render(path, {})
+
+class winners:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/winners.html')
         return template.render(path, {})
 
 
