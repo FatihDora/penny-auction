@@ -52,35 +52,29 @@ class Auction(db.Model):
 			Lists the top {count} active auctions
 		'''
 		return db.Query(model_class=Auction, keys_only=True).filter("active", True).order("auction_end").run(limit=count)
-
-	def __init__(self, item, start_delay, bid_pushback_time):
+	
+	def start_countdown(self, delay=3600):
 		'''
-			Create a new auction with the following properties:
-				item: an item object representing the item being auctioned
-				start_delay: the number of seconds to wait before opening the auction to bidding
-				bid_pushback_time: the number of seconds added to an active auction when a bid is placed
-		'''	
+			Begins the countdown to making this auction active after the number
+			of seconds given by delay, or makes this auction active immediately
+			if delay is zero. Newly instantiated auction objects are dormant
+			until this method is called.
+		'''
 
-		if item is None:
-			raise Exception("Auction creation failed: the item for this auction cannot be None")
-
-		self.item = item
-		if bid_pushback_time is not None:
-			self.bid_pushback_time = bid_pushback_time
-
-		# the heartbeat timer will be used when the auction is active, for now it will be set to None
+		self.start_timer = None
 		self.heartbeat_timer = None
 
-		# initialize the timer counting down to auction start
-		self.start_timer = Timer(
-			start_delay,
-			self.heartbeat,
-			()
-		).start()
+		if delay > 0:
+			# initialize the timer counting down to auction start
+			self.start_timer = Timer(
+				delay,
+				self._heartbeat,
+				()
+			).start()
+		else:
+			self._heartbeat()
 
-		self.put()
-
-	def heartbeat(self):
+	def _heartbeat(self):
 		'''
 			Called when an auction first becomes active, and when the end time for an auction is reached,
 			and then takes actions to maintain the state of the auction properly.
@@ -89,25 +83,25 @@ class Auction(db.Model):
 		# if this is the first heartbeat, take care of activating the auction
 		if not self.active:
 			self.active = True
-			self.auction_end = datetime.now() + datetime.timedelta(seconds=bid_pushback_time)
+			self.auction_end = datetime.datetime.now() + datetime.timedelta(seconds=self.bid_pushback_time)
 			self.start_timer = None
 			self.put()
 
 		else:
 			# check if there are any available autobidders and if so, place a bid
 			if self.attached_autobidders:
-				self.invoke_autobidders()
+				self._invoke_autobidders()
 			else:
 				# if there are no autobidders, close the auction
 				self.active = False
-				self.auction_end = datetime.now()
+				self.auction_end = datetime.datetime.now()
 				return
 
 		# set up the next heartbeat if this auction is still live
 		if self.active:
 			self.heartbeat_timer = Timer(
-				bid_pushback_time,
-				self.heartbeat,
+				self.bid_pushback_time,
+				self._heartbeat,
 				()
 			).start()
 
@@ -127,7 +121,7 @@ class Auction(db.Model):
 		self.current_winner = user
 		self.put()
 
-	def invoke_autobidders(self):
+	def _invoke_autobidders(self):
 		'''
 			Make the next auto bidder attached to this auction place a bid.
 			Returns a boolean indicating whether any bids were placed (no bids
@@ -137,17 +131,18 @@ class Auction(db.Model):
 		'''
 
 		# shortcut out if there are no autobidders on this auction
-		if not auction.attached_autobidders:
-			return false
+		if not self.attached_autobidders:
+			return False
 
 		# sort autobidders by last bid time, oldest to youngest, with autobidders that haven't bid yet
 		# sorted at the very front of the list
-		auction.attached_autobidders.sort(key=lambda this_autobidder: this_autobidder.last_bid_time
+		sorted_autobidder_list = self.attached_autobidders.fetch(None)
+		sorted_autobidder_list.sort(key=lambda this_autobidder: this_autobidder.last_bid_time
 				if(this_autobidder.last_bid_time)
 				else datetime.datetime(datetime.MINYEAR))
 
 		bid_placed = False
-		for next_autobidder in auction.attached_autobidders:
+		for next_autobidder in sorted_autobidder_list:
 			try:
 				bids_remaining = next_auto_bidder.use_bid()
 				bid_placed = True
@@ -155,7 +150,7 @@ class Auction(db.Model):
 					del next_autobidder
 				break
 			except InsufficientBidsException as exception:
-				del auction.attached_autobidders[this_autobidder_index]
+				del sorted_autobidder_list[this_autobidder_index]
 
 		return bid_placed
 	
