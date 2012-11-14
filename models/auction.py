@@ -63,9 +63,6 @@ class Auction(db.Model):
 			until this method is called.
 		'''
 
-		self.start_time = datetime.datetime.now() + datetime.timedelta(seconds=delay)
-		self.put()
-
 		if delay > 0:
 			# initialize the timer counting down to auction start
 			deferred.defer(self._heartbeat, _countdown=delay, _queue="auction-heartbeat")
