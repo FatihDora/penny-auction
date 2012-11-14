@@ -22,7 +22,7 @@ class User(db.Model):
 	password_salt = db.StringProperty(required=True)
 	create_time = db.DateTimeProperty(auto_now_add=True)
 	email_validated = db.BooleanProperty(default=False)
-	email_validation_code = db.StringProperty(required=True)
+	email_validation_code = db.IntegerProperty(required=True)
 	bid_count = db.IntegerProperty(default=0)
 	# implicit property 'active_autobidders' created by the Autobidder class
 	# implicit property 'auctions_won' created by the Auction class
@@ -34,44 +34,25 @@ class User(db.Model):
 		return User.all().filter("username =", username).get()
 
 	@staticmethod
-	def __init__(first_name,last_name,username,email,password):
+	def compute_secure_hashes(user_name, password):
 		'''
-			Define a new user in the database.
+			Because storing a plain text password is terribly insecure, the
+			User model only stores hashes and a salt. Use this method to
+			generate the password salt, email validation code, and hashed
+			password for a user, based on their user name and password. Returns
+			a dict with properties "password_salt", "email_validation_code",
+			and "hashed_password".
 		'''
 
-		if not first_name:
-			raise Exception("Argument 'first_name' was missing or empty")
+		password_salt = bcrypt.gensalt()
+		email_validation_code = random.randint(32768, sys.maxint)
+		hashed_password = bcrypt.hashpw(password + user_name, password_salt)
 
-		if not last_name:
-			raise Exception("Argument 'last_name' was missing or empty")
-
-		if not username:
-			raise Exception("Argument 'username' was missing or empty")
-
-		if not email:
-			raise Exception("Argument 'email' was missing or empty")
-
-		if not password:
-			raise Exception("Argument 'password' was missing or empty")
-
-		if User.username_exists(username):
-			raise Exception("An account with this username already exists")
-
-		if User.email_exists(email):
-			raise Exception("An account with this email address already exists")
-
-		salt = bcrypt.gensalt()
-		self.email_validation_code = random.randint(32768, sys.maxint)
-		self.hashed_password = bcrypt.hashpw(password + username, salt)
-		self.username = username
-		self.first_name = first_name
-		self.last_name = last_name
-		self.password_salt = salt
-		self.email = email
-
-		self.put()
-
-		return user_object
+		return {
+			"password_salt": password_salt,
+			"email_validation_code": email_validation_code,
+			"hashed_password": hashed_password
+		}
 
 	@staticmethod
 	def username_exists(username):
