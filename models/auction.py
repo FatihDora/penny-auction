@@ -92,7 +92,7 @@ class Auction(db.Model):
 
 		# set up the next heartbeat if this auction is still live
 		if self.active:
-			deferred.defer(self._heartbeat, _countdown=delay, _queue="auction-heartbeat")
+			deferred.defer(self._heartbeat, _countdown=self.bid_pushback_time, _queue="auction-heartbeat")
 
 		self.put()
 
