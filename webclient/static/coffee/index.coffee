@@ -18,7 +18,7 @@ auction_list = []
 auctions =
 	fetchingAuctionUpdates: null
 	init: ->
-		callApi AUCTIONS_LIST_ACTIVE,(count: 30), (data) ->
+		callApi AUCTIONS_LIST_ACTIVE,({count: 30}), (data) ->
 			$("#auctions").html ""
 			auctions = data.result
 			if not auctions?
@@ -26,14 +26,14 @@ auctions =
 				return
 
 			for ix of auctions
-				i = auctions[ix].i
-				n = auctions[ix].n
-				b = auctions[ix].b
-				u = auctions[ix].u
-				m = auctions[ix].m
-				p = auctions[ix].p
-				w = auctions[ix].w
-				t = secondsToHms(auctions[ix].t)
+				i = auctions[ix].id
+				n = auctions[ix].name
+				b = auctions[ix].base_price
+				u = auctions[ix].product_url
+				m = auctions[ix].image_url
+				p = auctions[ix].price
+				w = auctions[ix].winner
+				t = secondsToHms(auctions[ix].time_left)
 				auction_ids.push i
 				auction_list[i] = auctions[ix]
 				$("#auctions").append(buildAuction(i, n, b, u, m, p, w, t))
@@ -114,11 +114,11 @@ auctions =
 					auctions = data.result
 					auction_list = []
 					for ix of auctions
-						i = auctions[ix].i
-						p = auctions[ix].p
-						w = auctions[ix].w
-						t = secondsToHms(auctions[ix].t)
-						a = auctions[ix].a
+						i = auctions[ix].id
+						p = auctions[ix].price
+						w = auctions[ix].winner
+						t = secondsToHms(auctions[ix].time_left)
+						a = auctions[ix].active
 						# IF WE NEED TO BLINK...
 						#if $("#" + i + " span.winner").text isnt w
 						#	$("#" + i + " span.winner").css "backgroundColor", "#CC0000"

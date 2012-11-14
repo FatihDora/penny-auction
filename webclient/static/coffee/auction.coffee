@@ -19,17 +19,17 @@ auction = init: ->
 					$("#onecol .gallery").html '<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>'
 					return
 
-				i = auction.i # Image
-				n = auction.n # Name
-				b = auction.b # Base Price
-				u = auction.u # Manufacturer's URL
-				m = auction.m # Image Url
-				p = auction.p # Current Price
-				w = auction.w # Winner Username
-				t = secondsToHms(auctions[ix].t)
+				i = auction.id # ID
+				n = auction.name # Name
+				b = auction.base_price # Base Price
+				u = auction.product_url # Manufacturer's URL
+				m = auction.image_url # Image Url
+				p = auction.price # Current Price
+				w = auction.wwinner # Winner Username
+				t = secondsToHms(auctions[ix].time_left)
 
 				# Update the page with the data
-				$('#auction-image').html('<a href="' + auction.i + '" class="fancy-img fadeable"><img src="' + auction.i + '" alt="combo1" width="292" height="242" /></a>')
+				$('#auction-image').html('<img src="' + auction.m + '" alt="combo1" width="292" height="242" />')
 
 	# Setup the registration form.
 	$("#registration-form").submit (e) ->

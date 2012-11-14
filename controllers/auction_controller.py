@@ -71,7 +71,7 @@ class AuctionController(object):
 		'''
 			List the currently-running auctions
 		'''
-		auctions = auction.Auction.get_active(count)
+		auctions = auction.Auction.get_active(int(count))
 
 		if not auctions:
 			raise Exception("No active auctions.")
