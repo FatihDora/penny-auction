@@ -43,11 +43,12 @@ class UserController(object):
 
 		# Verify the username/password combination (including the user's password
 		# salt) matches the hashed password currently stored to the user object
-		hashed_password = user_hash_password(username, password, aUser.password_salt)
+		hashed_password = UserController.user_hash_password(username,
+			password, aUser.password_salt)
 		if hashed_password != aUser.hashed_password:
 			raise Exception("Invalid username or password")
 
-		create_cookie(aUser.username)
+		UserController.create_cookie(aUser.username)
 
 		return aUser.username
 
@@ -57,7 +58,7 @@ class UserController(object):
 			This will be used to authenticate a user's cookie information.
 		'''
 
-		username = validate_cookie()
+		username = UserController.validate_cookie()
 		if username is None:
 			raise Exception("Not logged in.")
 
@@ -82,7 +83,7 @@ class UserController(object):
 
 	@staticmethod
 	def user_logout():
-		username = validate_cookie()
+		username = UserController.validate_cookie()
 		user_cookie.UserCookie.delete_all_cookies(username)
 		return username
 
@@ -94,8 +95,8 @@ class UserController(object):
 
 		# create a new user and hash their password
 
-		userInfo = user.User.create(first_name, last_name, username, email,
-			password)
+		userInfo = UserController.create(first_name, last_name, username,
+			email, password)
 
 		message = mail.EmailMessage(sender="Darin Hoover <darinh@gmail.com>",
 									subject="Please Validate Your Account")
@@ -163,9 +164,10 @@ class UserController(object):
 		new_salt = bcrypt.gensalt()
 
 		# compute the new password hash using the new salt
-		user_object.hashed_password = UserController.user_hash_password(
-			user_object.username, new_password, new_salt)
-		user_object.password_salt = new_salt
+		hashes = user.User.compute_secure_hashes(user_object.username,
+				new_password)
+		user_object.hashed_password = hashes["hashed_password"]
+		user_object.password_salt = hashes["password_salt"]
 		user_object.put()
 
 	@staticmethod
@@ -176,6 +178,7 @@ class UserController(object):
 		'''
 		# compute the new password hash using the new salt
 		return bcrypt.hashpw(password + username, salt)
+
 
 	@staticmethod
 	def create_cookie(username):
@@ -213,7 +216,7 @@ class UserController(object):
 		else:
 			username = aCookie.username
 			aCookie.delete()
-			create_cookie(username)
+			UserController.create_cookie(username)
 			return username
 
 	@staticmethod
