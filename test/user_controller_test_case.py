@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import models.user as user
 import controllers.user_controller as user_controller
 import unittest
 
@@ -19,6 +20,8 @@ class UserControllerTestCase(unittest.TestCase):
 	def make_user(self):
 		user_controller.UserController.user_register("test", "user",
 			"testUser", "testUser@me.com", "testPassword")
+		user_object = user.User.get_by_username("testUser")
+		self.assertNotEquals(None, user_object, "Failed to create User!")
 
 	def testUserAuthenticate(self):
 		self.make_user()
@@ -70,8 +73,7 @@ class UserControllerTestCase(unittest.TestCase):
 		self.make_user()
 
 		# validate the password hash
-		user_key = db.Key.from_path("User", "testUser")
-		user_object = db.get(user_key)
+		user_object = user.User.get_by_username("testUser")
 		hashed_password = user_controller.UserController.user_hash_password(
 			"testUser", "testPassword", user_object.password_salt)
 		self.assertEquals(hashed_password, user_object.hashed_password)
@@ -87,8 +89,7 @@ class UserControllerTestCase(unittest.TestCase):
 
 		# pull a new refrence to the user from the DB and re-validate the new
 		# password hash
-		dup_user_key = db.Key.from_path("User", "testUser")
-		dup_user_object = db.get(dup_user_key)
+		dup_user_object = user.User.get_by_username("testUser")
 		self.assertEquals(new_hashed_password, dup_user_object.hashed_password)
 
 if __name__ == '__main__':
