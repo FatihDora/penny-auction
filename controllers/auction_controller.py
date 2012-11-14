@@ -18,14 +18,23 @@ class AuctionController(object):
 	''' This class manipulates auction models. '''
 
 	@staticmethod
-	def create(item_name, start_delay, bid_pushback_time):
+	def create(item_name, start_delay, bid_pushback_time=10):
 		'''
 			Creates an auction using the following parameters:
 				item_name: the name of the item being auctioned
 				start_delay: the number of seconds to wait before opening the auction to bidding
 				bid_pushback_time: the number of seconds added to an active auction when a bid is placed
+
+			Returns the newly created auction object to allow method chaining.
 		'''
-		Auction(item=Item.get(item_name), start_delay=start_delay, bid_pushback_time=bid_pushback_time)
+		item_object = item.Item.get(item_name)
+		if not item_object:
+			raise Exception('No item exists named "{}"'.format(item_name))
+		new_auction = auction.Auction(item=item_object, start_delay=start_delay, bid_pushback_time=bid_pushback_time)
+		new_auction.put()
+		# TODO: re-enable starting auctions once they have been fixed to not hang the whole application
+		# new_auction.start_countdown(start_delay)
+		return new_auction
 
 	@staticmethod
 	def auctions_status_by_id(auction_ids):
