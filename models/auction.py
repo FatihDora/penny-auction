@@ -46,7 +46,7 @@ class Auction(db.Model):
 			Generates a list of auctions whose id is contained in the {ids} list
 		'''
 		ids = [map(int, x) for x in ids]
-		return Auction.all().filter("id IN", ids).get()
+		return Auction.all().filter("id IN", ids).run()
 
 	@staticmethod
 	def get_active(count):
