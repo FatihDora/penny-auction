@@ -104,6 +104,9 @@
     },
     updateAuctions: function() {
       var fetchingAuctionUpdates, i, tmplist;
+      if (auction_ids.length === 0) {
+        return;
+      }
       tmplist = [];
       i = 0;
       while (i < auction_ids.length) {
@@ -121,7 +124,6 @@
         data: {
           ids: auction_ids.join()
         },
-        jsonp: "callback",
         success: function(data) {
           return $.map(data, function(auction) {
             var a, buttonText, ix, p, t, w, _results;
