@@ -183,7 +183,7 @@ class auctions_status_by_id:
         web.header('Content-Type', 'application/json')
 
         try:
-            auctions = auction_controller.AuctionController.auctions_status_by_id(auction_ids)
+            auctions = auction_controller.AuctionController.auctions_status_by_id(inputs.ids)
 
             # Build the JSON payload
             result = []
