@@ -32,8 +32,6 @@ $(document).ready ->
 	# Set up the jQuery AJAX stuff 
 	$.ajaxSetup
 		async: true
-		dataType: "jsonp"
-		jsonp: false
 		cache: false # default for 'jsonp'
 		type: "GET"
 		beforeSend: (xhr, settings) ->
@@ -172,7 +170,6 @@ window.callApi = (method, data, callback) ->
 	jQuery.ajax
 		url: API + method
 		data: data
-		jsonp: "callback"
 		success: callback
 
 # For getting parameters from the Query String

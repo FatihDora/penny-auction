@@ -94,6 +94,7 @@ auctions =
 			return tmplAuction
 	
 	updateAuctions: ->
+		if auction_ids.length == 0 then return
 		tmplist = []
 		i = 0
 		while i < auction_ids.length
@@ -108,7 +109,6 @@ auctions =
 			data:
 				ids: auction_ids.join()
 
-			jsonp: "callback"
 			success: (data) ->
 				$.map data, (auction) ->
 					auctions = data.result

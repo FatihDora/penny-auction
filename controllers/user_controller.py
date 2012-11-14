@@ -57,9 +57,6 @@ class UserController(object):
 			This will be used to authenticate a user's cookie information.
 		'''
 
-		# TODO: We are currently using the user's username as the hash until a new
-		#		hashing method is built.
-
 		username = validate_cookie()
 		if username is None:
 			raise Exception("Not logged in.")
