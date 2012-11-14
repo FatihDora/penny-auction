@@ -29,15 +29,16 @@ urls = (
 
     '/', 'index',
     '/account','account',
+    '/account/auto_bidders','account_auto_bidders',
+    '/account/bidding_history','account_bidding_history',
     '/auction/.*','auction',
     '/bid_packs','bid_packs',
     '/checkout','checkout',
     '/forgot_credentials','forgot_credentials',
     '/register','register',
+    '/support','support',
     '/validate_email','validate_email',
     '/winners','winners',
-    
-
     
     '/autobidder_create', 'autobidder_create',
     '/autobidder_status', 'autobidder_status',
@@ -62,15 +63,15 @@ urls = (
 )
 
 # JSON objects passed back to the client use these keys
-JSON_KEY_ID = "i"
-JSON_KEY_PRICE = "p"
-JSON_KEY_WINNER = "w"
-JSON_KEY_REMAINING_TIME = "t"
-JSON_KEY_IS_ACTIVE = "a"
-JSON_KEY_ITEM_NAME = "n"
-JSON_KEY_BASE_PRICE = "b"
-JSON_KEY_PRODUCT_URL = "u"
-JSON_KEY_IMAGE_URL = "m"
+JSON_KEY_ID = "id"
+JSON_KEY_PRICE = "price"
+JSON_KEY_WINNER = "winner"
+JSON_KEY_REMAINING_TIME = "time"
+JSON_KEY_IS_ACTIVE = "active"
+JSON_KEY_ITEM_NAME = "name"
+JSON_KEY_BASE_PRICE = "base_price"
+JSON_KEY_PRODUCT_URL = "product_url"
+JSON_KEY_IMAGE_URL = "image_url"
 
 
 '''
@@ -86,9 +87,14 @@ class account:
         path = os.path.join(os.path.dirname(__file__), 'webclient/account.html')
         return template.render(path, {})
 
-class bid_packs:
+class account_bidding_history:
     def GET(self):
-        path = os.path.join(os.path.dirname(__file__), 'webclient/bid_packs.html')
+        path = os.path.join(os.path.dirname(__file__), 'webclient/bidding_history.html')
+        return template.render(path, {})
+
+class account_auto_bidders:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/auto_bidders.html')
         return template.render(path, {})
 
 class auction:
@@ -96,6 +102,11 @@ class auction:
         auction_id = web.ctx.path.replace("/auction/","")
         path = os.path.join(os.path.dirname(__file__), 'webclient/auction.html')
         return template.render(path, {'id':auction_id})
+
+class bid_packs:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/bid_packs.html')
+        return template.render(path, {})
 
 class checkout:
     def GET(self):
@@ -110,6 +121,11 @@ class forgot_credentials:
 class register:
     def GET(self):
         path = os.path.join(os.path.dirname(__file__), 'webclient/register.html')
+        return template.render(path, {})
+
+class support:
+    def GET(self):
+        path = os.path.join(os.path.dirname(__file__), 'webclient/support.html')
         return template.render(path, {})
 
 class validate_email:
