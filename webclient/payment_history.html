@@ -22,17 +22,6 @@
 
 <body class="hideall">
 {% include '_messageDialog.html' %}
-<!-- Facebook code -->
-<div id="fb-root"></div>
-<script type="text/javascript">(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/it_IT/all.js#xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script> 
-
-<!-- end Facebook code --> 
 {% include '_topbar.html' %}
 <!-- start header -->
   <div id="header">
@@ -122,37 +111,6 @@
     <div class="clear"></div>
   </div>
   <!-- end box --> 
-  <!-- start category -->
-  <div class="category">
-    <div class="box"> 
-      <!-- start common -->
-      <div class="common2 first">
-        <h3 class="red">Linear Theme</h3>
-        <p>Integer interdum pretium leo, venenatis commodo male uada sit amet. Suspe disse ut neque neque. <strong>Aenean tincidunt</strong> ullamcorper nibh sit amet singur lopsem egestas. Fermentum erat <strong>condimentum</strong> ac. Sed liget Morbi por ta eget ferment.</p>
-      </div>
-      <!-- end common --> 
-      <!-- start twitter -->
-      <div class="common2 twitter">
-        <h3 class="red">Twitter</h3>
-        <ul id="twitter_update_list">
-          <li></li>
-        </ul>
-        <script type="text/javascript" src="http://twitter.com/statuses/user_timeline/WPNewsStation.json?callback=twitterCallback2&amp;count=2"></script> 
-      </div>
-      <!-- end twitter --> 
-      <!-- start facebook -->
-      <div class="common2 last facebook">
-        <h3 class="red">Facebook</h3>
-        <div class="fb-box"> 
-          <script type="text/javascript" src="js/facebook-box.js"></script> 
-        </div>
-        <!-- the css needs an absolute path to work properly --> 
-      </div>
-      <!-- end facebook -->
-      <div class="clear"></div>
-    </div>
-  </div>
-  <!-- end category --> 
 </div>
 <!-- end container --> 
 {% include '_footer.html' %}

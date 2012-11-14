@@ -22,18 +22,7 @@
 </head>
 
 <body class="hideall">
-
-<!-- Facebook code -->
-<div id="fb-root"></div>
-<script type="text/javascript">(function(d, s, id) {
-	var js, fjs = d.getElementsByTagName(s)[0];
-	if (d.getElementById(id)) return;
-	js = d.createElement(s); js.id = id;
-	js.src = "//connect.facebook.net/it_IT/all.js#xfbml=1";
-	fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script> 
-
-<!-- end Facebook code --> 
+{% include '_messageDialog.html' %}
 {% include '_topbar.html' %}
 <!-- start header -->
 <div id="header">
@@ -208,7 +197,6 @@
 		<div class="clear"></div>
 	</div>
 	<!-- end box --> 
-	
 </div>
 <!-- end container --> 
 {% include '_footer.html' %}

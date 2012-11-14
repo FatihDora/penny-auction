@@ -18,7 +18,7 @@ auction_list = []
 auctions =
 	fetchingAuctionUpdates: null
 	init: ->
-		callApi AUCTIONS_LIST_ACTIVE,(count: 30), (data) ->
+		callApi AUCTIONS_LIST_ACTIVE,({count: 30}), (data) ->
 			$("#auctions").html ""
 			auctions = data.result
 			if not auctions?
