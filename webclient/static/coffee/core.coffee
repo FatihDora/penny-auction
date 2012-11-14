@@ -1,10 +1,10 @@
 ######################
 # NOTE: Coffee doesn't allow anything into the global namespace, so
-#       anything you want to be global needs to be prefixed with {window.} 
+#		anything you want to be global needs to be prefixed with {window.}
 ######################
 
 # API
-window.API = "http://localhost:8080"
+window.API = ""
 
 # Autobidder
 window.AUTOBIDDER_CREATE = "/autobidder_create"
@@ -28,8 +28,8 @@ window.USER_INFO = "/user_info"
 window.USER_LOGOUT = "/user_logout"
 
 $(document).ready ->
-	
-	# Set up the jQuery AJAX stuff 
+
+	# Set up the jQuery AJAX stuff
 	$.ajaxSetup
 		async: true
 		cache: false # default for 'jsonp'
@@ -58,7 +58,7 @@ $(document).ready ->
 
 	# END $(document).ready
 
-window.user = 
+window.user =
 	fetchingInfo: null
 	username: null
 	bids: null
@@ -102,7 +102,7 @@ window.user =
 ############################################
 
 window.login = init: ->
-	
+
 	#------------#
 	# Login Form #
 	#------------#
@@ -140,11 +140,11 @@ window.showDialog = (dialogType, title, message) ->
 			icon = "alert"
 		else
 			icon = "info"
-	
+
 	# update the message dialog
 	$("#messageDialog p").html "<span class='ui-icon ui-icon-" + icon + "' style='float:left; margin:0 7px 20px 0;'></span>" + message
 	$("#messageDialog").dialog title: title
-	
+
 	# show the message dialog
 	$("#messageDialog").dialog "open"
 
@@ -152,7 +152,7 @@ window.padzero = (number, length) ->
 	str = "" + number
 	str = "0" + str	while str.length < length
 	str
-	
+
 window.getCookie = (c_name) ->
 	i = undefined
 	x = undefined
@@ -165,7 +165,7 @@ window.getCookie = (c_name) ->
 		x = x.replace(/^\s+|\s+$/g, "")
 		return unescape(y)	if x is c_name
 		i++
-		
+
 window.callApi = (method, data, callback) ->
 	jQuery.ajax
 		url: API + method

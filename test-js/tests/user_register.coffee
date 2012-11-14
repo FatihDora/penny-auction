@@ -3,7 +3,7 @@ PisoAuction = casper.PisoAuction
 # define a registration shortcut
 PisoAuction.register = (props) ->
 	casper.then ->
-		casper.click "#login-wrapper a"
+		casper.click "#register-link"
 	casper.then ->
 		casper.test.assertTitle "Piso Auction - Register", "Check page title"
 		casper.fill "#registration-form", props, true
