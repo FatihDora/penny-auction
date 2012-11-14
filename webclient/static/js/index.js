@@ -29,14 +29,14 @@
         }
         _results = [];
         for (ix in auctions) {
-          i = auctions[ix].i;
-          n = auctions[ix].n;
-          b = auctions[ix].b;
-          u = auctions[ix].u;
-          m = auctions[ix].m;
-          p = auctions[ix].p;
-          w = auctions[ix].w;
-          t = secondsToHms(auctions[ix].t);
+          i = auctions[ix].id;
+          n = auctions[ix].name;
+          b = auctions[ix].base_price;
+          u = auctions[ix].product_url;
+          m = auctions[ix].image_url;
+          p = auctions[ix].price;
+          w = auctions[ix].winner;
+          t = secondsToHms(auctions[ix].time_left);
           auction_ids.push(i);
           auction_list[i] = auctions[ix];
           _results.push($("#auctions").append(buildAuction(i, n, b, u, m, p, w, t)));
