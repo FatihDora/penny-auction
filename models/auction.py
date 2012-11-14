@@ -65,8 +65,14 @@ class Auction(db.Model):
 
 		if delay > 0:
 			# initialize the timer counting down to auction start
+			self.start_time = datetime.datetime.now() + datetime.timedelta(seconds=delay)
+			self.auction_end = self.start_time + datetime.timedelta(seconds=self.bid_pushback_time)
+			self.put()
 			deferred.defer(self._heartbeat, _countdown=delay, _queue="auction-heartbeat")
 		else:
+			self.start_time = datetime.datetime.now()
+			self.auction_end = self.start_time + datetime.timedelta(seconds=self.bid_pushback_time)
+			self.put()
 			self.heartbeat()
 
 	def _heartbeat(self):
@@ -78,8 +84,6 @@ class Auction(db.Model):
 		# if this is the first heartbeat, take care of activating the auction
 		if not self.active:
 			self.active = True
-			self.start_time - datetime.datetime.now()
-			self.auction_end = datetime.datetime.now() + datetime.timedelta(seconds=self.bid_pushback_time)
 
 		else:
 			# check if there are any available autobidders and if so, place a bid
