@@ -45,8 +45,18 @@ class Auction(db.Model):
 		'''
 			Generates a list of auctions whose id is contained in the {ids} list
 		'''
-		ids = [map(int, x) for x in ids]
-		return Auction.all().filter("id IN", ids).run()
+		auctions = []
+		count = 0
+		for auction_id in ids:
+			count += 1
+			auctions.append(Auction.get_by_id(auction_id))
+
+		return auctions
+
+		#ids = [map(int, x) for x in ids]
+		#raise Exception(Auction.all().filter("id =", ids).fetch())
+		#return Auction.all().get()
+		#return Auction.all().filter("id IN", ids).run()
 
 	@staticmethod
 	def get_current(count):
