@@ -18,15 +18,15 @@
             $("#onecol .gallery").html('<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>');
             return;
           }
-          i = auction.i;
-          n = auction.n;
-          b = auction.b;
-          u = auction.u;
-          m = auction.m;
-          p = auction.p;
-          w = auction.w;
-          t = secondsToHms(auctions[ix].t);
-          return $('#auction-image').html('<a href="' + auction.i + '" class="fancy-img fadeable"><img src="' + auction.i + '" alt="combo1" width="292" height="242" /></a>');
+          i = auction.id;
+          n = auction.name;
+          b = auction.base_price;
+          u = auction.product_url;
+          m = auction.image_url;
+          p = auction.price;
+          w = auction.wwinner;
+          t = secondsToHms(auctions[ix].time_left);
+          return $('#auction-image').html('<img src="' + auction.m + '" alt="combo1" width="292" height="242" />');
         }
       });
       return $("#registration-form").submit(function(e) {
