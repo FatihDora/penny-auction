@@ -131,11 +131,11 @@
             auction_list = [];
             _results = [];
             for (ix in auctions) {
-              i = auctions[ix].i;
-              p = auctions[ix].p;
-              w = auctions[ix].w;
-              t = secondsToHms(auctions[ix].t);
-              a = auctions[ix].a;
+              i = auctions[ix].id;
+              p = auctions[ix].price;
+              w = auctions[ix].winner;
+              t = secondsToHms(auctions[ix].time_left);
+              a = auctions[ix].active;
               auction_list[i] = auctions[ix];
               buttonText = "";
               if (auctions[ix].t > 11.0) {
