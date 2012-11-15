@@ -142,7 +142,7 @@ auctions =
 						$("#" + i + " span.price").text "P " + p
 						$("#" + i + " span.timeleft").html(t)
 
-						if a is "False"
+						if auctions[ix].time_left == 0
 							if w is "No Bidder" then  buttonText = "SOLD" else buttonText = "ENDED"
 		
 						$("#" + i + " div.bid").html '<a href="javascript:void(0);" class="button-default cart"><span class="hover">' + buttonText + '</span><span>' + buttonText + '</span></a>'

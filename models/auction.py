@@ -64,7 +64,7 @@ class Auction(db.Model):
 		'''
 			Lists the top {count} auctions that are either open or waiting to open.
 		'''
-		return db.Query(model_class=Auction, keys_only=False).order("auction_end").run(limit=count)
+		return db.Query(model_class=Auction, keys_only=False).filter("auction_end >",datetime.datetime.now()).order("auction_end").run(limit=count)
 	
 	def start_countdown(self, delay=datetime.timedelta(hours=1)):
 		'''
@@ -134,8 +134,8 @@ class Auction(db.Model):
 		if user is None:
 			raise Exception("The user passed to Auction.bid() cannot be None.")
 
-		self.current_price += PRICE_INCREASE_FROM_BID
-		self.auction_end += bid_pushback_time
+		self.current_price += decimal.Decimal(self.PRICE_INCREASE_FROM_BID)
+		self.auction_end += self.bid_pushback_time
 		self.current_winner = user
 		self.put()
 
