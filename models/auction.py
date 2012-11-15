@@ -64,7 +64,7 @@ class Auction(db.Model):
 		'''
 			Lists the top {count} auctions that are either open or waiting to open.
 		'''
-		return db.Query(model_class=Auction, keys_only=False).order("auction_end").run(limit=count)
+		return db.Query(model_class=Auction, keys_only=False).filter("auction_end >",datetime.datetime.now()).order("auction_end").run(limit=count)
 	
 	def start_countdown(self, delay=datetime.timedelta(hours=1)):
 		'''

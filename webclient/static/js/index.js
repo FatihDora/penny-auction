@@ -157,7 +157,7 @@
               $("#" + i + " span.winner").html("<a href=\"#\">" + w + "</a>");
               $("#" + i + " span.price").text("P " + p);
               $("#" + i + " span.timeleft").html(t);
-              if (a === "False") {
+              if (auctions[ix].time_left === 0) {
                 if (w === "No Bidder") {
                   buttonText = "SOLD";
                 } else {
