@@ -36,18 +36,19 @@ class AuctionController(object):
 		return new_auction
 
 	@staticmethod
-	def auctions_status_by_id(auction_ids):
+	def auctions_status_by_ids(auction_ids):
 		'''
 			List the auctions specified
 		'''
 		if not auction_ids:
 			return
 
-		# Try to parse the IDs and create a list of ints.
+		# Try to parse the string of IDs and create a list of ints.
 		try:
 			sids = auction_ids.split(',')
 		except Exception, e:
 			raise Exception("The list of IDs provided could not be parsed.")
+		
 		ids = []
 		for sid in sids:
 			try:
@@ -59,7 +60,7 @@ class AuctionController(object):
 			raise Exception("Too many ids")
 
 		# Try to get some auctions from the list of IDs
-		auctions = auction.Auction.get_by_id(ids)
+		auctions = auction.Auction.get_by_ids(ids)
 		if not auctions:
 			raise Exception("There were no auctions for the IDs you provided.")
 
