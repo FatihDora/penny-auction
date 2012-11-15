@@ -195,10 +195,8 @@ class auctions_status_by_id:
             for elem in auctions:
                 count += 1
 
-                logging.error(count)
                 if not elem:
                     continue
-                logging.error(count)
                 delta = elem.auction_end - datetime.datetime.now()
                 if delta.total_seconds() <= 0:
                     delta = timedelta(seconds=0)
@@ -206,7 +204,7 @@ class auctions_status_by_id:
                     elem.put()
                     # TODO: Do winner stuff here... apparently our daemon hasn't gotten to this one.
                     # note from Brent: I don't think this is the right place to handle winning auctions
-                logging.error(count)
+
                 username = "No Bidders"
                 if elem.current_winner:
                     username = elem.current_winner.username
@@ -214,7 +212,6 @@ class auctions_status_by_id:
                 price = "0.00"
                 if elem.current_price:
                     price = "{0:.2f}".format(elem.current_price)
-                logging.error(count)
                 result.append({
                     JSON_KEY_ID: unicode(elem.key().id()),
                     JSON_KEY_PRICE: unicode(price),
