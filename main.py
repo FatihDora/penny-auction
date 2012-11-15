@@ -16,6 +16,8 @@ from lib import web
 import os
 from django.utils import simplejson as json
 import logging
+import datetime
+from datetime import timedelta
 
 from controllers import user_controller, auction_controller
 import models.auction as auction
@@ -219,8 +221,8 @@ class auctions_status_by_id:
                     })
                 except Exception, e:
                     logging.error(unicode(e))
+                    json.dumps({'error': unicode(e)})
 
-		result = auction_controller.AuctionController.auctions_status_by_id(inputs.ids)
 		return json.dumps({'result': result})
 
 	except Exception, e:
@@ -262,10 +264,12 @@ class auctions_list_active:
                         JSON_KEY_IMAGE_URL: unicode(elem.item.image_url),
                         JSON_KEY_PRICE: unicode(price),
                         JSON_KEY_WINNER: unicode(username),
-                        JSON_KEY_TIME_REMAINING: unicode(delta.total_seconds())
+                        JSON_KEY_REMAINING_TIME: unicode(delta.total_seconds())
                     })
                 except Exception, e:
                     logging.error(unicode(e))
+                    json.dumps({'error': unicode(e)})
+
 
             return json.dumps({'result': result})
 
