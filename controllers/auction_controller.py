@@ -18,36 +18,43 @@ class AuctionController(object):
 	''' This class manipulates auction models. '''
 
 	@staticmethod
-	def create(item_name, start_delay, bid_pushback_time=10):
+	def create(item_name, start_delay, bid_pushback_time=timedelta(seconds=10)):
 		'''
 			Creates an auction using the following parameters:
 				item_name: the name of the item being auctioned
-				start_delay: the number of seconds to wait before opening the auction to bidding
-				bid_pushback_time: the number of seconds added to an active auction when a bid is placed
+				start_delay: a timedelta object giving the duration to wait before opening the auction to bidding
+					(must represent a positive time duration)
+				bid_pushback_time: a timedelta object giving the amount of time to be added to an active auction when a bid is placed
+					(must represent a positive time duration)
 
 			Returns the newly created auction object to allow method chaining.
 		'''
 		item_object = item.Item.get(item_name)
 		if not item_object:
 			raise Exception('No item exists named "{}"'.format(item_name))
+		if start_delay < timedelta(0):
+			raise Exception("The start_delay parameter must be a positive time interval, but the passed value was {}.".format(start_delay))
+		if bid_pushback_time < timedelta(0):
+			raise Exception("The bid_pushback_time parameter must be a positive time interval, but the passed value was {}.".format(bid_pushback_time))
 		new_auction = auction.Auction(item=item_object, bid_pushback_time=bid_pushback_time)
 		new_auction.put()
 		new_auction.start_countdown(start_delay)
 		return new_auction
 
 	@staticmethod
-	def auctions_status_by_id(auction_ids):
+	def auctions_status_by_ids(auction_ids):
 		'''
 			List the auctions specified
 		'''
 		if not auction_ids:
 			return
 
-		# Try to parse the IDs and create a list of ints.
+		# Try to parse the string of IDs and create a list of ints.
 		try:
 			sids = auction_ids.split(',')
 		except Exception, e:
 			raise Exception("The list of IDs provided could not be parsed.")
+		
 		ids = []
 		for sid in sids:
 			try:
@@ -59,7 +66,7 @@ class AuctionController(object):
 			raise Exception("Too many ids")
 
 		# Try to get some auctions from the list of IDs
-		auctions = auction.Auction.get_by_id(ids)
+		auctions = auction.Auction.get_by_ids(ids)
 		if not auctions:
 			raise Exception("There were no auctions for the IDs you provided.")
 
@@ -67,14 +74,14 @@ class AuctionController(object):
 
 
 	@staticmethod
-	def auctions_list_active(count=10):
+	def auctions_list_current(count=10):
 		'''
 			List the currently-running auctions
 		'''
-		auctions = auction.Auction.get_active(int(count))
+		auctions = auction.Auction.get_current(int(count))
 
 		if not auctions:
-			raise Exception("No active auctions.")
+			raise Exception("No current auctions.")
 
 		return auctions
 
@@ -103,6 +110,11 @@ class AuctionController(object):
 		if userInfo is None:
 			raise Exception("Couldn't get info for " + username)
 
+		try:
+			auction_id = int(auction_id)
+		except Exception, e:
+			raise Exception("Auction ID is invalid.")
+
 		auctionInfo = auction.Auction.get_by_id(auction_id)
 
 		if auctionInfo is None:
@@ -112,7 +124,7 @@ class AuctionController(object):
 			raise Exception("This auction is not currently accepting bids.")
 
 		# Perform Bid:
-		userInfo.use_bids(1)
+		userInfo.use_bid(1)
 		auctionInfo.bid(userInfo)
 
 	@staticmethod

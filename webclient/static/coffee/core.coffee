@@ -13,7 +13,7 @@ window.AUTOBIDDER_CANCEL = "/autobidder_cancel"
 window.AUTOBIDDERS_LIST = "/autobidders_list"
 
 #Auctions
-window.AUCTIONS_LIST_ACTIVE = "/auctions_list_active"
+window.AUCTIONS_LIST_CURRENT = "/auctions_list_current"
 window.AUCTIONS_STATUS_BY_ID = "/auctions_status_by_id"
 window.AUCTION_BID = "/auction_bid"
 window.AUCTION_DETAIL = "/auction_detail"

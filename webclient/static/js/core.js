@@ -11,7 +11,7 @@
 
   window.AUTOBIDDERS_LIST = "/autobidders_list";
 
-  window.AUCTIONS_LIST_ACTIVE = "/auctions_list_active";
+  window.AUCTIONS_LIST_CURRENT = "/auctions_list_current";
 
   window.AUCTIONS_STATUS_BY_ID = "/auctions_status_by_id";
 

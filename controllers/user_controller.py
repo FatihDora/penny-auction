@@ -93,6 +93,12 @@ class UserController(object):
 			Register a new account
 		'''
 
+		if user.User.username_exists(username):
+			raise Exception("This username already exists.  Please choose another.")
+
+		if user.User.email_exists(email):
+			raise Exception("This email address has already been registered.  If you "
+				           +"need help logging in, please <a href='/forgot_credentials'>click here.</a>")
 		# create a new user and hash their password
 
 		userInfo = UserController.create(first_name, last_name, username,

@@ -49,7 +49,7 @@ urls = (
     '/autobidders_list_by_auction', 'autobidders_list_by_auction',
 
     '/auctions_status_by_id', 'auctions_status_by_id',
-    '/auctions_list_active', 'auctions_list_active',
+    '/auctions_list_current', 'auctions_list_current',
     '/auctions_list_all', 'auctions_list_all',
     '/auction_bid', 'auction_bid',
     '/auction_detail', 'auction_detail',
@@ -150,15 +150,15 @@ class winners:
 
 class autobidder_create:
     def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
 
-        try:
-            result = {'result':auction_controller.attach_autobidder(inputs.auction_id, user_name, num_bids)}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
+		result = auction_controller.AuctionController.attach_autobidder(
+				auction_id=int(inputs.auction_id),
+				user_name=inputs.user_name,
+				num_bids=inputs.num_bids
+		)
+		return json.dumps({'result': unicode(result)})
 
 class autobidder_status:
     def GET(self):
@@ -185,57 +185,49 @@ class auctions_status_by_id:
         web.header('Content-Type', 'application/json')
 
         try:
-            auctions = auction_controller.AuctionController.auctions_status_by_id(inputs.ids)
+            auctions = auction_controller.AuctionController.auctions_status_by_ids(inputs.ids)
 
             # Build the JSON payload
             result = []
             delta = ""
+            count = 0
 
             for elem in auctions:
-                try:
-                    if not elem:
-                        continue
+                count += 1
 
-                    delta = elem.auction_end - datetime.datetime.now()
-                    if delta.total_seconds() <= 0:
-                        delta = timedelta(seconds=0)
-                        elem.active = False
-                        elem.put()
-                        # TODO: Do winner stuff here... apparently our daemon hasn't gotten to this one.
-                        # note from Brent: I don't think this is the right place to handle winning auctions
+                if not elem:
+                    continue
+                delta = elem.auction_end - datetime.datetime.now()
+                if delta.total_seconds() <= 0:
+                    delta = timedelta(seconds=0)
 
-                    username = "No Bidders"
-                    if elem.current_winner:
-                        username = elem.current_winner.username
+                username = "No Bidders"
+                if elem.current_winner:
+                    username = elem.current_winner.username
 
-                    price = "0.00"
-                    if elem.current_price:
-                        price = "{0:.2f}".format(elem.current_price)
+                price = "{0:.2f}".format(elem.current_price)
 
-                    result.append({
-                        JSON_KEY_ID: unicode(elem.key().id()),
-                        JSON_KEY_PRICE: unicode(price),
-                        JSON_KEY_WINNER: unicode(username),
-                        JSON_KEY_REMAINING_TIME: unicode(delta.total_seconds()),
-                        JSON_KEY_IS_ACTIVE: unicode(elem.active)
-                    })
-                except Exception, e:
-                    logging.error(unicode(e))
-                    json.dumps({'error': unicode(e)})
+                result.append({
+                    JSON_KEY_ID: unicode(elem.key().id()),
+                    JSON_KEY_PRICE: unicode(price),
+                    JSON_KEY_WINNER: unicode(username),
+                    JSON_KEY_REMAINING_TIME: unicode(delta.total_seconds()),
+                    JSON_KEY_IS_ACTIVE: unicode(elem.active)
+                })
 
-		return json.dumps({'result': result})
+            return json.dumps({'result': result})
 
-	except Exception, e:
-		# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
-		return json.dumps({'exception':unicode(e)})
+        except Exception, e:
+    		# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
+    		return json.dumps({'exception':unicode(e)})
 
-class auctions_list_active:
+class auctions_list_current:
     def GET(self):
         inputs = web.input()
         web.header('Content-Type', 'application/json')
 
         try:
-            auctions = auction_controller.AuctionController.auctions_list_active(inputs.count)
+            auctions = auction_controller.AuctionController.auctions_list_current(inputs.count)
 
             # Build the JSON payload
             result = []

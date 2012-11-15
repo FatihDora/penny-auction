@@ -10,6 +10,7 @@ from google.appengine.ext import db
 import lib.bcrypt.bcrypt as bcrypt
 import random
 import sys
+from exceptions import InsufficientBidsException
 
 
 class User(db.Model):
@@ -59,7 +60,10 @@ class User(db.Model):
 		q = User.all().filter('username = ', username)
 
 		#Verify the user exists in the database
-		return (q.get() is None)
+		if q.get() == None:
+			return False
+		else:
+			return True
 
 	@staticmethod
 	def email_exists(email):
@@ -88,7 +92,7 @@ class User(db.Model):
 		sender.bid_count += num
 		sender.put()
 	
-	def use_bid(self, number):
+	def use_bids(self, number):
 		'''
 			Uses up an amount of this user's bids specified by the number
 			parameter. Raises a InsufficientBidsException if the user doesn't

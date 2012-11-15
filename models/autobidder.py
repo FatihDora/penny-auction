@@ -10,6 +10,7 @@ from google.appengine.ext import db
 import datetime
 import models.user as user
 import models.auction as auction
+from exceptions import InsufficientBidsException
 
 
 class Autobidder(db.Model):
@@ -33,9 +34,9 @@ class Autobidder(db.Model):
 
 	def use_bid(self):
 		'''
-			Uses up one of the bids in this autobidder and returns the number of
-			bids remaining after using this bid. Throws a NoBidsRemainingException if
-			there are no bids left to use.
+			Uses up one of the bids in this autobidder and returns the number
+			of bids remaining after using this bid. Throws an
+			InsufficientBidsException if there are no bids left to use.
 		'''
 
 		if self.remaining_bids > 0:
@@ -43,7 +44,7 @@ class Autobidder(db.Model):
 			self.remaining_bids -= 1
 			self.put()
 		else:
-			raise NoBidsRemainingException(self.user, self)
+			raise InsufficientBidsException(self.user, 1, self)
 
 		return self.remaining_bids
 
