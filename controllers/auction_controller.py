@@ -30,7 +30,7 @@ class AuctionController(object):
 		item_object = item.Item.get(item_name)
 		if not item_object:
 			raise Exception('No item exists named "{}"'.format(item_name))
-		new_auction = auction.Auction(item=item_object, start_delay=start_delay, bid_pushback_time=bid_pushback_time)
+		new_auction = auction.Auction(item=item_object, bid_pushback_time=bid_pushback_time)
 		new_auction.put()
 		new_auction.start_countdown(start_delay)
 		return new_auction
@@ -67,14 +67,14 @@ class AuctionController(object):
 
 
 	@staticmethod
-	def auctions_list_active(count=10):
+	def auctions_list_current(count=10):
 		'''
 			List the currently-running auctions
 		'''
-		auctions = auction.Auction.get_active(int(count))
+		auctions = auction.Auction.get_current(int(count))
 
 		if not auctions:
-			raise Exception("No active auctions.")
+			raise Exception("No current auctions.")
 
 		return auctions
 

@@ -81,25 +81,10 @@
           user.username = data.result[0]['username'];
           user.bids = data.result[0]['bids'];
           user.autobidders = data.result[0]['auto-bidders'];
-          return $('div#login-wrapper').fadeOut('fast', function() {
-            var newHtml;
-            newHtml = '<span class="heading">';
-            newHtml += '<img src="/images/ico_man.png" width="15" height="15" alt="man" />';
-            newHtml += 'Logged in as <a href="#"><strong>' + user.username + '</strong></a></span>';
-            newHtml += '<span class="logout"><a href="javascript:void(0);">Logout</a></span>';
-            $('span.logout a').live('click', function(e) {
-              e.preventDefault();
-              return callApi(USER_LOGOUT, {}, function(data) {
-                return document.location.href = '/';
-              });
-            });
-            $(this).html(newHtml);
-            $(this).fadeIn('slow');
-            $('#top-account-info').fadeIn(1000);
-            user.update();
-            return fetchingInfo = null;
-          });
+          login.showLoggedIn(user.username);
+          user.update();
         }
+        return fetchingInfo = null;
       });
     },
     update: function() {
@@ -120,11 +105,17 @@
           password: password
         }, function(data) {
           if (data.result != null) {
-            document.location.reload(true);
+            user.refresh();
           }
           if (data.exception != null) {
             return showDialog("error", "Login Error", data.exception);
           }
+        });
+      });
+      $('#logout-link').click(function(e) {
+        e.preventDefault();
+        return callApi(USER_LOGOUT, {}, function(data) {
+          return login.showLoggedOut();
         });
       });
       $("#login-form").delegate("#login-username, #login-password", "focus", function() {
@@ -138,6 +129,22 @@
           $(this).val($(this).attr("id").split("-")[1]);
           return $(this).removeClass("login-focus");
         }
+      });
+    },
+    showLoggedIn: function(username) {
+      return $('div#login-wrapper').fadeOut('fast', function() {
+        $('.username-label').html(user.username);
+        return $('#logout-wrapper').fadeIn('slow', function() {
+          return $('#top-account-info').fadeIn('slow');
+        });
+      });
+    },
+    showLoggedOut: function() {
+      return $('#logout-wrapper').fadeOut('fast', function() {
+        $('.username-label').html("");
+        return $('#login-wrapper').fadeIn('slow', function() {
+          return $('#top-account-info').fadeOut('slow');
+        });
       });
     }
   };

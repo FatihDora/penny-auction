@@ -24,4 +24,3 @@ class DummyAuctions(object):
 			delay += 8640 # 1/10th of a day in seconds
 			item_name = items[random.randint(0,2)]
 			auction_controller.AuctionController.create(item_name=item_name, start_delay=delay)
-

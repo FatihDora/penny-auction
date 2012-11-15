@@ -128,11 +128,11 @@ textarea {
 }
 /* END FOOTER AND BORDERS */
 
-/*  START INPUT BOX LIGHT BACKGROUND */
+/*	START INPUT BOX LIGHT BACKGROUND */
 form.search2 .third span, .search2 .jquery-selectbox span, .detail-block .price-col div, .detail-block .quat-col .listmenu, .ui-tabs .ui-tabs-nav li span, .cloud-zoom-loading, .accordin-panel h5 span, .block1st .graycol, table th span, table#cart tr td .input, .shopping .left .labeltop span, .contact h5 span, .search, #cart-content ul li .cont:hover, .topnav li.info ul li:hover, .jquery-selectbox .jquery-selectbox-item.listelementhover, table tr:hover td {
 	background-color:#FBFBFB; /* edit the color here */
 }
-/*  END INPUT BOX LIGHT BACKGROUND */
+/*	END INPUT BOX LIGHT BACKGROUND */
 
 /* BORDER COLOR AND SHADOWS STYLE */
 input[type="text"], input[type="password"], textarea, .general-select .jquery-selectbox, .currency .jquery-selectbox.selecthover, .divisory, .topnav li.info ul, .topnav ul:first-child > li.info:hover > a, .jquery-selectbox .jquery-selectbox-list, form .error .jquery-selectbox, #header-right .cart #cart-content, .cart, .feature, #menu-bar, #navigation ul:first-child > li, #navigation ul li ul.sub, #navigation ul li ul.sub li + li + li h3, #navigation ul li ul.sub2, #showcase, #leftcol, #onecol .gallery ul li, .gallery .top-block, .gallery .imgb, .gallery ul li .cart-button, .partner li, #rightcol, #rightcol .rightcol-block, .offer li .imgb, #cart-content ul li .imgb, #cart-content ul li, .button-cart, .banner .imgb, .category, #wrapper-border, .nivo-controlNav, .slider-wrapper-cycle ul li, .breadcrumb, .common3, .common3 .imgb2, form.search2 .select, form.search2 .select2, form.search2 .third, .product-detail .imgb5, .button-default.cart, .pagination2 li, .search2 .jquery-selectbox, .search2 .jquery-selectbox .jquery-selectbox-list, .detail-left .imgb, .detail-block ul.thumbnail li a, .detail-block .price-col, .detail-block .quat-col div.listmenu-border, .info-content,.cloud-zoom-big, .cloud-zoom-loading, .customer-left, .customer h4, .customer-form .input, .accordin-panel h5.ui-accordion-header, .accordin-block .input, .accordin-block .listmenu, .pro-col li .imgb, .Featured .block1st, .block1st h4, .post-col .date, .post-col .imgb1, .post-col .txtb h1, table th, table th:first-child, table td, table tr.padding.bot td, table#cart td .imgb, table#cart tr td .input, .shopping .left .labeltop, .shopping .left .select, .shopping .right .col1, .shopping .right .total, .shopping .right .total, .submit-review, .contact h5, .fill-form .col1 .input, .fill-form .input2, .fill-form .textarea, .review-list li, .ui-tabs .ui-tabs-nav li, .feature2-left, .feature2-right, .about-txt, .team-container, .team img {
@@ -210,7 +210,7 @@ a, body, .topnav li.info ul li a:hover, .feature, .feature a:hover, .search .inp
 
 ::selection, ::-moz-selection {
 	background-color:#D94A38; /* edit the color here */
-	
+
 }
 /* ----------------------------------- END MAIN STYLES, BACKGROUNDS AND BORDERS  -----------------------------------*/
 
@@ -315,7 +315,7 @@ blockquote {
 blockquote p {
 	font-size:18px !important;
 }
-/* ----------------------------------- START INDEX  -----------------------------------*/
+/* ----------------------------------- START INDEX	-----------------------------------*/
 
 .hideall {
 	visibility:hidden;
@@ -523,7 +523,7 @@ body {
 	position:relative;
 	margin-top:1px;
 }
-.tb-right .language li.active { 
+.tb-right .language li.active {
 	background:url(/images/bg_flag_top.png) bottom no-repeat;
 }
 .tb-right .language li span {
@@ -559,6 +559,10 @@ body {
 }
 .logotable tr{
 	width:100%;
+}
+
+#logout-wrapper {
+	display: none;
 }
 
 #login-username, #login-password {
@@ -1023,7 +1027,7 @@ border: 0;
 	overflow: hidden;
 }
 /**
- *  Horizontal Buttons
+ *	Horizontal Buttons
  */
 .jcarousel-skin-partner .jcarousel-next-horizontal {
 	position: absolute;
@@ -1079,7 +1083,7 @@ border: 0;
 	width:100%;
 }
 /**
- *  Horizontal Buttons
+ *	Horizontal Buttons
  */
 .jcarousel-skin-featured .jcarousel-next-horizontal {
 	position: absolute;
@@ -1263,7 +1267,7 @@ border: 0;
 	height:29px;
 	font-size:12px;
 	line-height:2.4em;
-}	
+}
 .totalbox span {
 	margin-bottom:11px;
 	display:block;
@@ -1411,7 +1415,7 @@ border: 0;
 	float:left;
 	padding:0 8px 0 0;
 }
-/* FEATURED AND LATEST ZOOM IN  */
+/* FEATURED AND LATEST ZOOM IN	*/
 
 /* --- Container configuration ---------------------------------------------------------- */
 .thumbnail-zoom {
@@ -1741,7 +1745,7 @@ span.lazy img {
 	height:100%;
 }
 /**
- *  Horizontal Buttons
+ *	Horizontal Buttons
  */
 .jcarousel-skin-slider .jcarousel-next-horizontal {
 	position: absolute;
@@ -1826,9 +1830,9 @@ span.lazy img {
 	z-index:10;
 	cursor:pointer;
 }
-/* ----------------------------------- END INDEX 2  -----------------------------------*/
+/* ----------------------------------- END INDEX 2	-----------------------------------*/
 
-/* ----------------------------------- START CATEGORY PAGE  -----------------------------------*/
+/* ----------------------------------- START CATEGORY PAGE	-----------------------------------*/
 
 .breadcrumb {
 	width:100%;
@@ -3151,7 +3155,7 @@ div.rating-cancel {
 .ui-tabs .ui-tabs-hide {
 	display: none !important;
 }
-/* END JQUERY TABS  */
+/* END JQUERY TABS	*/
 
 /* START CLOUD ZOOM */
 
@@ -3181,16 +3185,16 @@ div.rating-cancel {
  * Simple and fancy lightbox alternative
  *
  * Examples and documentation at: http://fancybox.net
- * 
+ *
  * Copyright (c) 2008 - 2010 Janis Skarnelis
  * That said, it is hardly a one-person project. Many people have submitted bugs, code, and offered their advice freely. Their support is greatly appreciated.
- * 
+ *
  * Version: 1.3.4 (11/11/2010)
  * Requires: jQuery v1.3+
  *
  * Dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
+ *	 http://www.opensource.org/licenses/mit-license.php
+ *	 http://www.gnu.org/licenses/gpl.html
  */
 
 #fancybox-loading {
@@ -3586,7 +3590,7 @@ filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/fancy_sh
 .customer-form .button.second:hover {
 	background-position:left top;
 }
-/* ----------------------------------- START CHECKOUT PAGE  -----------------------------------*/
+/* ----------------------------------- START CHECKOUT PAGE	-----------------------------------*/
 .accordin-panel {
 	width:100%;
 }
@@ -3828,7 +3832,7 @@ ul.catelist li {
 	display:block;
 	padding:0 0 18px 14px;
 }
-/* ----------------------------------- START BLOG PAGE  -----------------------------------*/
+/* ----------------------------------- START BLOG PAGE	-----------------------------------*/
 .post-col {
 	width:100%;
 	margin-top:13px;
@@ -3907,7 +3911,7 @@ ul.catelist li {
 .offer li .txtb .price span.blog-click {
 	text-decoration: none;
 }
-/* ----------------------------------- START CART PAGE  -----------------------------------*/
+/* ----------------------------------- START CART PAGE	-----------------------------------*/
 .shopping {
 	width:100%;
 	padding:0 0 0 0;
@@ -4294,24 +4298,24 @@ table td.last-child {
 	line-height:1.8em !important;
 }
 #ajax-status {
-    display: none;
+	display: none;
 	clear:both;
 }
 #status {
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 14px;
-    margin: 19px 0 0 0;
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 14px;
+	margin: 19px 0 0 0;
 	display:inline-block;
-    padding: 0 0 0 26px;
+	padding: 0 0 0 26px;
 	height:16px;
 }
 #status.ok {
-    background: url("/images/ok.png") no-repeat scroll left top transparent;
+	background: url("/images/ok.png") no-repeat scroll left top transparent;
 }
 #status.error {
-    background: url("/images/cross.png") no-repeat scroll left top transparent;
+	background: url("/images/cross.png") no-repeat scroll left top transparent;
 }
-/* ----------------------------------- START REGISTER PAGE  -----------------------------------*/
+/* ----------------------------------- START REGISTER PAGE	-----------------------------------*/
 .accordin-panel.register-page {
 	margin-top:-2px;
 }
@@ -4343,7 +4347,7 @@ table td.last-child {
 .contact .accordin-block .select-check {
 	padding-top:15px;
 }
-/* ----------------------------------- START WISHLIST PAGE  -----------------------------------*/
+/* ----------------------------------- START WISHLIST PAGE	-----------------------------------*/
 table#cart.wish {
 	margin-top:-1px;
 }
@@ -4396,34 +4400,34 @@ table#cart.wish td:first-child + td + td + td + td + td + td {
 	margin-bottom:0;
 }
 .buttons-block .button-default.cart:first-child{
-	margin-right:29px;	
+	margin-right:29px;
 }
 .buttons-block .button-cart.last-child{
 	margin-right:0;
 	margin-left:1px;
 }
 .info-box {
-    padding: 17px 20px;
+	padding: 17px 20px;
 }
 .info-box.warning {
-    background: none repeat scroll 0 0 #FCF8E2;
-    border: 1px solid #F0D53F;
-    color: #945000;
+	background: none repeat scroll 0 0 #FCF8E2;
+	border: 1px solid #F0D53F;
+	color: #945000;
 }
 .info-box.error {
-    background: none repeat scroll 0 0 #FCE2E2;
-    border: 1px solid #FB8E8E;
-    color: #940000;
+	background: none repeat scroll 0 0 #FCE2E2;
+	border: 1px solid #FB8E8E;
+	color: #940000;
 }
 .info-box.success {
-    background: none repeat scroll 0 0 #E2F6BB;
-    border: 1px solid #CADA7D;
-    color: #3C7300;
+	background: none repeat scroll 0 0 #E2F6BB;
+	border: 1px solid #CADA7D;
+	color: #3C7300;
 }
 .info-box.info {
-    background: none repeat scroll 0 0 #BBE5F5;
-    border: 1px solid #7DB4DA;
-    color: #004973;
+	background: none repeat scroll 0 0 #BBE5F5;
+	border: 1px solid #7DB4DA;
+	color: #004973;
 }
 .full-elements h1{
 	padding-bottom:41px;

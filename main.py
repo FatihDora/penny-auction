@@ -49,7 +49,7 @@ urls = (
     '/autobidders_list_by_auction', 'autobidders_list_by_auction',
 
     '/auctions_status_by_id', 'auctions_status_by_id',
-    '/auctions_list_active', 'auctions_list_active',
+    '/auctions_list_current', 'auctions_list_current',
     '/auctions_list_all', 'auctions_list_all',
     '/auction_bid', 'auction_bid',
     '/auction_detail', 'auction_detail',
@@ -229,13 +229,13 @@ class auctions_status_by_id:
 		# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
 		return json.dumps({'exception':unicode(e)})
 
-class auctions_list_active:
+class auctions_list_current:
     def GET(self):
         inputs = web.input()
         web.header('Content-Type', 'application/json')
 
         try:
-            auctions = auction_controller.AuctionController.auctions_list_active(inputs.count)
+            auctions = auction_controller.AuctionController.auctions_list_current(inputs.count)
 
             # Build the JSON payload
             result = []
