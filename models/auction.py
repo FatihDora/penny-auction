@@ -49,11 +49,11 @@ class Auction(db.Model):
 		return Auction.all().filter("id IN", ids).run()
 
 	@staticmethod
-	def get_active(count):
+	def get_current(count):
 		'''
-			Lists the top {count} active auctions
+			Lists the top {count} auctions that are either open or waiting to open.
 		'''
-		return db.Query(model_class=Auction, keys_only=False).filter("active", True).order("auction_end").run(limit=count)
+		return db.Query(model_class=Auction, keys_only=False).order("auction_end").run(limit=count)
 	
 	def start_countdown(self, delay=3600):
 		'''

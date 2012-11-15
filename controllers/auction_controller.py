@@ -67,14 +67,14 @@ class AuctionController(object):
 
 
 	@staticmethod
-	def auctions_list_active(count=10):
+	def auctions_list_current(count=10):
 		'''
 			List the currently-running auctions
 		'''
-		auctions = auction.Auction.get_active(int(count))
+		auctions = auction.Auction.get_current(int(count))
 
 		if not auctions:
-			raise Exception("No active auctions.")
+			raise Exception("No current auctions.")
 
 		return auctions
 
