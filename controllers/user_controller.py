@@ -39,7 +39,7 @@ class UserController(object):
 		# Verify the user exists in the database
 		aUser = user.User.get_by_username(username)
 		if aUser is None:
-			raise Exception("Invalid username or password!")
+			raise Exception("Invalid username or password")
 
 		# Verify the username/password combination (including the user's password
 		# salt) matches the hashed password currently stored to the user object
