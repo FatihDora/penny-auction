@@ -75,21 +75,9 @@ window.user =
 				user.username = data.result[0]['username']
 				user.bids = data.result[0]['bids']
 				user.autobidders = data.result[0]['auto-bidders']
-				$('div#login-wrapper').fadeOut 'fast', ->
-					newHtml = '<span class="heading">'
-					newHtml += '<img src="/images/ico_man.png" width="15" height="15" alt="man" />'
-					newHtml += 'Logged in as <a href="#"><strong>' + user.username + '</strong></a></span>'
-					newHtml += '<span class="logout"><a href="javascript:void(0);">Logout</a></span>'
-					$('span.logout a').live('click', (e) ->
-						e.preventDefault()
-						callApi USER_LOGOUT,{}, (data) ->
-							document.location.href='/'
-						)
-					$(@).html newHtml
-					$(@).fadeIn 'slow'
-					$('#top-account-info').fadeIn 1000
-					user.update()
-					fetchingInfo = null
+				login.showLoggedIn user.username
+				user.update()
+			fetchingInfo = null
 
 	update: ->
 		$('#topbar-bids').text user.bids
@@ -101,32 +89,44 @@ window.user =
 # Login
 ############################################
 
-window.login = init: ->
+window.login =
+	init: ->
+		$("#login-form").submit (e) ->
+			e.preventDefault()
+			username = $("#login-username").val()
+			password = $("#login-password").val()
+			callApi USER_AUTHENTICATE,
+				username: username
+				password: password
+			, (data) ->
+					if data.result? then user.refresh()
+					if data.exception? then showDialog "error", "Login Error", data.exception
 
-	#------------#
-	# Login Form #
-	#------------#
+		$('#logout-link').click (e) ->
+			e.preventDefault()
+			callApi USER_LOGOUT,{}, (data) ->
+				login.showLoggedOut()
 
-	$("#login-form").submit (e) ->
-		e.preventDefault()
-		username = $("#login-username").val()
-		password = $("#login-password").val()
-		callApi USER_AUTHENTICATE,
-			username: username
-			password: password
-		, (data) ->
-				if data.result? then document.location.reload true
-				if data.exception? then showDialog "error", "Login Error", data.exception
+		$("#login-form").delegate "#login-username, #login-password", "focus", ->
+			if $(@).val() is "username" or $(@).val() is "password"
+				$(@).val ""
+				$(@).addClass "login-focus"
 
-	$("#login-form").delegate "#login-username, #login-password", "focus", ->
-		if $(@).val() is "username" or $(@).val() is "password"
-			$(@).val ""
-			$(@).addClass "login-focus"
+		$("#login-form").delegate "#login-username, #login-password", "blur", ->
+			if $(@).val() is ""
+				$(@).val $(@).attr("id").split("-")[1]
+				$(@).removeClass "login-focus"
 
-	$("#login-form").delegate "#login-username, #login-password", "blur", ->
-		if $(@).val() is ""
-			$(@).val $(@).attr("id").split("-")[1]
-			$(@).removeClass "login-focus"
+	showLoggedIn: (username) ->
+		$('div#login-wrapper').fadeOut 'fast', ->
+			$('.username-label').html user.username
+			$('#logout-wrapper').fadeIn 'slow', ->
+				$('#top-account-info').fadeIn 'slow'
+	showLoggedOut: ->
+		$('#logout-wrapper').fadeOut 'fast', ->
+			$('.username-label').html ""
+			$('#login-wrapper').fadeIn 'slow', ->
+				$('#top-account-info').fadeOut 'slow'
 
 # Functions
 
