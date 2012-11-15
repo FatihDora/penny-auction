@@ -46,10 +46,11 @@ class Auction(db.Model):
 			Generates a list of auctions whose id is contained in the {ids} list
 		'''
 		auctions = []
-		count = 0
+
 		for auction_id in ids:
-			count += 1
-			auctions.append(Auction.get_by_id(auction_id))
+			auction = Auction.get_by_id(auction_id)
+			if auction:
+				auctions.append(auction)
 
 		return auctions
 

@@ -190,44 +190,44 @@ class auctions_status_by_id:
             # Build the JSON payload
             result = []
             delta = ""
+            count = 0
 
             for elem in auctions:
-                try:
-                    if not elem:
-                        continue
+                count += 1
 
-                    delta = elem.auction_end - datetime.datetime.now()
-                    if delta.total_seconds() <= 0:
-                        delta = timedelta(seconds=0)
-                        elem.active = False
-                        elem.put()
-                        # TODO: Do winner stuff here... apparently our daemon hasn't gotten to this one.
-                        # note from Brent: I don't think this is the right place to handle winning auctions
+                logging.error(count)
+                if not elem:
+                    continue
+                logging.error(count)
+                delta = elem.auction_end - datetime.datetime.now()
+                if delta.total_seconds() <= 0:
+                    delta = timedelta(seconds=0)
+                    elem.active = False
+                    elem.put()
+                    # TODO: Do winner stuff here... apparently our daemon hasn't gotten to this one.
+                    # note from Brent: I don't think this is the right place to handle winning auctions
+                logging.error(count)
+                username = "No Bidders"
+                if elem.current_winner:
+                    username = elem.current_winner.username
 
-                    username = "No Bidders"
-                    if elem.current_winner:
-                        username = elem.current_winner.username
+                price = "0.00"
+                if elem.current_price:
+                    price = "{0:.2f}".format(elem.current_price)
+                logging.error(count)
+                result.append({
+                    JSON_KEY_ID: unicode(elem.key().id()),
+                    JSON_KEY_PRICE: unicode(price),
+                    JSON_KEY_WINNER: unicode(username),
+                    JSON_KEY_REMAINING_TIME: unicode(delta.total_seconds()),
+                    JSON_KEY_IS_ACTIVE: unicode(elem.active)
+                })
 
-                    price = "0.00"
-                    if elem.current_price:
-                        price = "{0:.2f}".format(elem.current_price)
+            return json.dumps({'result': result})
 
-                    result.append({
-                        JSON_KEY_ID: unicode(elem.key().id()),
-                        JSON_KEY_PRICE: unicode(price),
-                        JSON_KEY_WINNER: unicode(username),
-                        JSON_KEY_REMAINING_TIME: unicode(delta.total_seconds()),
-                        JSON_KEY_IS_ACTIVE: unicode(elem.active)
-                    })
-                except Exception, e:
-                    logging.error(unicode(e))
-                    json.dumps({'error': unicode(e)})
-
-		return json.dumps({'result': result})
-
-	except Exception, e:
-		# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
-		return json.dumps({'exception':unicode(e)})
+        except Exception, e:
+    		# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
+    		return json.dumps({'exception':unicode(e)})
 
 class auctions_list_current:
     def GET(self):
