@@ -4,7 +4,7 @@ PisoAuction.test ->
 	# successful login/logout
 	casper.then ->
 		casper.test.comment "Testing successful user login"
-		#login
+		# login
 		username = "kevin"
 		PisoAuction.login username, "asdf", ->
 			casper.test.assertNotVisible "#login-wrapper", "Login wrapper not visible"
