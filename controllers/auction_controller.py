@@ -30,7 +30,7 @@ class AuctionController(object):
 		item_object = item.Item.get(item_name)
 		if not item_object:
 			raise Exception('No item exists named "{}"'.format(item_name))
-		new_auction = auction.Auction(item=item_object, start_delay=start_delay, bid_pushback_time=bid_pushback_time)
+		new_auction = auction.Auction(item=item_object, bid_pushback_time=bid_pushback_time)
 		new_auction.put()
 		new_auction.start_countdown(start_delay)
 		return new_auction
