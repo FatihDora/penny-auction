@@ -3,8 +3,7 @@ $(document).ready ->
 	auctions.init()
 
 	if $("#auctions").length isnt 0
-		window.setInterval auctions.updateAuctions, 1000
-
+				window.setInterval auctions.updateAuctions, 1000
 	# End $(document).ready
 	
 
@@ -18,7 +17,7 @@ auction_list = []
 auctions =
 	fetchingAuctionUpdates: null
 	init: ->
-		callApi AUCTIONS_LIST_ACTIVE,({count: 30}), (data) ->
+		callApi AUCTIONS_LIST_CURRENT,({count: 30}), (data) ->
 			$("#auctions").html ""
 			auctions = data.result
 			if not auctions?
@@ -81,7 +80,6 @@ auctions =
 			tmplAuction += '\t\t\t<span class="timeleft">{time-remaining}</span>\n'
 			tmplAuction += '\t\t</div>\n'
 			tmplAuction += '\t\t<!-- top block -->\n'
-			#tmplAuction += '\t\t<div class="bid"><a href="javascript:void(0);"><span>BID NOW</span></a></div>\n'
 			tmplAuction += '\t\t<div class="bid js-button"><a href="javascript:void(0);" class="button-default cart"><span class="hover">BID NOW</span><span>BID NOW</span></a></div>\n'
 			tmplAuction += '\t</li>\n'
 			tmplAuction = tmplAuction.replaceAll("{auction-id}", id)
@@ -94,15 +92,21 @@ auctions =
 			return tmplAuction
 	
 	updateAuctions: ->
-		if auction_ids.length == 0 then return
+		if auction_ids.length is 0 then return
+		console.log("Auction List Length: " + auction_list.length)
+
 		tmplist = []
 		i = 0
-		while i < auction_ids.length
-			if auction_list[auction_ids[i]].t > 0.0
-				tmplist.push auction_ids[i]
+		for id in auction_ids
+			try 
+				if auction_list[id].time_left > 0.0
+					tmplist.push id
+			catch error
+				console.log("!!! ERROR !!! :: [" + id + "] :: " + error)
 			i++
 
 		auction_ids = tmplist
+
 		if fetchingAuctionUpdates then fetchingAuctionUpdates.abort()
 		fetchingAuctionUpdates = jQuery.ajax
 			url: API + AUCTIONS_STATUS_BY_ID
@@ -112,6 +116,7 @@ auctions =
 			success: (data) ->
 				$.map data, (auction) ->
 					auctions = data.result
+					console.log("Updated Auctions Length: " + auctions.length)
 					auction_list = []
 					for ix of auctions
 						i = auctions[ix].id
@@ -125,7 +130,7 @@ auctions =
 						#	$("#" + i + " span.winner").animate backgroundColor: "#FFFFFF"
 						auction_list[i] = auctions[ix]
 						buttonText =""
-						if auctions[ix].t > 11.0
+						if auctions[ix].time_left > 11.0
 							buttonText = "Starting Soon..."
 						else
 							if user.loggedIn?

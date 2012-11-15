@@ -53,7 +53,7 @@ class Auction(db.Model):
 		'''
 			Lists the top {count} active auctions
 		'''
-		return db.Query(model_class=Auction, keys_only=False).filter("active", True).order("auction_end").run(limit=count)
+		return db.Query(model_class=Auction, keys_only=False).order("auction_end").run(limit=count)
 	
 	def start_countdown(self, delay=3600):
 		'''
