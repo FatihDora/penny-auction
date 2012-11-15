@@ -59,7 +59,10 @@ class User(db.Model):
 		q = User.all().filter('username = ', username)
 
 		#Verify the user exists in the database
-		return (q.get() is None)
+		if q.get() == None:
+			return False
+		else:
+			return True
 
 	@staticmethod
 	def email_exists(email):
