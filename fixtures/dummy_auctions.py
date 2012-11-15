@@ -19,8 +19,8 @@ class DummyAuctions(object):
 		db.delete(auction.Auction.all())
 		
 		items = ['MacBook Air', 'MacBook Pro', 'Airport Express']
-		delay = 0
+		delay = timedelta(0)
 		for x in range(0, 100):
-			delay += 8640 # 1/10th of a day in seconds
+			delay += timedelta(days=0.1)
 			item_name = items[random.randint(0,2)]
 			auction_controller.AuctionController.create(item_name=item_name, start_delay=delay)

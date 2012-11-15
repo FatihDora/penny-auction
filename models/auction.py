@@ -7,7 +7,7 @@ from __future__ import division
 from __future__ import unicode_literals
 
 from google.appengine.ext import db, deferred
-from models import item, user, decimal_property
+from models import item, user, decimal_property, timedelta_property
 import datetime, decimal, logging
 
 class Auction(db.Model):
@@ -20,9 +20,9 @@ class Auction(db.Model):
 	# the time at which this auction began accepting bids, NOT the time the auction was created
 	start_time = db.DateTimeProperty(default=None)
 
-	# the time, in seconds, added to an auction when a bid is placed
+	# the time, as a timedelta object, added to an auction when a bid is placed
 	# also used for how long an auction with no bids should stay open
-	bid_pushback_time = db.IntegerProperty(default=10)
+	bid_pushback_time = timedelta_property.TimedeltaProperty(default=datetime.timedelta(seconds=10))
 
 	# the time at which the auction is set to end; this will be initially unset and will be updated as
 	# bidding progresses
@@ -55,23 +55,24 @@ class Auction(db.Model):
 		'''
 		return db.Query(model_class=Auction, keys_only=False).order("auction_end").run(limit=count)
 	
-	def start_countdown(self, delay=3600):
+	def start_countdown(self, delay=datetime.timedelta(hours=1)):
 		'''
-			Begins the countdown to making this auction active after the number
-			of seconds given by delay, or makes this auction active immediately
-			if delay is zero. Newly instantiated auction objects are dormant
-			until this method is called.
+			Begins the countdown to making this auction active after the
+			interval given by delay (which is expected to be a
+			datetime.timedelta object), or makes this auction active
+			immediately if delay is zero or a negative time. Newly instantiated
+			auction objects are dormant until this method is called.
 		'''
 
-		if delay > 0:
+		if delay > datetime.timedelta(0):
 			# initialize the timer counting down to auction start
-			self.start_time = datetime.datetime.now() + datetime.timedelta(seconds=delay)
-			self.auction_end = self.start_time + datetime.timedelta(seconds=self.bid_pushback_time)
+			self.start_time = datetime.datetime.now() + delay
+			self.auction_end = self.start_time + self.bid_pushback_time
 			self.put()
-			deferred.defer(self._heartbeat, _countdown=delay, _queue="auction-heartbeat")
+			deferred.defer(self._heartbeat, _countdown=delay.total_seconds(), _queue="auction-heartbeat")
 		else:
 			self.start_time = datetime.datetime.now()
-			self.auction_end = self.start_time + datetime.timedelta(seconds=self.bid_pushback_time)
+			self.auction_end = self.start_time + self.bid_pushback_time
 			self.put()
 			self.heartbeat()
 
@@ -109,7 +110,7 @@ class Auction(db.Model):
 
 		# set up the next heartbeat if this auction is still live
 		if self.active:
-			deferred.defer(self._heartbeat, _countdown=self.bid_pushback_time, _queue="auction-heartbeat")
+			deferred.defer(self._heartbeat, _countdown=self.bid_pushback_time.total_seconds(), _queue="auction-heartbeat")
 
 	def bid(self, user):
 		'''
@@ -123,7 +124,7 @@ class Auction(db.Model):
 			raise Exception("The user passed to Auction.bid() cannot be None.")
 
 		self.current_price += PRICE_INCREASE_FROM_BID
-		self.auction_end += datetime.timedelta(seconds=bid_pushback_time)
+		self.auction_end += bid_pushback_time
 		self.current_winner = user
 		self.put()
 
