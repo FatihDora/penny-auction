@@ -110,6 +110,11 @@ class AuctionController(object):
 		if userInfo is None:
 			raise Exception("Couldn't get info for " + username)
 
+		try:
+			auction_id = int(auction_id)
+		except Exception, e:
+			raise Exception("Auction ID is invalid.")
+
 		auctionInfo = auction.Auction.get_by_id(auction_id)
 
 		if auctionInfo is None:
@@ -119,7 +124,7 @@ class AuctionController(object):
 			raise Exception("This auction is not currently accepting bids.")
 
 		# Perform Bid:
-		userInfo.use_bids(1)
+		userInfo.use_bid(1)
 		auctionInfo.bid(userInfo)
 
 	@staticmethod

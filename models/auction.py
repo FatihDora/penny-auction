@@ -134,8 +134,8 @@ class Auction(db.Model):
 		if user is None:
 			raise Exception("The user passed to Auction.bid() cannot be None.")
 
-		self.current_price += PRICE_INCREASE_FROM_BID
-		self.auction_end += bid_pushback_time
+		self.current_price += decimal.Decimal(self.PRICE_INCREASE_FROM_BID)
+		self.auction_end += self.bid_pushback_time
 		self.current_winner = user
 		self.put()
 
