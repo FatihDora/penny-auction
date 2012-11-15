@@ -21,5 +21,5 @@ class DummyAuctions(object):
 		items = ['MacBook Air', 'MacBook Pro', 'Airport Express']
 		for x in range(0, 100):
 			item_name = items[random.randint(0,2)]
-			auction_controller.AuctionController.create(item_name=item_name, start_delay=1)
+			auction_controller.AuctionController.create(item_name=item_name, start_delay=60)
 
