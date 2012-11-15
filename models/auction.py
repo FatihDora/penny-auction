@@ -187,6 +187,9 @@ class Auction(db.Model):
 
 		if user is None:
 			raise Exception("The user passed to Auction.attach_autobidder() cannot be None.")
+		
+		if not self.active and self.auction_end < datetime.datetime.now():
+			raise Exception("Cannot attach autobidder because this auction has closed.")
 
 		if bids < 1:
 			raise Exception("The number of bids passed to Auction.attach_autobidder() must be at least 1.")
