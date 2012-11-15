@@ -8,7 +8,7 @@ from __future__ import unicode_literals
 
 from google.appengine.ext import db, deferred
 from models import item, user, decimal_property
-import datetime, decimal
+import datetime, decimal, logging
 
 class Auction(db.Model):
 	''' This class represents a single auction. '''
@@ -86,13 +86,24 @@ class Auction(db.Model):
 			self.active = True
 
 		else:
-			# check if there are any available autobidders and if so, place a bid
-			if self.attached_autobidders:
-				self._invoke_autobidders()
-			else:
+			if not self._invoke_autobidders():
 				# if there are no autobidders, close the auction
 				self.active = False
 				self.auction_end = datetime.datetime.now()
+				if self.current_winner:
+					logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price} and winning user {winner}.".format(
+						item = self.item.name,
+						start_time = self.start_time,
+						end_time = self.auction_end,
+						price = self.current_price,
+						winner = self.current_winner
+					))
+				else:
+					logging.info("Auction of {item} begun at {start_time} closed at {end_time} with no bidders.".format(
+						item = self.item.name,
+						start_time = self.start_time,
+						end_time = self.auction_end
+					))
 
 		self.put()
 
@@ -125,19 +136,20 @@ class Auction(db.Model):
 			auction).
 		'''
 
+		autobidders = self.attached_autobidders.fetch(None)
+
 		# shortcut out if there are no autobidders on this auction
-		if not self.attached_autobidders:
+		if not autobidders:
 			return False
 
 		# sort autobidders by last bid time, oldest to youngest, with autobidders that haven't bid yet
 		# sorted at the very front of the list
-		sorted_autobidder_list = self.attached_autobidders.fetch(None)
-		sorted_autobidder_list.sort(key=lambda this_autobidder: this_autobidder.last_bid_time
+		autobidders.sort(key=lambda this_autobidder: this_autobidder.last_bid_time
 				if(this_autobidder.last_bid_time)
 				else datetime.datetime(datetime.MINYEAR))
 
 		bid_placed = False
-		for next_autobidder in sorted_autobidder_list:
+		for next_autobidder in autobidders:
 			try:
 				bids_remaining = next_auto_bidder.use_bid()
 				bid_placed = True
@@ -145,7 +157,11 @@ class Auction(db.Model):
 					del next_autobidder
 				break
 			except InsufficientBidsException as exception:
-				del sorted_autobidder_list[this_autobidder_index]
+				del autobidders[this_autobidder_index]
+
+		self.attached_autobidders = autobidders
+		self.attached_autobidders.put()
+		self.put()
 
 		return bid_placed
 	
@@ -172,5 +188,6 @@ class Auction(db.Model):
 			raise Exception("The user passed to Auction.attached_autobidder() already owns an autobidder on this auction.")
 		
 		self.attached_autobidders.append(Autobidder(user, self, bids))
+		self.attached_autobidders.put()
 		self.put()
 
