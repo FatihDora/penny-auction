@@ -145,6 +145,7 @@ class Auction(db.Model):
 		for next_autobidder in autobidders:
 			try:
 				bids_remaining = next_autobidder.use_bid()
+				self.bid(next_autobidder.user)
 				bid_placed = True
 				next_autobidder.put()
 				if bids_remaining < 1:
@@ -205,7 +206,6 @@ class Autobidder(db.Model):
 		'''
 
 		if self.remaining_bids > 0:
-			self.auction.bid(self.user)
 			self.last_bid_time = datetime.datetime.now()
 			self.remaining_bids -= 1
 			self.put()
