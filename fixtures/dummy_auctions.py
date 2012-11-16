@@ -16,6 +16,7 @@ import datetime
 class DummyAuctions(object):
 	@staticmethod
 	def setup():
+		db.delete(auction.Autobidder.all())
 		db.delete(auction.Auction.all())
 		
 		items = ['MacBook Air', 'MacBook Pro', 'Airport Express']
