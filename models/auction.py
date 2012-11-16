@@ -37,7 +37,7 @@ class Auction(db.Model):
 
 
 	# the amount an auction's price increases when a bid is placed, in centavos
-	PRICE_INCREASE_FROM_BID = 0.01 
+	PRICE_INCREASE_FROM_BID = decimal.Decimal(0.01)
 
 
 	@staticmethod
@@ -134,7 +134,7 @@ class Auction(db.Model):
 		if user is None:
 			raise Exception("The user passed to Auction.bid() cannot be None.")
 
-		self.current_price += decimal.Decimal(self.PRICE_INCREASE_FROM_BID)
+		self.current_price += self.PRICE_INCREASE_FROM_BID
 		self.auction_end += self.bid_pushback_time
 		self.current_winner = user
 		self.put()
@@ -158,12 +158,12 @@ class Auction(db.Model):
 		# sorted at the very front of the list
 		autobidders.sort(key=lambda this_autobidder: this_autobidder.last_bid_time
 				if(this_autobidder.last_bid_time)
-				else datetime.datetime(datetime.MINYEAR))
+				else datetime.datetime(year=datetime.MINYEAR, month=1, day=1))
 
 		bid_placed = False
 		for next_autobidder in autobidders:
 			try:
-				bids_remaining = next_auto_bidder.use_bid()
+				bids_remaining = next_autobidder.use_bid()
 				bid_placed = True
 				next_autobidder.put()
 				if bids_remaining < 1:
