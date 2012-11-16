@@ -41,25 +41,6 @@ class Auction(db.Model):
 
 
 	@staticmethod
-	def get_by_ids(ids):
-		'''
-			Generates a list of auctions whose id is contained in the {ids} list
-		'''
-		auctions = []
-
-		for auction_id in ids:
-			auction = Auction.get_by_id(auction_id)
-			if auction:
-				auctions.append(auction)
-
-		return auctions
-
-		#ids = [map(int, x) for x in ids]
-		#raise Exception(Auction.all().filter("id =", ids).fetch())
-		#return Auction.all().get()
-		#return Auction.all().filter("id IN", ids).run()
-
-	@staticmethod
 	def get_current(count):
 		'''
 			Lists the top {count} auctions that are either open or waiting to open.

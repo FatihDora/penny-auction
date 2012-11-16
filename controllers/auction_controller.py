@@ -66,7 +66,7 @@ class AuctionController(object):
 			raise Exception("Too many ids")
 
 		# Try to get some auctions from the list of IDs
-		auctions = auction.Auction.get_by_ids(ids)
+		auctions = auction.Auction.get_by_id(ids)
 		if not auctions:
 			raise Exception("There were no auctions for the IDs you provided.")
 
