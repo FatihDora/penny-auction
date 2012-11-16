@@ -73,7 +73,7 @@
         tmplAuction += ' <li id="{auction-id}">\n';
         tmplAuction += '\t\t<!-- top block -->\n';
         tmplAuction += '\t\t<div class="top-block">\n';
-        tmplAuction += '\t\t\t<h3 class="nocufon"><a href="{url}" title="{item-name}">{item-name}</a></h3>\n';
+        tmplAuction += '\t\t\t<h3 class="nocufon"><a href="/auction/{auction-id}" title="{item-name}">{item-name}</a></h3>\n';
         tmplAuction += '\t\t\t<div class="imgb thumbnail-zoom">\n';
         tmplAuction += '\t\t\t\t<a href="/auction/{auction-id}" class="fadeable">\n';
         tmplAuction += '\t\t\t\t\t<span class="light-background">\n';
@@ -93,7 +93,6 @@
         tmplAuction += '\t\t<div class="bid js-button"><a href="javascript:void(0);" class="button-default cart"><span class="hover">BID NOW</span><span>BID NOW</span></a></div>\n';
         tmplAuction += '\t</li>\n';
         tmplAuction = tmplAuction.replaceAll("{auction-id}", id);
-        tmplAuction = tmplAuction.replaceAll("{url}", productUrl);
         tmplAuction = tmplAuction.replaceAll("{item-name}", productName);
         tmplAuction = tmplAuction.replaceAll("{image-url}", imageUrl);
         tmplAuction = tmplAuction.replaceAll("{current-price}", currentPrice);
