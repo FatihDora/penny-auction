@@ -53,6 +53,7 @@ urls = (
     '/auctions_list_all', 'auctions_list_all',
     '/auction_bid', 'auction_bid',
     '/auction_detail', 'auction_detail',
+    '/auction_recent_bids', 'auction_recent_bids',
 
     '/user_get_nonce', 'user_get_nonce',
     '/user_register', 'user_register',
@@ -331,12 +332,46 @@ class auction_detail:
         inputs = web.input()
         web.header('Content-Type', 'application/json')
 
+        # STUB:
+        ad = []
+        ad.append({'id':inputs.id,
+                        'name':'test auction',
+                        'base_price':'58.91',
+                        'product_url':'http://www.google.com',
+                        'image_url':'http://www.randomwebsite.com/images/head.jpg',
+                        'price':'2.05',
+                        'winner':'darin',
+                        'time_of_bid':'14:39:58',
+                        'time_left':'8'})
+        return json.dumps({'result':ad}) 
+        
+
+
+
         try:
             result = {'result':auction_controller.AuctionController.auction_detail(inputs.id)}
             return json.dumps(result)
 
         except Exception, e:
             return json.dumps({'exception':unicode(e)})
+
+class auction_recent_bids:
+    def GET(self):
+        inputs = web.inputs
+        web.header('Content-Type', 'application/json')
+
+        ad = []
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:58'})
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:52'})
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:47'})
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:44'})
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:40'})
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:33'})
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:32'})
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:29'})
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:24'})
+        ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:21'})
+        return json.dumps({'result':ad}) 
 
 # USER Stuff
 
