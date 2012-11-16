@@ -7,7 +7,8 @@ PisoAuction.test ->
 		# login
 		username = "kevin"
 		PisoAuction.login username, "asdf", ->
-			casper.test.assertNotVisible "#login-wrapper", "Login wrapper not visible"
+			casper.test.assertNotVisible "#login-wrapper",
+				"Login wrapper shouldn't be visible"
 
 			# validate username
 			actualUsername = casper.fetchText ".username-label"
@@ -15,5 +16,6 @@ PisoAuction.test ->
 
 			# logout
 			PisoAuction.logout ->
-				casper.test.assertVisible "#login-wrapper", "Login wrapper visible"
+				casper.test.assertVisible "#login-wrapper",
+					"Login wrapper should be visible"
 
