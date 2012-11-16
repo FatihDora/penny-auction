@@ -8,28 +8,33 @@
 
   auction = {
     init: function() {
+      var oAuction;
+      oAuction = null;
       callApi(AUCTION_DETAIL, {
         id: auction_id
       }, function(data) {
-        var b, i, m, n, p, t, u, w;
-        if (data.result) {
-          auction = data.result;
-          if (!(auction != null)) {
-            $("#onecol .gallery").html('<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>');
-            return;
-          }
-          i = auction.id;
-          n = auction.name;
-          b = auction.base_price;
-          u = auction.product_url;
-          m = auction.image_url;
-          p = auction.price;
-          w = auction.wwinner;
-          t = secondsToHms(auctions[ix].time_left);
-          return $('#auction-image').html('<img src="' + auction.m + '" alt="combo1" width="292" height="242" />');
+        var b, i, m, n, p, u, w;
+        if (!data.result) {
+          return document.location.href = '/';
+        } else {
+          oAuction = data.result[0];
+          i = oAuction.id;
+          n = oAuction.name;
+          b = oAuction.base_price;
+          u = oAuction.product_url;
+          m = oAuction.image_url;
+          p = oAuction.price;
+          w = oAuction.winner;
+          oAuction.time_left = secondsToHms(oAuction.time_left);
+          $('#auction-name').html(oAuction.name);
+          $('#auction-image').html('<img src="' + oAuction.image_url + '" alt="' + oAuction.name + '" width="292" height="242" />');
+          $('#current-price').html('P' + oAuction.price);
+          $('#current-winner').html(oAuction.winner);
+          $('#auction-baseprice').html(oAuction.base_price);
+          return $('#auction-time-left').html(oAuction.time_left);
         }
       });
-      return $("#registration-form").submit(function(e) {
+      return $("#createautobidder-form").submit(function(e) {
         var email, error, first_name, last_name, password, termsaccepted, username;
         e.preventDefault();
         error = "<ul style='clear: both'>";

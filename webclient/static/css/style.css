@@ -4685,3 +4685,7 @@ div#rightcol ul#auctions li .bid a {
 	width: 95%;
 	margin-top: 10px;
 }
+
+div.auction-baseprice {
+	font-size: 16px;
+}

@@ -341,7 +341,6 @@ class auction_detail:
                         'image_url':'http://www.randomwebsite.com/images/head.jpg',
                         'price':'2.05',
                         'winner':'darin',
-                        'time_of_bid':'14:39:58',
                         'time_left':'8'})
         return json.dumps({'result':ad}) 
         
