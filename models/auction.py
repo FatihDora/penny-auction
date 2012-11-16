@@ -206,6 +206,7 @@ class Autobidder(db.Model):
 
 		if self.remaining_bids > 0:
 			self.auction.bid(self.user)
+			self.last_bid_time = datetime.datetime.now()
 			self.remaining_bids -= 1
 			self.put()
 		else:
