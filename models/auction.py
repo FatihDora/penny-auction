@@ -7,7 +7,7 @@ from __future__ import division
 from __future__ import unicode_literals
 
 from google.appengine.ext import db, deferred
-from models import item, user, decimal_property, timedelta_property
+from models import item, user, decimal_property, timedelta_property, insufficient_bids_exception
 import datetime, decimal, logging
 
 class Auction(db.Model):
@@ -165,15 +165,12 @@ class Auction(db.Model):
 			try:
 				bids_remaining = next_auto_bidder.use_bid()
 				bid_placed = True
+				next_autobidder.put()
 				if bids_remaining < 1:
-					del next_autobidder
+					db.delete(self.attached_autobidders.filter("key", next_autobidder.key()))
 				break
-			except InsufficientBidsException as exception:
-				del autobidders[this_autobidder_index]
-
-		self.attached_autobidders = autobidders
-		self.attached_autobidders.put()
-		self.put()
+			except insufficient_bids_exception.InsufficientBidsException as exception:
+				db.delete(self.attached_autobidders.filter("key", next_autobidder.key()))
 
 		return bid_placed
 	
@@ -196,13 +193,9 @@ class Auction(db.Model):
 		if bids < 1:
 			raise Exception("The number of bids passed to Auction.attach_autobidder() must be at least 1.")
 
-		user_list = ()
-		for autobidder in self.attached_autobidders:
-			user_list.append(autobidder.user)
-		if user in user_list:
+		if self.attached_autobidders.filter("user", user).run():
 			raise Exception("The user passed to Auction.attached_autobidder() already owns an autobidder on this auction.")
-		
-		self.attached_autobidders.append(Autobidder(user, self, bids))
-		self.attached_autobidders.put()
-		self.put()
+
+		new_autobidder = autobidder.Autobidder(user=user, auction=self, remaining_bids=bids)
+		new_autobidder.put()
 

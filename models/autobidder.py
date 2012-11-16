@@ -10,6 +10,7 @@ from google.appengine.ext import db
 import datetime
 import models.user as user
 import models.auction as auction
+import models.insufficient_bids_exception
 
 
 class Autobidder(db.Model):
@@ -18,24 +19,17 @@ class Autobidder(db.Model):
 		automatically on behalf of its creator.
 	'''
 
-	id = db.IntegerProperty(required=True)
 	user = db.ReferenceProperty(user.User, collection_name='active_autobidders')
 	auction = db.ReferenceProperty(auction.Auction, collection_name='attached_autobidders')
 	remaining_bids = db.IntegerProperty(required=True)
-	create_time = db.DateTimeProperty(required=True)
+	create_time = db.DateTimeProperty(auto_now_add=True)
 	last_bid_time = db.DateTimeProperty(default=None)
-
-	def __init__(self, user, auction, bids):
-		self.user = user
-		self.auction = auction
-		self.remaining_bids = bids
-		self.create_time = datetime.now()
 
 	def use_bid(self):
 		'''
-			Uses up one of the bids in this autobidder and returns the number of
-			bids remaining after using this bid. Throws a NoBidsRemainingException if
-			there are no bids left to use.
+			Uses up one of the bids in this autobidder and returns the number
+			of bids remaining after using this bid. Throws an
+			InsufficientBidsException if there are no bids left to use.
 		'''
 
 		if self.remaining_bids > 0:
@@ -43,7 +37,7 @@ class Autobidder(db.Model):
 			self.remaining_bids -= 1
 			self.put()
 		else:
-			raise NoBidsRemainingException(self.user, self)
+			raise insufficient_bids_exception.InsufficientBidsException(self.user, 1, self)
 
 		return self.remaining_bids
 

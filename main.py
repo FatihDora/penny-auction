@@ -151,15 +151,15 @@ class winners:
 
 class autobidder_create:
     def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
 
-        try:
-            result = {'result':auction_controller.attach_autobidder(inputs.auction_id, user_name, num_bids)}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
+		result = auction_controller.AuctionController.attach_autobidder(
+				auction_id=int(inputs.auction_id),
+				user_name=inputs.user_name,
+				num_bids=inputs.num_bids
+		)
+		return json.dumps({'result': unicode(result)})
 
 class autobidder_status:
     def GET(self):

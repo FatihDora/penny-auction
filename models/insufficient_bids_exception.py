@@ -26,8 +26,8 @@ class InsufficientBidsException(Exception):
 		if autobidder:
 			Exception.__init__(self, "There are no bids remaining in this autobidder to use up.")
 		else:
-			Exception.__init__(self, "User {user_name} tried to use {requested} bids but only has {actual} in his or her account.".format(user_name=user.name, requested=requested_number_of_bids, actual=user.bid_count)))
+			Exception.__init__(self, "User {user_name} tried to use {requested} bids but only has {actual} in his or her account.".format(user_name=user.username, requested=requested_number_of_bids, actual=user.bid_count))
 		self.user = user
-		self.requested_number_of_bids
+		self.requested_number_of_bids = requested_number_of_bids
 		self.autobidder = autobidder
 

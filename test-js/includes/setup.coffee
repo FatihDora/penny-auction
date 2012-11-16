@@ -2,8 +2,14 @@
 PisoAuction = casper.PisoAuction = {}
 
 PisoAuction.test = (testBlock) ->
-	casper.start "http://localhost:8081"
-	casper.reload()
+	# clear the data
+	casper.test.info "Resetting fixtures"
+	casper.start "http://localhost:8081/reset_data"
+	casper.waitFor ->
+		/done/i.test casper.getPageContent()
+
+	# run tests
+	casper.thenOpen "http://localhost:8081/"
 	testBlock()
 	casper.run ->
 		@test.done()
@@ -11,8 +17,10 @@ PisoAuction.test = (testBlock) ->
 # define a login shortcut
 PisoAuction.login = (username, password, callback) ->
 	casper.test.info "Logging in as '#{username}'"
-	casper.test.assertVisible "#login-wrapper", "Login wrapper visible"
-	casper.test.assertNotVisible "#logout-wrapper", "Logout wrapper not visible"
+	casper.test.assertVisible "#login-wrapper",
+		"Login wrapper should be visible"
+	casper.test.assertNotVisible "#logout-wrapper",
+		"Logout wrapper shouldn't be visible"
 	casper.fill "form#login-form",
 		"login-username": username
 		"login-password": password
@@ -26,8 +34,10 @@ PisoAuction.login = (username, password, callback) ->
 # define a logout shortcut
 PisoAuction.logout = (callback) ->
 	casper.test.info "Logging out"
-	casper.test.assertNotVisible "#login-wrapper", "Login wrapper not visible"
-	casper.test.assertVisible "#logout-wrapper", "Logout wrapper visible"
+	casper.test.assertNotVisible "#login-wrapper",
+		"Login wrapper shouldn't be visible"
+	casper.test.assertVisible "#logout-wrapper",
+		"Logout wrapper should be visible"
 	casper.click "#logout-link"
 	casper.waitUntilVisible "#login-wrapper", ->
 		casper.test.info "logged out"
@@ -36,6 +46,16 @@ PisoAuction.logout = (callback) ->
 
 # define a shortcut for expecting certain dialog messages
 PisoAuction.expectMessage = (expectedMessage) ->
-	casper.test.assertVisible "#messageDialog", "Message dialog shown"
+	casper.test.assertVisible "#messageDialog",
+		"Message dialog shown"
 	actualMessage = casper.fetchText "#messageDialog p"
-	casper.test.assertEquals actualMessage, expectedMessage, "Check message"
+	casper.test.assertEquals actualMessage, expectedMessage,
+		"Check message"
+
+# define a shortcut for expecting certain dialog partial messages
+PisoAuction.expectMessageRegex = (expectedRegex) ->
+	casper.test.assertVisible "#messageDialog",
+		"Message dialog shown"
+	actualMessage = casper.fetchText "#messageDialog p"
+	casper.test.assertMatch actualMessage, expectedRegex,
+		"Check message (regex)"

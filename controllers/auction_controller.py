@@ -124,7 +124,7 @@ class AuctionController(object):
 			raise Exception("This auction is not currently accepting bids.")
 
 		# Perform Bid:
-		userInfo.use_bid(1)
+		userInfo.use_bids(1)
 		auctionInfo.bid(userInfo)
 
 	@staticmethod

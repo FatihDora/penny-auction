@@ -10,6 +10,8 @@ from google.appengine.ext import db
 import lib.bcrypt.bcrypt as bcrypt
 import random
 import sys
+from models import insufficient_bids_exception
+import logging
 
 
 class User(db.Model):
@@ -91,16 +93,17 @@ class User(db.Model):
 		sender.bid_count += num
 		sender.put()
 	
-	def use_bid(self, number):
+	def use_bids(self, number):
 		'''
 			Uses up an amount of this user's bids specified by the number
 			parameter. Raises a InsufficientBidsException if the user doesn't
 			have enough bids to use.
 		'''
 
+		number = int(number)
 		if self.bid_count >= number:
 			self.bid_count -= number
 			self.put()
 		else:
-			raise InsufficientBidsException(self, number)
+			raise insufficient_bids_exception.InsufficientBidsException(self, number)
 
