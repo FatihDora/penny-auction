@@ -37,7 +37,7 @@ class Auction(db.Model):
 
 
 	# the amount an auction's price increases when a bid is placed, in centavos
-	PRICE_INCREASE_FROM_BID = 0.01 
+	PRICE_INCREASE_FROM_BID = 0.01
 
 
 	@staticmethod
@@ -65,7 +65,7 @@ class Auction(db.Model):
 			Lists the top {count} auctions that are either open or waiting to open.
 		'''
 		return db.Query(model_class=Auction, keys_only=False).filter("auction_end >",datetime.datetime.now()).order("auction_end").run(limit=count)
-	
+
 	def start_countdown(self, delay=datetime.timedelta(hours=1)):
 		'''
 			Begins the countdown to making this auction active after the
@@ -173,7 +173,7 @@ class Auction(db.Model):
 				db.delete(self.attached_autobidders.filter("key", next_autobidder.key()))
 
 		return bid_placed
-	
+
 	def attach_autobidder(self, user, bids):
 		'''
 			Attaches an autobidder to this auction, where user is the user
@@ -186,7 +186,7 @@ class Auction(db.Model):
 
 		if user is None:
 			raise Exception("The user passed to Auction.attach_autobidder() cannot be None.")
-		
+
 		if not self.active and self.auction_end < datetime.datetime.now():
 			raise Exception("Cannot attach autobidder because this auction has closed.")
 
@@ -199,3 +199,15 @@ class Auction(db.Model):
 		new_autobidder = autobidder.Autobidder(user=user, auction=self, remaining_bids=bids)
 		new_autobidder.put()
 
+	def __eq__(self, other):
+		'''
+			Equality tester
+		'''
+		return (isinstance(other, self.__class__)
+				and self.key().id() == other.key().id())
+
+	def __neq__(self, other):
+		'''
+			Inequality tester
+		'''
+		return not self.__eq__(other)

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import controllers.auction_controller as auction_controller
+import models.auction as auction
 import fixtures.dummy_items as dummy_items
 import fixtures.dummy_auctions as dummy_auctions
 import unittest
@@ -20,10 +21,14 @@ class AuctionControllerTestCase(unittest.TestCase):
 
 		# fixtures
 		dummy_items.DummyItems.setup()
-		dummy_auctions.DummyAuctions.setup()
 
 	def tearDown(self):
 		self.testbed.deactivate()
+
+	# shortcut for creating a valid auction
+	def make_valid_auction(self):
+		return auction_controller.AuctionController.create("MacBook Pro",
+			timedelta(seconds=10), timedelta(10))
 
 	def testAuctionCreationWhenItemDoesntExist(self):
 		try:
@@ -55,9 +60,10 @@ class AuctionControllerTestCase(unittest.TestCase):
 			assert re.search("bid_pushback_time", str(e), re.IGNORECASE)
 			assert re.search("must be a positive", str(e), re.IGNORECASE)
 
-# test auction_controller.AuctionController.create(item_name, start_delay,
-#	bid_pushback_time)
-# -- successful auction creation
+	def testAuctionCreationWhenValid(self):
+		the_auction = self.make_valid_auction()
+		auction_copy = auction.Auction.get(the_auction.key())
+		self.assertEquals(the_auction, auction_copy)
 
 # test auction_controller.AuctionController.auctions_status_by_ids(auction_ids)
 # -- when no ids are specified
