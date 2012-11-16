@@ -20,8 +20,7 @@ import datetime
 from datetime import timedelta
 
 from controllers import user_controller, auction_controller
-import models.auction as auction
-import models.autobidder as autobidder
+import models.auction
 import models.bid_history as bid_history
 import models.item as item
 import models.user as user

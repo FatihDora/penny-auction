@@ -165,18 +165,51 @@ class Auction(db.Model):
 			owning the new autobidder.
 		'''
 
+		bids = int(bids)
+
 		if user is None:
 			raise Exception("The user passed to Auction.attach_autobidder() cannot be None.")
-		
+
 		if not self.active and self.auction_end < datetime.datetime.now():
 			raise Exception("Cannot attach autobidder because this auction has closed.")
 
 		if bids < 1:
 			raise Exception("The number of bids passed to Auction.attach_autobidder() must be at least 1.")
 
-		if self.attached_autobidders.filter("user", user).run():
+		if self.attached_autobidders.filter("user", user).fetch(None):
 			raise Exception("The user passed to Auction.attached_autobidder() already owns an autobidder on this auction.")
 
-		new_autobidder = autobidder.Autobidder(user=user, auction=self, remaining_bids=bids)
+		new_autobidder = Autobidder(user=user, auction=self, remaining_bids=bids)
 		new_autobidder.put()
+
+
+
+
+class Autobidder(db.Model):
+	'''
+		This class models an auto bidder, which places bids on an auction
+		automatically on behalf of its creator.
+	'''
+
+	user = db.ReferenceProperty(user.User, collection_name='active_autobidders')
+	auction = db.ReferenceProperty(Auction, collection_name='attached_autobidders')
+	remaining_bids = db.IntegerProperty(required=True)
+	create_time = db.DateTimeProperty(auto_now_add=True)
+	last_bid_time = db.DateTimeProperty(default=None)
+
+	def use_bid(self):
+		'''
+			Uses up one of the bids in this autobidder and returns the number
+			of bids remaining after using this bid. Throws an
+			InsufficientBidsException if there are no bids left to use.
+		'''
+
+		if self.remaining_bids > 0:
+			self.auction.bid(self.user)
+			self.remaining_bids -= 1
+			self.put()
+		else:
+			raise insufficient_bids_exception.InsufficientBidsException(self.user, 1, self)
+
+		return self.remaining_bids
 

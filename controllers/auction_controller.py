@@ -148,7 +148,7 @@ class AuctionController(object):
 		if auction_info is None:
 			raise Exception("Auction does not exist.")
 
-		if not auction_info.active and auction_info.auction_end_time < datetime.now():
+		if not auction_info.active and auction_info.auction_end < datetime.now():
 			raise Exception("Auction has closed.")
 
 		user_info = user.User.get_by_username(user_name)
