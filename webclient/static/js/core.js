@@ -19,6 +19,8 @@
 
   window.AUCTION_DETAIL = "/auction_detail";
 
+  window.AUCTION_RECENT_BIDS = "/auction_recent_bids";
+
   window.USER_REGISTER = "/user_register";
 
   window.USER_AUTHENTICATE = "/user_authenticate";

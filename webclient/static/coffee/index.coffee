@@ -80,7 +80,7 @@ auctions =
 			tmplAuction += '\t\t\t<span class="timeleft">{time-remaining}</span>\n'
 			tmplAuction += '\t\t</div>\n'
 			tmplAuction += '\t\t<!-- top block -->\n'
-			tmplAuction += '\t\t<div class="bid js-button"><a href="javascript:void(0);" class="button-default cart"><span class="hover">BID NOW</span><span>BID NOW</span></a></div>\n'
+			tmplAuction += '\t\t<div class="bid js-button"><a href="javascript:void(0);" class="button-default cart"><span class="hover">LOADING...</span><span>LOADING...</span></a></div>\n'
 			tmplAuction += '\t</li>\n'
 			tmplAuction = tmplAuction.replaceAll("{auction-id}", id)
 			tmplAuction = tmplAuction.replaceAll("{item-name}", productName)
@@ -92,7 +92,6 @@ auctions =
 	
 	updateAuctions: ->
 		if auction_ids.length is 0 then return
-		console.log("Auction List Length: " + auction_list.length)
 
 		tmplist = []
 		i = 0
@@ -101,7 +100,6 @@ auctions =
 				if auction_list[id].time_left > 0.0
 					tmplist.push id
 			catch error
-				console.log("!!! ERROR !!! :: [" + id + "] :: " + error)
 			i++
 
 		auction_ids = tmplist
@@ -113,9 +111,9 @@ auctions =
 				ids: auction_ids.join()
 
 			success: (data) ->
+				fetchingAuctionUpdates = null
 				$.map data, (auction) ->
 					auctions = data.result
-					console.log("Updated Auctions Length: " + auctions.length)
 					auction_list = []
 					for ix of auctions
 						i = auctions[ix].id

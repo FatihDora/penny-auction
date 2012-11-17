@@ -90,7 +90,7 @@
         tmplAuction += '\t\t\t<span class="timeleft">{time-remaining}</span>\n';
         tmplAuction += '\t\t</div>\n';
         tmplAuction += '\t\t<!-- top block -->\n';
-        tmplAuction += '\t\t<div class="bid js-button"><a href="javascript:void(0);" class="button-default cart"><span class="hover">BID NOW</span><span>BID NOW</span></a></div>\n';
+        tmplAuction += '\t\t<div class="bid js-button"><a href="javascript:void(0);" class="button-default cart"><span class="hover">LOADING...</span><span>LOADING...</span></a></div>\n';
         tmplAuction += '\t</li>\n';
         tmplAuction = tmplAuction.replaceAll("{auction-id}", id);
         tmplAuction = tmplAuction.replaceAll("{item-name}", productName);
@@ -106,7 +106,6 @@
       if (auction_ids.length === 0) {
         return;
       }
-      console.log("Auction List Length: " + auction_list.length);
       tmplist = [];
       i = 0;
       for (_i = 0, _len = auction_ids.length; _i < _len; _i++) {
@@ -116,7 +115,7 @@
             tmplist.push(id);
           }
         } catch (error) {
-          console.log("!!! ERROR !!! :: [" + id + "] :: " + error);
+
         }
         i++;
       }
@@ -130,10 +129,10 @@
           ids: auction_ids.join()
         },
         success: function(data) {
+          fetchingAuctionUpdates = null;
           return $.map(data, function(auction) {
             var a, buttonText, ix, p, t, w, _results;
             auctions = data.result;
-            console.log("Updated Auctions Length: " + auctions.length);
             auction_list = [];
             _results = [];
             for (ix in auctions) {

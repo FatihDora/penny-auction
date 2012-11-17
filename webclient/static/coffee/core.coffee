@@ -17,6 +17,7 @@ window.AUCTIONS_LIST_CURRENT = "/auctions_list_current"
 window.AUCTIONS_STATUS_BY_ID = "/auctions_status_by_id"
 window.AUCTION_BID = "/auction_bid"
 window.AUCTION_DETAIL = "/auction_detail"
+window.AUCTION_RECENT_BIDS = "/auction_recent_bids"
 
 # User
 window.USER_REGISTER = "/user_register"
