@@ -129,7 +129,8 @@ class Auction(db.Model):
 			auction).
 		'''
 
-		autobidders = self.attached_autobidders.fetch(None)
+		# ignore autobidders owned by the last bidder, if there is one
+		autobidders = self.attached_autobidders.filter("user !=", self.current_winner).fetch(None)
 
 		# shortcut out if there are no autobidders on this auction
 		if not autobidders:
