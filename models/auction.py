@@ -77,28 +77,11 @@ class Auction(db.Model):
 		# if this is the first heartbeat, take care of activating the auction
 		if not self.active:
 			self.active = True
-
+			self.put()
 		else:
 			if not self._invoke_autobidders():
 				# if there are no autobidders, close the auction
-				self.active = False
-				self.auction_end = datetime.datetime.now()
-				if self.current_winner:
-					logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price} and winning user {winner}.".format(
-						item = self.item.name,
-						start_time = self.start_time,
-						end_time = self.auction_end,
-						price = self.current_price,
-						winner = self.current_winner
-					))
-				else:
-					logging.info("Auction of {item} begun at {start_time} closed at {end_time} with no bidders.".format(
-						item = self.item.name,
-						start_time = self.start_time,
-						end_time = self.auction_end
-					))
-
-		self.put()
+				self.close()
 
 		# set up the next heartbeat if this auction is still live
 		if self.active:
@@ -119,6 +102,36 @@ class Auction(db.Model):
 		self.auction_end = datetime.datetime.now() + self.bid_pushback_time
 		self.current_winner = user
 		self.put()
+	
+	def close(self):
+		'''
+			Close the auction and perform any required cleanup. Currently this
+			means closing out all attached autobidders and setting the active
+			and auction_end properties, but other cleanup logic should be added
+			here as needed.
+		'''
+
+		self.auction_end = datetime.datetime.now()
+		self.active = False
+		self.put()
+
+		if self.current_winner:
+			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price} and winning user {winner}.".format(
+				item = self.item.name,
+				start_time = self.start_time,
+				end_time = self.auction_end,
+				price = self.current_price,
+				winner = self.current_winner
+			))
+		else:
+			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with no bidders.".format(
+				item = self.item.name,
+				start_time = self.start_time,
+				end_time = self.auction_end
+			))
+		
+		for autobidder in self.attached_autobidders:
+			autobidder.close()
 
 	def _invoke_autobidders(self):
 		'''
@@ -214,4 +227,17 @@ class Autobidder(db.Model):
 			raise insufficient_bids_exception.InsufficientBidsException(self.user, 1, self)
 
 		return self.remaining_bids
+
+	def close(self):
+		'''
+			Close the autobidder and perform any required cleanup. Currently
+			this means refunding all unused bids to the owning user, but other
+			cleanup logic should be added here as needed.
+		'''
+
+		owner = user.User.get_by_id(self.user.key().id())
+		owner.add_bids(self.remaining_bids)
+		owner.put()
+		self.remaining_bids = 0
+		self.put()
 
