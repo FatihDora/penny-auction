@@ -116,12 +116,12 @@ class Auction(db.Model):
 		self.put()
 
 		if self.current_winner:
-			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price} and winning user {winner}.".format(
+			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price.2f} and winning user {winner}.".format(
 				item = self.item.name,
 				start_time = self.start_time,
 				end_time = self.auction_end,
 				price = self.current_price,
-				winner = self.current_winner
+				winner = self.current_winner.username
 			))
 		else:
 			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with no bidders.".format(
