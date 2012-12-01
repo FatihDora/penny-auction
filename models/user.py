@@ -89,18 +89,49 @@ class User(db.Model):
 		result.email_validated = True
 		result.put()
 
-	def add_bids(sender, num):
-		sender.bid_count += num
-		sender.put()
+	def add_bids(self, number):
+		'''
+			Adds bids to this user's account. Prevents accidentally deducting
+			bids instead of adding (due to bugs, malicious use, etc) by
+			refusing to process negative bid numbers--invoke the use_bids()
+			method instead to intentionally deduct bids from a user's account.
+		'''
+
+		number = int(number)
+
+		if number < 0:
+			raise Exception(
+				'''Cannot add negative bids ({number}) to a user's account from
+				the add_bids() method. Invoke the use_bids() method instead to
+				use up bid in this user's account.'''.format(
+					number = number
+				)
+			)
+
+		self.bid_count += number
+		self.put()
 	
 	def use_bids(self, number):
 		'''
 			Uses up an amount of this user's bids specified by the number
 			parameter. Raises a InsufficientBidsException if the user doesn't
-			have enough bids to use.
+			have enough bids to use. Prevents accidentally adding bids instead
+			of removing them (due to bugs, malicious use, etc) by refusing to
+			process negative bid numbers--invoke the add_bids() method instead
+			to intentionally add bids from a user's account.
 		'''
 
 		number = int(number)
+
+		if number < 0:
+			raise Exception(
+				'''Cannot deduct negative bids ({num}) from a user's account from
+				the use_bids() method. Invoke the add_bids() method instead to
+				add bids to this user's account.'''.format(
+					num = num
+				)
+			)
+
 		if self.bid_count >= number:
 			self.bid_count -= number
 			self.put()

@@ -14,3 +14,8 @@ indexes:
   properties:
   - name: active
   - name: auction_end
+
+- kind: Autobidder
+  properties:
+  - name: auction
+  - name: user

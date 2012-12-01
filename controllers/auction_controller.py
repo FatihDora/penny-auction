@@ -66,7 +66,7 @@ class AuctionController(object):
 			raise Exception("Too many ids")
 
 		# Try to get some auctions from the list of IDs
-		auctions = auction.Auction.get_by_ids(ids)
+		auctions = auction.Auction.get_by_id(ids)
 		if not auctions:
 			raise Exception("There were no auctions for the IDs you provided.")
 
@@ -148,7 +148,7 @@ class AuctionController(object):
 		if auction_info is None:
 			raise Exception("Auction does not exist.")
 
-		if not auction_info.active and auction_info.auction_end_time < datetime.now():
+		if not auction_info.active and auction_info.auction_end < datetime.datetime.now():
 			raise Exception("Auction has closed.")
 
 		user_info = user.User.get_by_username(user_name)

@@ -37,27 +37,8 @@ class Auction(db.Model):
 
 
 	# the amount an auction's price increases when a bid is placed, in centavos
-	PRICE_INCREASE_FROM_BID = 0.01
+	PRICE_INCREASE_FROM_BID = decimal.Decimal(0.01)
 
-
-	@staticmethod
-	def get_by_ids(ids):
-		'''
-			Generates a list of auctions whose id is contained in the {ids} list
-		'''
-		auctions = []
-
-		for auction_id in ids:
-			auction = Auction.get_by_id(auction_id)
-			if auction:
-				auctions.append(auction)
-
-		return auctions
-
-		#ids = [map(int, x) for x in ids]
-		#raise Exception(Auction.all().filter("id =", ids).fetch())
-		#return Auction.all().get()
-		#return Auction.all().filter("id IN", ids).run()
 
 	@staticmethod
 	def get_current(count):
@@ -96,28 +77,11 @@ class Auction(db.Model):
 		# if this is the first heartbeat, take care of activating the auction
 		if not self.active:
 			self.active = True
-
+			self.put()
 		else:
 			if not self._invoke_autobidders():
 				# if there are no autobidders, close the auction
-				self.active = False
-				self.auction_end = datetime.datetime.now()
-				if self.current_winner:
-					logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price} and winning user {winner}.".format(
-						item = self.item.name,
-						start_time = self.start_time,
-						end_time = self.auction_end,
-						price = self.current_price,
-						winner = self.current_winner
-					))
-				else:
-					logging.info("Auction of {item} begun at {start_time} closed at {end_time} with no bidders.".format(
-						item = self.item.name,
-						start_time = self.start_time,
-						end_time = self.auction_end
-					))
-
-		self.put()
+				self.close()
 
 		# set up the next heartbeat if this auction is still live
 		if self.active:
@@ -134,10 +98,40 @@ class Auction(db.Model):
 		if user is None:
 			raise Exception("The user passed to Auction.bid() cannot be None.")
 
-		self.current_price += decimal.Decimal(self.PRICE_INCREASE_FROM_BID)
-		self.auction_end += self.bid_pushback_time
+		self.current_price += self.PRICE_INCREASE_FROM_BID
+		self.auction_end = datetime.datetime.now() + self.bid_pushback_time
 		self.current_winner = user
 		self.put()
+
+	def close(self):
+		'''
+			Close the auction and perform any required cleanup. Currently this
+			means closing out all attached autobidders and setting the active
+			and auction_end properties, but other cleanup logic should be added
+			here as needed.
+		'''
+
+		self.auction_end = datetime.datetime.now()
+		self.active = False
+		self.put()
+
+		if self.current_winner:
+			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price.2f} and winning user {winner}.".format(
+				item = self.item.name,
+				start_time = self.start_time,
+				end_time = self.auction_end,
+				price = self.current_price,
+				winner = self.current_winner.username
+			))
+		else:
+			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with no bidders.".format(
+				item = self.item.name,
+				start_time = self.start_time,
+				end_time = self.auction_end
+			))
+
+		for autobidder in self.attached_autobidders:
+			autobidder.close()
 
 	def _invoke_autobidders(self):
 		'''
@@ -148,7 +142,8 @@ class Auction(db.Model):
 			auction).
 		'''
 
-		autobidders = self.attached_autobidders.fetch(None)
+		# ignore autobidders owned by the last bidder, if there is one
+		autobidders = self.attached_autobidders.filter("user !=", self.current_winner).fetch(None)
 
 		# shortcut out if there are no autobidders on this auction
 		if not autobidders:
@@ -158,12 +153,13 @@ class Auction(db.Model):
 		# sorted at the very front of the list
 		autobidders.sort(key=lambda this_autobidder: this_autobidder.last_bid_time
 				if(this_autobidder.last_bid_time)
-				else datetime.datetime(datetime.MINYEAR))
+				else datetime.datetime(year=datetime.MINYEAR, month=1, day=1))
 
 		bid_placed = False
 		for next_autobidder in autobidders:
 			try:
-				bids_remaining = next_auto_bidder.use_bid()
+				bids_remaining = next_autobidder.use_bid()
+				self.bid(next_autobidder.user)
 				bid_placed = True
 				next_autobidder.put()
 				if bids_remaining < 1:
@@ -184,6 +180,8 @@ class Auction(db.Model):
 			owning the new autobidder.
 		'''
 
+		bids = int(bids)
+
 		if user is None:
 			raise Exception("The user passed to Auction.attach_autobidder() cannot be None.")
 
@@ -193,10 +191,10 @@ class Auction(db.Model):
 		if bids < 1:
 			raise Exception("The number of bids passed to Auction.attach_autobidder() must be at least 1.")
 
-		if self.attached_autobidders.filter("user", user).run():
+		if self.attached_autobidders.filter("user", user).fetch(None):
 			raise Exception("The user passed to Auction.attached_autobidder() already owns an autobidder on this auction.")
 
-		new_autobidder = autobidder.Autobidder(user=user, auction=self, remaining_bids=bids)
+		new_autobidder = Autobidder(user=user, auction=self, remaining_bids=bids)
 		new_autobidder.put()
 
 	def __eq__(self, other):
@@ -211,3 +209,46 @@ class Auction(db.Model):
 			Inequality tester
 		'''
 		return not self.__eq__(other)
+
+
+
+class Autobidder(db.Model):
+	'''
+		This class models an auto bidder, which places bids on an auction
+		automatically on behalf of its creator.
+	'''
+
+	user = db.ReferenceProperty(user.User, collection_name='active_autobidders')
+	auction = db.ReferenceProperty(Auction, collection_name='attached_autobidders')
+	remaining_bids = db.IntegerProperty(required=True)
+	create_time = db.DateTimeProperty(auto_now_add=True)
+	last_bid_time = db.DateTimeProperty(default=None)
+
+	def use_bid(self):
+		'''
+			Uses up one of the bids in this autobidder and returns the number
+			of bids remaining after using this bid. Throws an
+			InsufficientBidsException if there are no bids left to use.
+		'''
+
+		if self.remaining_bids > 0:
+			self.last_bid_time = datetime.datetime.now()
+			self.remaining_bids -= 1
+			self.put()
+		else:
+			raise insufficient_bids_exception.InsufficientBidsException(self.user, 1, self)
+
+		return self.remaining_bids
+
+	def close(self):
+		'''
+			Close the autobidder and perform any required cleanup. Currently
+			this means refunding all unused bids to the owning user, but other
+			cleanup logic should be added here as needed.
+		'''
+
+		owner = user.User.get_by_id(self.user.key().id())
+		owner.add_bids(self.remaining_bids)
+		owner.put()
+		self.remaining_bids = 0
+		self.put()
