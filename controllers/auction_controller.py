@@ -159,3 +159,33 @@ class AuctionController(object):
 		user_info.use_bids(num_bids)
 		auction_info.attach_autobidder(user_info, num_bids)
 
+
+	@staticmethod
+	def get_autobidder_remaining_bids(auction_id, user_name):
+		'''
+			Returns an integer number of bids remaining in the specified user's
+			autobidder attached to the specified auction. If the user has no
+			autobidder, 0 will be returned.
+		'''
+
+		# TODO: perform some kind of user authentication
+
+		auction_info = auction.Auction.get_by_id(auction_id)
+
+		if auction_info is None:
+			raise Exception("Auction does not exist.")
+
+		if not auction_info.active and auction_info.auction_end < datetime.datetime.now():
+			raise Exception("Auction has closed.")
+
+		user_info = user.User.get_by_username(user_name)
+
+		if user_info is None:
+			raise Exception("Couldn't get info for " + user_name)
+
+		autobidder = auction_info.attached_autobidders.filter("user", user_info).get()
+		if autobidder is None:
+			return 0
+		else:
+			return autobidder.remaining_bids
+
