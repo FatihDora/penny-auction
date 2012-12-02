@@ -41,10 +41,7 @@ urls = (
     '/validate_email','validate_email',
     '/winners','winners',
     
-    '/autobidder_create', 'autobidder_create',
-    '/autobidder_status', 'autobidder_status',
-    '/autobidder_cancel', 'autobidder_cancel',
-    '/autobidders_list', 'autobidders_list',
+    '/autobidders_list_all', 'autobidders_list_all',
     '/autobidders_list_by_auction', 'autobidders_list_by_auction',
 
     '/auctions_status_by_id', 'auctions_status_by_id',
@@ -53,6 +50,11 @@ urls = (
     '/auction_bid', 'auction_bid',
     '/auction_detail', 'auction_detail',
     '/auction_recent_bids', 'auction_recent_bids',
+	'/auction_add_pending_bids', 'auction_add_pending_bids',
+	'/auction_get_pending_bids_for_user', 'auction_get_pending_bids_for_user',
+	'/auction_cancel_pending_bids_for_user', 'auction_cancel_pending_bids_for_user',
+	'/auction_add_pending_bids_for_user', 'auction_add_pending_bids_for_user',
+	'/auction_remove_pending_bids_for_user', 'auction_remove_pending_bids_for_user',
 
     '/user_get_nonce', 'user_get_nonce',
     '/user_register', 'user_register',
@@ -148,29 +150,9 @@ class winners:
 '''
 
 
-class autobidder_create:
+class autobidders_list_all:
     def GET(self):
-		inputs = web.input()
-		web.header('Content-Type', 'application/json')
-
-		result = auction_controller.AuctionController.attach_autobidder(
-				auction_id=int(inputs.auction_id),
-				user_name=inputs.user_name,
-				num_bids=inputs.num_bids
-		)
-		return json.dumps({'result': unicode(result)})
-
-class autobidder_status:
-    def GET(self):
-        return "autobidder_status stub"
-
-class autobidder_cancel:
-    def GET(self):
-        return "autobidder_cancel stub"
-
-class autobidders_list:
-    def GET(self):
-        return "autobidders_list stub"
+        return "autobidders_list_all stub"
 
 class autobidders_list_by_auction:
     def GET(self):
@@ -371,6 +353,34 @@ class auction_recent_bids:
         ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:24'})
         ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:21'})
         return json.dumps({'result':ad}) 
+
+class auction_add_pending_bids:
+    def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		result = auction_controller.AuctionController.attach_autobidder(
+				auction_id=int(inputs.auction_id),
+				user_name=inputs.user_name,
+				num_bids=inputs.num_bids
+		)
+		return json.dumps({'result': unicode(result)})
+
+class auction_get_pending_bids_for_user:
+    def GET(self):
+        return "auction_get_remaining_bids_for_user stub"
+
+class auction_cancel_pending_bids_for_user:
+    def GET(self):
+        return "auction_cancel_pending_bids_for_user stub"
+
+class auction_add_pending_bids_for_user:
+    def GET(self):
+        return "auction_add_pending_bids_for_user stub"
+
+class auction_remove_pending_bids_for_user:
+    def GET(self):
+        return "auction_remove_pending_bids_for_user stub"
 
 # USER Stuff
 

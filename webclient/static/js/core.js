@@ -3,13 +3,9 @@
 
   window.API = "";
 
-  window.AUTOBIDDER_CREATE = "/autobidder_create";
+  window.AUTOBIDDERS_LIST_ALL = "/autobidders_list_all";
 
-  window.AUTOBIDDER_STATUS = "/autobidder_status";
-
-  window.AUTOBIDDER_CANCEL = "/autobidder_cancel";
-
-  window.AUTOBIDDERS_LIST = "/autobidders_list";
+  window.AUTOBIDDERS_LIST_BY_AUCTION = "/autobidders_list_by_auction";
 
   window.AUCTIONS_LIST_CURRENT = "/auctions_list_current";
 
@@ -18,6 +14,16 @@
   window.AUCTION_BID = "/auction_bid";
 
   window.AUCTION_DETAIL = "/auction_detail";
+
+  window.AUCTION_ADD_PENDING_BIDS = "/auction_add_pending_bids";
+
+  window.AUCTION_GET_PENDING_BIDS_FOR_USER = "/auction_get_pending_bids_for_user";
+
+  window.AUCTION_CANCEL_PENDING_BIDS_FOR_USER = "/auction_cancel_pending_bids_for_user";
+
+  window.AUCTION_ADD_PENDING_BIDS_FOR_USER = "/auction_add_pending_bids_for_user";
+
+  window.AUCTION_REMOVE_PENDING_BIDS_FOR_USER = "/auction_remove_pending_bids_for_user";
 
   window.USER_REGISTER = "/user_register";
 
