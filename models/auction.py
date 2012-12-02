@@ -14,7 +14,7 @@ class Auction(db.Model):
 	''' This class represents a single auction. '''
 
 	item = db.ReferenceProperty(item.Item, collection_name='auctions')
-	current_price = decimal_property.DecimalProperty(default="0.00")
+	current_price = decimal_property.DecimalProperty(default=decimal.Decimal("0.00"))
 	current_winner = db.ReferenceProperty(user.User, collection_name='auctions_won', default=None)
 
 	# the time at which this auction began accepting bids, NOT the time the auction was created
@@ -37,7 +37,7 @@ class Auction(db.Model):
 
 
 	# the amount an auction's price increases when a bid is placed, in centavos
-	PRICE_INCREASE_FROM_BID = decimal.Decimal(0.01)
+	PRICE_INCREASE_FROM_BID = decimal.Decimal('0.01')
 
 
 	@staticmethod
@@ -116,7 +116,7 @@ class Auction(db.Model):
 		self.put()
 
 		if self.current_winner:
-			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price.2f} and winning user {winner}.".format(
+			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price} and winning user {winner}.".format(
 				item = self.item.name,
 				start_time = self.start_time,
 				end_time = self.auction_end,
