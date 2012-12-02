@@ -66,7 +66,7 @@ class Auction(db.Model):
 			self.start_time = datetime.datetime.now()
 			self.auction_end = self.start_time + self.bid_pushback_time
 			self.put()
-			self.heartbeat()
+			self._heartbeat()
 
 	def _heartbeat(self):
 		'''
