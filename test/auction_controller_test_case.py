@@ -108,9 +108,12 @@ class AuctionControllerTestCase(unittest.TestCase):
 
 		# verify that only the good ids were returned
 		ids_list = ",".join(str(x) for x in auction_ids)
-		valid_auctions = auction_controller.AuctionController.auctions_status_by_ids(ids_list)
-		valid_auction_ids = sorted(list(int(x.key().id())
-			for x in valid_auctions))
+		all_returned_auctions = auction_controller.AuctionController.auctions_status_by_ids(ids_list)
+		valid_auction_ids = []
+		for k in all_returned_auctions:
+			if not k is None:
+				valid_auction_ids.append(int(k.key().id()))
+		valid_auction_ids = sorted(valid_auction_ids)
 		self.assertEquals(valid_auction_ids, good_ids)
 
 	def testAuctionsStatusesByIdsWhenAllIdsExist(self):
@@ -161,4 +164,5 @@ class AuctionControllerTestCase(unittest.TestCase):
 # -- when auction doesn't exist
 # -- when auction is not active
 # -- when auction has ended
+# -- when autobidder already exists
 # -- successful autobidder attach
