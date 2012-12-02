@@ -379,7 +379,14 @@ class auction_get_pending_bids_for_user:
 
 class auction_cancel_pending_bids_for_user:
     def GET(self):
-        return "auction_cancel_pending_bids_for_user stub"
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		result = auction_controller.AuctionController.cancel_autobidder(
+				auction_id=int(inputs.auction_id),
+				user_name=inputs.user_name
+		)
+		return json.dumps({'result': unicode(result)})
 
 class auction_add_pending_bids_for_user:
     def GET(self):

@@ -196,6 +196,25 @@ class Auction(db.Model):
 
 		new_autobidder = Autobidder(user=user, auction=self, remaining_bids=bids)
 		new_autobidder.put()
+	
+	def close_autobidder(self, user):
+		'''
+			Closes any autobidder on this auction, where user is the user model
+			object for the user owning the autobidder. Does nothing if the user
+			has no active autobidder on this auction.
+		'''
+
+
+		if user is None:
+			raise Exception("The user passed to Auction.attach_autobidder() cannot be None.")
+
+		if not self.active and self.auction_end < datetime.datetime.now():
+			raise Exception("Cannot cancel autobidder because this auction has closed.")
+
+		autobidder = self.attached_autobidders.filter("user", user).get()
+		if autobidder:
+			autobidder.close()
+			db.delete(autobidder)
 
 
 

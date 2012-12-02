@@ -189,3 +189,28 @@ class AuctionController(object):
 		else:
 			return autobidder.remaining_bids
 
+	@staticmethod
+	def cancel_autobidder(auction_id, user_name):
+		'''
+			Cancels any autobidder attached to the specified auction and
+			belonging to the specified user. Does nothing if the user has no
+			active autobidder on the auction.
+		'''
+
+		# TODO: perform some kind of user authentication
+
+		auction_info = auction.Auction.get_by_id(auction_id)
+
+		if auction_info is None:
+			raise Exception("Auction does not exist.")
+
+		if not auction_info.active and auction_info.auction_end < datetime.datetime.now():
+			raise Exception("Auction has closed.")
+
+		user_info = user.User.get_by_username(user_name)
+
+		if user_info is None:
+			raise Exception("Couldn't get info for " + user_name)
+
+		auction_info.close_autobidder(user_info)
+
