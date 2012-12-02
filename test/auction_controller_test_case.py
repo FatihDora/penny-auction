@@ -3,12 +3,13 @@
 
 import controllers.auction_controller as auction_controller
 import models.auction as auction
+import models.item as item
 import random
 import fixtures.dummy_items as dummy_items
 import fixtures.dummy_auctions as dummy_auctions
 import unittest
 import re
-from datetime import timedelta
+from datetime import *
 
 from google.appengine.ext import db
 from google.appengine.ext import testbed
@@ -133,10 +134,32 @@ class AuctionControllerTestCase(unittest.TestCase):
 			for x in valid_auctions)
 		self.assertEquals(sorted(valid_auction_ids), sorted(good_ids))
 
-# test auction_controller.AuctionController.auctions_list_current(count)
-# -- when no auctions exist
-# -- when no auctions are "current"
-# -- successful current auctions list
+	def testAuctionsListCurrentWhenNoAuctionsExist(self):
+		try:
+			current_auctions = auction_controller.AuctionController.auctions_list_current(10)
+			self.fail("Current Auction list returned when no Auctions exist!")
+		except Exception, e:
+			# expected behavior
+			assert re.search("no auctions", str(e), re.IGNORECASE)
+
+	def testAuctionsListCurrentWhenNoAuctionsAreCurrent(self):
+		item_object = item.Item.get("MacBook Pro")
+		old_auction = auction.Auction(item=item_object,
+			current_price="65.49",
+			start_time=datetime.today() - timedelta(3),
+			auction_end=datetime.today() - timedelta(1),
+			bid_pushback_time=timedelta(10))
+		old_auction.put()
+
+		try:
+			current_auctions = auction_controller.AuctionController.auctions_list_current(10)
+			self.fail("Current Auction list returned when no Auctions are current!")
+		except Exception, e:
+			# expected behavior
+			assert re.search("no auctions", str(e), re.IGNORECASE)
+
+	def testAuctionsListCurrentWhenAuctionsExistAndAreCurrent(self):
+		pass
 
 # test auction_controller.AuctionController.auctions_list_all()
 # -- when no auctions exist
