@@ -187,7 +187,8 @@ class auctions_status_by_id:
                 if elem.current_winner:
                     username = elem.current_winner.username
 
-                price = "{0:.2f}".format(elem.current_price)
+                # price = "{0:.2f}".format(elem.current_price)
+                price = elem.current_price
 
                 result.append({
                     JSON_KEY_ID: unicode(elem.key().id()),
