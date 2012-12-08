@@ -171,11 +171,8 @@ class auctions_status_by_id:
 
             # Build the JSON payload
             result = []
-            delta = ""
-            count = 0
 
             for elem in auctions:
-                count += 1
 
                 if not elem:
                     continue
@@ -214,7 +211,6 @@ class auctions_list_current:
 
             # Build the JSON payload
             result = []
-            delta = ""
 
             for elem in auctions:
                 try:
@@ -257,14 +253,13 @@ class auctions_list_all:
         inputs = web.input()
         web.header('Content-Type', 'application/json')
 
-        # TODO: check that an administrative user issued this request
-
         try:
+            # TODO: check that an administrative user issued this request
+
             auctions = auction_controller.AuctionController.auctions_list_all()
 
             # Build the JSON payload
             result = []
-            delta = ""
 
             for elem in auctions:
                 try:

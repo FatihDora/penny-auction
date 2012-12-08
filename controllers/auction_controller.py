@@ -103,8 +103,6 @@ class AuctionController(object):
 			Performs a single bid on the given auction on behalf of the specified user.
 		'''
 
-		# TODO: perform some kind of user authentication
-
 		userInfo = user.User.get_by_username(username)
 
 		if userInfo is None:
@@ -141,8 +139,6 @@ class AuctionController(object):
 			specified user with the specified number of bids.
 		'''
 
-		# TODO: perform some kind of user authentication
-
 		auction_info = auction.Auction.get_by_id(auction_id)
 
 		if auction_info is None:
@@ -167,8 +163,6 @@ class AuctionController(object):
 			autobidder attached to the specified auction. If the user has no
 			autobidder, 0 will be returned.
 		'''
-
-		# TODO: perform some kind of user authentication
 
 		auction_info = auction.Auction.get_by_id(auction_id)
 
@@ -196,8 +190,6 @@ class AuctionController(object):
 			belonging to the specified user. Does nothing if the user has no
 			active autobidder on the auction.
 		'''
-
-		# TODO: perform some kind of user authentication
 
 		auction_info = auction.Auction.get_by_id(auction_id)
 
