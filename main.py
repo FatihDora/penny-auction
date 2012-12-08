@@ -217,7 +217,11 @@ class auctions_status_by_id:
 				raise Exception("The list of IDs provided could not be parsed.")
 			ids = tuple(ids) 	# freeze the ID list
 
-			auctions = auction_controller.AuctionController.auctions_status_by_ids(ids)
+			try:
+				auctions = auction_controller.AuctionController.auctions_status_by_ids(ids)
+			except Exception, exception:
+				logging.error("The following exception was raised by AuctionController.auctions_status_by_ids():\n{}".format(exception))
+				raise Exception("An internal error occurred.")
 
             # Build the JSON payload
             result = []
@@ -228,7 +232,6 @@ class auctions_status_by_id:
             return json.dumps({'result': result})
 
         except Exception, e:
-    		# TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
     		return json.dumps({'exception':unicode(e)})
 
 class auctions_list_current:
@@ -237,7 +240,15 @@ class auctions_list_current:
         web.header('Content-Type', 'application/json')
 
         try:
-            auctions = auction_controller.AuctionController.auctions_list_current(inputs.count)
+			if not inputs.count:
+				raise Exception("The number of auctions to list was not provided in the 'count' parameter.")
+
+			try:
+            	auctions = auction_controller.AuctionController.auctions_list_current(inputs.count)
+
+			except Exception, exception:
+				logging.error("The following exception was raised by AuctionController.auctions_list_current():\n{}".format(exception))
+				raise Exception("An internal error occurred.")
 
             # Build the JSON payload
             result = []
@@ -248,7 +259,6 @@ class auctions_list_current:
             return json.dumps({'result': result})
 
         except Exception, e:
-            # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
             return json.dumps({'exception':unicode(e)})
 
 class auctions_list_all:
@@ -259,7 +269,12 @@ class auctions_list_all:
         try:
             # TODO: check that an administrative user issued this request
 
-            auctions = auction_controller.AuctionController.auctions_list_all()
+			try:
+            	auctions = auction_controller.AuctionController.auctions_list_all()
+
+			except Exception, exception:
+				logging.error("The following exception was raised by AuctionController.auctions_list_all():\n{}".format(exception))
+				raise Exception("An internal error occurred.")
 
             # Build the JSON payload
             result = []
@@ -270,7 +285,6 @@ class auctions_list_all:
             return json.dumps({'result': result})
 
         except Exception, e:
-            # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
             return json.dumps({'exception':unicode(e)})
 
 class auction_bid:
@@ -279,17 +293,25 @@ class auction_bid:
         web.header('Content-Type', 'application/json')
 
         try:
-            username = user_controller.UserController.validate_cookie()
 
+			if not inputs.id:
+				raise Exception("No auction ID to bid on was given in the 'id' parameter.")
+
+			# user validation
+            username = user_controller.UserController.validate_cookie()
             if username is None:
                 raise Exception("Not logged in!")
 
-            result = auction_controller.AuctionController.auction_bid(inputs.id, username)
+			try:
+            	result = auction_controller.AuctionController.auction_bid(inputs.id, username)
+
+			except Exception, exception:
+				logging.error("The following exception was raised by AuctionController.auction_bid():\n{}".format(exception))
+				raise Exception("An internal error occurred.")
 
             return json.dumps({'result': result})
 
         except Exception, e:
-            # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
             return json.dumps({'exception':unicode(e)})
 
 class auction_detail:
@@ -301,12 +323,17 @@ class auction_detail:
 			if not inputs.id:
 				raise Exception("No auction ID was supplied in the 'id' parameter.")
 
-            auction = auction_controller.AuctionController.auctions_status_by_ids((inputs.id))
+			try:
+				auction = auction_controller.AuctionController.auctions_status_by_ids((inputs.id))
+
+			except Exception, exception:
+				logging.error("The following exception was raised by AuctionController.auctions_status_by_ids():\n{}".format(exception))
+				raise Exception("An internal error occurred.")
+
 			result = generate_auction_dict(auction)
 			return json.dumps({'result': result})
 
         except Exception, e:
-            # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
             return json.dumps({'exception':unicode(e)})
 
 class auction_recent_bids:
@@ -333,34 +360,93 @@ class auction_add_pending_bids:
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 
-		result = auction_controller.AuctionController.attach_autobidder(
-				auction_id=int(inputs.auction_id),
-				user_name=inputs.user_name,
-				num_bids=inputs.num_bids
-		)
-		return json.dumps({'result': unicode(result)})
+        try:
+			if not inputs.id:
+				raise Exception("No auction ID was supplied in the 'id' parameter.")
+
+			if not inputs.num_bids:
+				raise Exception("No number of bids was supplied in the 'num_bids' parameter.")
+
+			# user validation
+            user_name = user_controller.UserController.validate_cookie()
+            if user_name is None:
+                raise Exception("Not logged in!")
+
+			try:
+				result = auction_controller.AuctionController.attach_autobidder(
+						auction_id=int(inputs.id),
+						user_name=user_name,
+						num_bids=inputs.num_bids
+				)
+
+			except Exception, exception:
+				logging.error("The following exception was raised by AuctionController.attach_autobidder():\n{}".format(exception))
+				raise Exception("An internal error occurred.")
+
+			return json.dumps({'result': result})
+
+        except Exception, e:
+            return json.dumps({'exception':unicode(e)})
 
 class auction_get_pending_bids_for_user:
     def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 
-		result = auction_controller.AuctionController.get_autobidder_remaining_bids(
-				auction_id=int(inputs.auction_id),
-				user_name=inputs.user_name
-		)
-		return json.dumps({'result': unicode(result)})
+        try:
+			if not inputs.id:
+				raise Exception("No auction ID was supplied in the 'id' parameter.")
+
+			# user validation
+            user_name = user_controller.UserController.validate_cookie()
+            if user_name is None:
+                raise Exception("Not logged in!")
+
+			try:
+				result = auction_controller.AuctionController.get_autobidder_remaining_bids(
+						auction_id=int(inputs.auction_id),
+						user_name=user_name
+				)
+
+			except Exception, exception:
+				logging.error("The following exception was raised by AuctionController.get_autobidder_remaining_bids():\n{}".format(exception))
+				raise Exception("An internal error occurred.")
+
+			return json.dumps({'result': result})
+
+        except Exception, e:
+            return json.dumps({'exception':unicode(e)})
 
 class auction_cancel_pending_bids_for_user:
     def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 
-		result = auction_controller.AuctionController.cancel_autobidder(
-				auction_id=int(inputs.auction_id),
-				user_name=inputs.user_name
-		)
 		return json.dumps({'result': unicode(result)})
+
+        try:
+			if not inputs.id:
+				raise Exception("No auction ID was supplied in the 'id' parameter.")
+
+			# user validation
+            user_name = user_controller.UserController.validate_cookie()
+            if user_name is None:
+                raise Exception("Not logged in!")
+
+			try:
+				result = auction_controller.AuctionController.cancel_autobidder(
+						auction_id=int(inputs.id),
+						user_name=user_name
+				)
+
+			except Exception, exception:
+				logging.error("The following exception was raised by AuctionController.cancel_autobidder():\n{}".format(exception))
+				raise Exception("An internal error occurred.")
+
+			return json.dumps({'result': result})
+
+        except Exception, e:
+            return json.dumps({'exception':unicode(e)})
 
 class auction_add_pending_bids_for_user:
     def GET(self):
