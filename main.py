@@ -161,39 +161,69 @@ class autobidders_list_by_auction:
 
 # AUCTIONS
 
+def generate_auction_dict(auction):
+	'''
+		Takes an auction model object and returns the corresponding dictionary
+		structure that the web client can consume; just convert to JSON and
+		send back to the web client. Use this as a helper function for the many
+		API methods that return auction status. Note that if the passed auction
+		object is None, then None will be returned.
+	'''
+
+	if not auction:
+		return None
+
+	remaining_time = auction.auction_end - datetime.datetime.now()
+	zero_time = datetime.datetime.timeremaining_time(seconds=0)
+	if remaining_time < zero_time:
+		remaining_time = zero_time
+
+	username = "No Bidders"
+	if auction.current_winner:
+		username = auction.current_winner.username
+
+	return {
+		JSON_KEY_ID: unicode(auction.key().id()),
+		JSON_KEY_IS_ACTIVE: unicode(auction.active),
+		JSON_KEY_ITEM_NAME: unicode(auction.item.name),
+		JSON_KEY_BASE_PRICE: unicode(auction.item.base_price),
+		JSON_KEY_PRODUCT_URL: unicode(auction.item.product_url),
+		JSON_KEY_IMAGE_URL: unicode(auction.item.image_url),
+		JSON_KEY_PRICE: unicode(auction.current_price),
+		JSON_KEY_WINNER: unicode(username),
+		JSON_KEY_REMAINING_TIME: unicode(remaining_time.total_seconds())
+	}
+
+
 class auctions_status_by_id:
     def GET(self):
         inputs = web.input()
         web.header('Content-Type', 'application/json')
 
         try:
-            auctions = auction_controller.AuctionController.auctions_status_by_ids(inputs.ids)
+			if not auction_ids:
+				raise Exception("No auction IDs were supplied in the 'auction_ids' parameter.")
+
+			# parse the string of IDs into a tuple of ints
+			sids = auction_ids.split(',')
+			if len(sids) > 40:
+				raise Exception("Too many ids")
+
+			ids = []
+			for sid in sids:
+			try:
+				ids.append(int(sid))
+			except Exception, e:
+				raise Exception("The list of IDs provided could not be parsed.")
+			ids = tuple(ids) 	# freeze the ID list
+
+			auctions = auction_controller.AuctionController.auctions_status_by_ids(ids)
 
             # Build the JSON payload
             result = []
 
             for elem in auctions:
-
-                if not elem:
-                    continue
-                delta = elem.auction_end - datetime.datetime.now()
-                if delta.total_seconds() <= 0:
-                    delta = timedelta(seconds=0)
-
-                username = "No Bidders"
-                if elem.current_winner:
-                    username = elem.current_winner.username
-
-                # price = "{0:.2f}".format(elem.current_price)
-                price = elem.current_price
-
-                result.append({
-                    JSON_KEY_ID: unicode(elem.key().id()),
-                    JSON_KEY_PRICE: unicode(price),
-                    JSON_KEY_WINNER: unicode(username),
-                    JSON_KEY_REMAINING_TIME: unicode(delta.total_seconds()),
-                    JSON_KEY_IS_ACTIVE: unicode(elem.active)
-                })
+				result.append(generate_auction_dict(elem))
 
             return json.dumps({'result': result})
 
@@ -213,34 +243,7 @@ class auctions_list_current:
             result = []
 
             for elem in auctions:
-                try:
-                    if not elem:
-                        continue
-                    delta = elem.auction_end - datetime.datetime.now()
-
-                    username = "No Bidders"
-                    if elem.current_winner:
-                        username = elem.current_winner.username
-
-                    price = "0.00"
-                    if elem.current_price:
-                        price = "{0:.2f}".format(elem.current_price)
-
-                    result.append({
-                        JSON_KEY_ID: unicode(elem.key().id()),
-                        JSON_KEY_IS_ACTIVE: unicode(elem.active),   # Is Auction Active? "True" or "False"
-                        JSON_KEY_ITEM_NAME: unicode(elem.item.name),
-                        JSON_KEY_BASE_PRICE: unicode(elem.item.base_price),
-                        JSON_KEY_PRODUCT_URL: unicode(elem.item.product_url),
-                        JSON_KEY_IMAGE_URL: unicode(elem.item.image_url),
-                        JSON_KEY_PRICE: unicode(price),
-                        JSON_KEY_WINNER: unicode(username),
-                        JSON_KEY_REMAINING_TIME: unicode(delta.total_seconds())
-                    })
-                except Exception, e:
-                    logging.error(unicode(e))
-                    json.dumps({'error': unicode(e)})
-
+				result.append(generate_auction_dict(elem))
 
             return json.dumps({'result': result})
 
@@ -262,28 +265,12 @@ class auctions_list_all:
             result = []
 
             for elem in auctions:
-                try:
-                    if not elem:
-                        continue
-                    delta = elem.auction_end - datetime.datetime.now()
-
-                    result.append({
-                        JSON_KEY_ID: unicode(elem.key().id()),
-                        JSON_KEY_IS_ACTIVE: unicode(elem.active),   # Is Auction Active? "True" or "False"
-                        JSON_KEY_ITEM_NAME: unicode(elem.item.name),
-                        JSON_KEY_BASE_PRICE: unicode(elem.item.base_price),
-                        JSON_KEY_PRODUCT_URL: unicode(elem.item.product_url),
-                        JSON_KEY_IMAGE_URL: unicode(elem.item.image_url),
-                        JSON_KEY_PRICE: unicode(elem.current_price),
-                        JSON_KEY_WINNER: unicode(elem.current_winner.username),
-                        JSON_KEY_TIME_REMAINING: unicode(delta.total_seconds())
-                    })
-                except Exception, e:
-                    logging.error(unicode(e))
+				result.append(generate_auction_dict(elem))
 
             return json.dumps({'result': result})
 
         except Exception, e:
+            # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
             return json.dumps({'exception':unicode(e)})
 
 class auction_bid:
@@ -302,34 +289,24 @@ class auction_bid:
             return json.dumps({'result': result})
 
         except Exception, e:
+            # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
             return json.dumps({'exception':unicode(e)})
 
 class auction_detail:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-
-        # STUB:
-        ad = []
-        ad.append({'id':inputs.id,
-                        'name':'test auction',
-                        'base_price':'58.91',
-                        'product_url':'http://www.google.com',
-                        'image_url':'http://www.randomwebsite.com/images/head.jpg',
-                        'price':'2.05',
-                        'winner':'darin',
-                        'time_of_bid':'14:39:58',
-                        'time_left':'8'})
-        return json.dumps({'result':ad}) 
-        
-
-
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
 
         try:
-            result = {'result':auction_controller.AuctionController.auction_detail(inputs.id)}
-            return json.dumps(result)
+			if not inputs.id:
+				raise Exception("No auction ID was supplied in the 'id' parameter.")
+
+            auction = auction_controller.AuctionController.auctions_status_by_ids((inputs.id))
+			result = generate_auction_dict(auction)
+			return json.dumps({'result': result})
 
         except Exception, e:
+            # TODO: Don't print raw exception messages, this is a security leak! See: http://cwe.mitre.org/data/definitions/209.html
             return json.dumps({'exception':unicode(e)})
 
 class auction_recent_bids:
@@ -337,6 +314,7 @@ class auction_recent_bids:
         inputs = web.inputs
         web.header('Content-Type', 'application/json')
 
+		# stub
         ad = []
         ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:58'})
         ad.append({'username':'darin','price':'2.05','time_of_bid':'14:39:52'})

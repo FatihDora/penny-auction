@@ -49,26 +49,10 @@ class AuctionController(object):
 		if not auction_ids:
 			return
 
-		# Try to parse the string of IDs and create a list of ints.
-		try:
-			sids = auction_ids.split(',')
-		except Exception, e:
-			raise Exception("The list of IDs provided could not be parsed.")
-		
-		ids = []
-		for sid in sids:
-			try:
-				ids.append(int(sid))
-			except Exception, e:
-				raise Exception("The list of IDs provided could not be parsed.")
-
-		if len(ids) > 40:
-			raise Exception("Too many ids")
-
 		# Try to get some auctions from the list of IDs
 		auctions = auction.Auction.get_by_id(ids)
 		if not auctions:
-			raise Exception("There were no auctions for the IDs you provided.")
+			auctions = []
 
 		return auctions
 
@@ -124,13 +108,6 @@ class AuctionController(object):
 		# Perform Bid:
 		userInfo.use_bids(1)
 		auctionInfo.bid(userInfo)
-
-	@staticmethod
-	def auction_detail(auction_id):
-		'''
-			Returns detailed auction information for the auction page.
-		'''
-		pass
 
 	@staticmethod
 	def attach_autobidder(auction_id, user_name, num_bids):
