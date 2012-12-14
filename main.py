@@ -450,10 +450,12 @@ class auction_cancel_pending_bids_for_user:
 
 class auction_add_pending_bids_for_user:
     def GET(self):
+		# stub
         return "auction_add_pending_bids_for_user stub"
 
 class auction_remove_pending_bids_for_user:
     def GET(self):
+		# stub
         return "auction_remove_pending_bids_for_user stub"
 
 # USER Stuff
