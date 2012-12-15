@@ -70,6 +70,25 @@ class AuctionController(object):
 		return auctions
 
 	@staticmethod
+	def auction_bid_history_by_user(auction_id, user_name):
+		'''
+			Returns a list of bids by the specified user on the specified
+			auction. An empty list will be returned if this user has never bid
+			on this auction. An Exception will be thrown if either the user or
+			auction does not exist.
+		'''
+
+		this_auction = auction.Auction.get_by_id(auction_id)
+		if not this_auction:
+			raise Exception("No auction with ID \"{}\" exists.".format(auction_id))
+
+		this_user = user.User.get_by_username(user_name)
+		if not this_user:
+			raise Exception("No user exists with user name \"{}\".".format(user_name))
+
+		return this_auction.past_bids.filter("user", this_user).order("transaction_time").run()
+
+	@staticmethod
 	def auctions_list_all():
 		'''
 			List all auctions (administrative only)

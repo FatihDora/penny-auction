@@ -19,3 +19,9 @@ indexes:
   properties:
   - name: auction
   - name: user
+
+- kind: BidHistory
+  properties:
+  - name: auction
+  - name: user
+  - name: transaction_time
