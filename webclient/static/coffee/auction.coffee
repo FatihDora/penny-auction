@@ -1,5 +1,13 @@
 $(document).ready ->
+	# Load up the auction detail once
 	auction.init()
+	autobidder.init()
+
+	# Update the main auction
+	# TODO: auction.update()
+	# TODO: autobidder.update()
+
+	#Update the side auctions
 
 	# End $(document).ready
 
@@ -33,47 +41,19 @@ auction = init: ->
 				$('#auction-image img').attr 'src', auction.image_url
 				$('#auction-detail div.price span.right').html 'P' + auction.price
 				$('#auction-detail div.winner span.right').html auction.winner
+				$('#auction-detail div.time-left').html secondsToHms(auction.time_left)
 
-	# Setup the registration form.
-	$("#registration-form").submit (e) ->
-		e.preventDefault()
-		error = "<ul style='clear: both'>"
-		first_name = $("#FirstName").val()
-		last_name = $("#LastName").val()
-		username = $("#Username").val()
-		email = $("#Email").val()
-		password = $("#Password").val()
-		termsaccepted = $("#termsandconditions:checked").val()
-
-		if first_name.length == 0 then error += "<li>A First Name is required.<li/>"
-		if last_name.length == 0 then error += "<li>A Last Name is required.<li/>"
-		if username.length == 0 then error += "<li>A username is required.<li/>"
-		if email.length == 0 then error += "<li>An email address is required.<li/>"
-		if password.length == 0 then error += "<li>A password is required.<li/>"
-		if not termsaccepted then error += "<li>You must accept our terms and conditions to register an account.<li/>"
-
-		error += "</ul>"
-
-		if error != "<ul style='clear: both'></ul>"
-			showDialog "error", "Registration Error", error
-			return false
-
-
-		callApi USER_REGISTER,
-			first_name: first_name
-			last_name: last_name
-			username: username
-			email: email
-			password: password
-		, (data) ->
-			if data.exception
-				showDialog "error", "Registration Error", data.exception
-				return
-
+autobidder = init: ->
+	# Gets the user's autobidder infor for this auction
+	callApi AUTOBIDDER_STATUS_BY_AUCTION,(id: auction_id), (data) ->
 			if data.result
-				$("div#registration-form").slideUp 'slow', ->
-					$("div#registration-complete strong").text(email)
-					$("div#registration-complete").fadeIn 1000
-				return
 
-		false
+				autobidder = data.result
+				# If there is an id present, we assume that an autobidder exists.
+				if not autobidder.id
+					$('#create-autobidder').show();
+					$('#cancel-autobidder').hide();
+				else
+					$('#cancel-autobidder').show();
+					$('#create-autobidder').hide();
+	

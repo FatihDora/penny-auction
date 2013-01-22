@@ -7,6 +7,8 @@
 
   window.AUTOBIDDERS_LIST_BY_AUCTION = "/autobidders_list_by_auction";
 
+  window.AUTOBIDDER_STATUS_BY_AUCTION = "/autobidder_status_by_auction";
+
   window.AUCTIONS_LIST_CURRENT = "/auctions_list_current";
 
   window.AUCTIONS_STATUS_BY_ID = "/auctions_status_by_id";

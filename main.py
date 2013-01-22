@@ -43,6 +43,7 @@ urls = (
     
     '/autobidders_list_all', 'autobidders_list_all',
     '/autobidders_list_by_auction', 'autobidders_list_by_auction',
+    '/autobidder_status_by_auction', 'autobidder_status_by_auction',
 
     '/auctions_status_by_id', 'auctions_status_by_id',
     '/auctions_list_current', 'auctions_list_current',
@@ -156,6 +157,15 @@ class autobidders_list_by_auction:
     def GET(self):
         return "autobidders_list_by_auction stub"
 
+class autobidder_status_by_auction:
+	'''
+		Returns the status of a user's autobidder for a given auction
+		The presence of an ID tells the client whether or not an autobidder
+		exists for this auction/user combo.
+	'''
+	def GET(self):
+		web.header('Content-Type', 'application/json')
+		return json.dumps({"result":{"id":""}})
 
 # AUCTIONS
 

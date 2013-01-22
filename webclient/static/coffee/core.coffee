@@ -9,6 +9,7 @@ window.API = "http://localhost:8080"
 # Autobidder
 window.AUTOBIDDERS_LIST_ALL = "/autobidders_list_all"
 window.AUTOBIDDERS_LIST_BY_AUCTION = "/autobidders_list_by_auction"
+window.AUTOBIDDER_STATUS_BY_AUCTION = "/autobidder_status_by_auction"
 
 #Auctions
 window.AUCTIONS_LIST_CURRENT = "/auctions_list_current"
