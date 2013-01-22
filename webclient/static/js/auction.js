@@ -24,9 +24,12 @@
           u = auction.product_url;
           m = auction.image_url;
           p = auction.price;
-          w = auction.wwinner;
-          t = secondsToHms(auctions[ix].time_left);
-          return $('#auction-image').html('<img src="' + auction.m + '" alt="combo1" width="292" height="242" />');
+          w = auction.winner;
+          t = secondsToHms(auction.time_left);
+          $('#auction-name').text(auction.name);
+          $('#auction-image img').attr('src', auction.image_url);
+          $('#auction-detail div.price span.right').html('P' + auction.price);
+          return $('#auction-detail div.winner span.right').html(auction.winner);
         }
       });
       return $("#registration-form").submit(function(e) {

@@ -25,11 +25,14 @@ auction = init: ->
 				u = auction.product_url # Manufacturer's URL
 				m = auction.image_url # Image Url
 				p = auction.price # Current Price
-				w = auction.wwinner # Winner Username
-				t = secondsToHms(auctions[ix].time_left)
+				w = auction.winner # Winner Username
+				t = secondsToHms(auction.time_left)
 
 				# Update the page with the data
-				$('#auction-image').html('<img src="' + auction.m + '" alt="combo1" width="292" height="242" />')
+				$('#auction-name').text auction.name
+				$('#auction-image img').attr 'src', auction.image_url
+				$('#auction-detail div.price span.right').html 'P' + auction.price
+				$('#auction-detail div.winner span.right').html auction.winner
 
 	# Setup the registration form.
 	$("#registration-form").submit (e) ->
