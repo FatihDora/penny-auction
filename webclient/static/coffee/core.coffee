@@ -4,7 +4,7 @@
 ######################
 
 # API
-window.API = ""
+window.API = "http://localhost:8080"
 
 # Autobidder
 window.AUTOBIDDERS_LIST_ALL = "/autobidders_list_all"
@@ -44,7 +44,7 @@ $(document).ready ->
 			# called
 		error: (xhr, status, error) ->
 			# Error handler
-			if result.statusText isnt "abort"
+			if xhr.statusText isnt "abort"
 				showDialog "error", "Unexpected Error", error
 
 	$("#messageDialog").dialog

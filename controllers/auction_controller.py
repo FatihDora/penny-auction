@@ -50,7 +50,7 @@ class AuctionController(object):
 			return
 
 		# Try to get some auctions from the list of IDs
-		auctions = auction.Auction.get_by_id(ids)
+		auctions = auction.Auction.get_by_id(auction_ids)
 		if not auctions:
 			auctions = []
 

@@ -172,7 +172,7 @@ def generate_auction_dict(auction):
 		return None
 
 	remaining_time = auction.auction_end - datetime.datetime.now()
-	zero_time = datetime.datetime.timeremaining_time(seconds=0)
+	zero_time = datetime.timedelta(seconds=0)
 	if remaining_time < zero_time:
 		remaining_time = zero_time
 
@@ -197,10 +197,11 @@ class auctions_status_by_id:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
+		auction_ids = inputs.ids
 
 		try:
 			if not auction_ids:
-				raise Exception("No auction IDs were supplied in the 'auction_ids' parameter.")
+				raise Exception("No auction IDs were supplied in the 'ids' parameter.")
 
 			# parse the string of IDs into a tuple of ints
 			sids = auction_ids.split(',')
@@ -219,7 +220,7 @@ class auctions_status_by_id:
 				auctions = auction_controller.AuctionController.auctions_status_by_ids(ids)
 			except Exception, exception:
 				logging.error("The following exception was raised by AuctionController.auctions_status_by_ids():\n{}".format(exception))
-				raise Exception("An internal error occurred.")
+				#raise Exception("An internal error occurred.")
 
 			# Build the JSON payload
 			result = []
