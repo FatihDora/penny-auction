@@ -323,11 +323,10 @@ class auction_detail:
 				raise Exception("No auction ID was supplied in the 'id' parameter.")
 
 			try:
-				auction = auction_controller.AuctionController.auctions_status_by_ids((inputs.id))
-
+				auction = auction_controller.AuctionController.auctions_status_by_ids(int(inputs.id))
 			except Exception, exception:
 				logging.error("The following exception was raised by AuctionController.auctions_status_by_ids():\n{}".format(exception))
-				raise Exception("An internal error occurred.")
+				#raise Exception("An internal error occurred.")
 
 			result = generate_auction_dict(auction)
 			return json.dumps({'result': result})
