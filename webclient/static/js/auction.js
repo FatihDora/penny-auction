@@ -3,7 +3,9 @@
   var auction, autobidder;
 
   $(document).ready(function() {
-    auction.init();
+    if (auction.init()) {
+      window.setInterval(auction.update, 1000);
+    }
     return autobidder.init();
   });
 
@@ -17,7 +19,7 @@
           auction = data.result;
           if (!(auction != null)) {
             $("#onecol .gallery").html('<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>');
-            return;
+            return false;
           }
           i = auction.id;
           n = auction.name;
@@ -31,7 +33,20 @@
           $('#auction-image img').attr('src', auction.image_url);
           $('#auction-detail div.price span.right').html('P' + auction.price);
           $('#auction-detail div.winner span.right').html(auction.winner);
-          return $('#auction-detail div.time-left').html(secondsToHms(auction.time_left));
+          $('#auction-detail div.time-left').html(secondsToHms(auction.time_left));
+          return true;
+        } else {
+          return false;
+        }
+      });
+    },
+    update: function() {
+      return callApi(AUCTION_RECENT_BIDS, {
+        id: auction_id
+      }, function(data) {
+        var recent_bids;
+        if (data.result) {
+          return recent_bids = data.result;
         }
       });
     }

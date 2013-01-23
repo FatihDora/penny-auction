@@ -89,6 +89,16 @@ class AuctionController(object):
 		return this_auction.past_bids.filter("user", this_user).order("transaction_time").run()
 
 	@staticmethod
+	def auction_recent_bids(auction_id):
+		'''
+			Returns a list of usernames, price, and datetimes for the last 10 bids
+		'''
+
+		#this_auction = auction.Auction.get_by_id(auction_id)
+		#if not this_auction:
+		#	raise Exception("No auction with ID\"{}\" exists.".format(auction_id))
+
+	@staticmethod
 	def auctions_list_all():
 		'''
 			List all auctions (administrative only)

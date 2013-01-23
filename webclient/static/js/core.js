@@ -17,6 +17,8 @@
 
   window.AUCTION_DETAIL = "/auction_detail";
 
+  window.AUCTION_RECENT_BIDS = "/auction_recent_bids";
+
   window.AUCTION_ADD_PENDING_BIDS = "/auction_add_pending_bids";
 
   window.AUCTION_GET_PENDING_BIDS_FOR_USER = "/auction_get_pending_bids_for_user";

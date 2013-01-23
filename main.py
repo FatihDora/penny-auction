@@ -346,36 +346,28 @@ class auction_detail:
 
 class auction_recent_bids:
     def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
 
-        try:
-			if not inputs.id:
-				raise Exception("No auction ID was supplied in the 'id' parameter.")
-
-			# user validation
-			user_name = user_controller.UserController.validate_cookie()
-			if user_name is None:
-				raise Exception("Not logged in!")
-
-			try:
-				bid_history = auction_controller.AuctionController.auction_bid_history_by_user(auction_id=int(inputs.id), user_name=user_name)
-
-			except Exception, exception:
-				logging.error("The following exception was raised by AuctionController.auction_bid_history_by_user():\n{}".format(exception))
-				raise Exception("An internal error occurred.")
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+		try:
 
 			result = []
-			for bid in bid_history:
-				datetime = bid.transaction_time
-				# convert the datetime object to a Unix timestamp in milliseconds
-				timestamp_millis = time.mktime(datetime.timetuple()) * 1000 + datetime.microsecond / 1000
-				result.append(timestamp_millis)
+			result.append({username:'kevin',price:'1.20',bidtime:'05:14:23 PM'})
+			result.append({username:'darin',price:'1.19',bidtime:'05:14:15 PM'})
+			result.append({username:'brent',price:'1.18',bidtime:'05:14:10 PM'})
+			result.append({username:'kevin',price:'1.17',bidtime:'05:14:09 PM'})
+			result.append({username:'chris',price:'1.16',bidtime:'05:14:02 PM'})
+			result.append({username:'kevin',price:'1.15',bidtime:'05:13:58 PM'})
+			result.append({username:'darin',price:'1.14',bidtime:'05:13:49 PM'})
+			result.append({username:'brent',price:'1.13',bidtime:'05:13:42 PM'})
+			result.append({username:'chris',price:'1.12',bidtime:'05:13:36 PM'})
 
-			return json.dumps({'result': result})
+			return json.dumps({'result':result})
 
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
+		except Exception, e:
+			return json.dumps({'exception':unicode(e)})
+
+
 
 class auction_add_pending_bids_for_user:
     def GET(self):
