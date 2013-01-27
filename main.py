@@ -21,7 +21,6 @@ from datetime import timedelta
 
 from controllers import user_controller, auction_controller
 import models.auction
-import models.bid_history as bid_history
 import models.item as item
 import models.user as user
 

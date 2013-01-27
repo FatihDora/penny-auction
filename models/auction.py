@@ -101,6 +101,8 @@ class Auction(db.Model):
 		self.current_price += self.PRICE_INCREASE_FROM_BID
 		self.auction_end = datetime.datetime.now() + self.bid_pushback_time
 		self.current_winner = user
+		new_bid_history = BidHistory(auction=self, user=user)
+		new_bid_history.put()
 		self.put()
 	
 	def close(self):
@@ -259,4 +261,19 @@ class Autobidder(db.Model):
 		owner.put()
 		self.remaining_bids = 0
 		self.put()
+
+
+
+
+class BidHistory(db.Model):
+	'''
+		This class models a record of a bid placed, either directly by a user
+		clicking the bid button in the front end, or by an autobidder bidding
+		on the user's behalf.
+	'''
+
+	id = db.IntegerProperty(required=True)
+	transaction_time = db.DateTimeProperty(auto_now_add=True)
+	auction = db.ReferenceProperty(Auction, collection_name='past_bids')
+	user = db.ReferenceProperty(user.User, collection_name='past_bids')
 
