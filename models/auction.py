@@ -272,7 +272,6 @@ class BidHistory(db.Model):
 		on the user's behalf.
 	'''
 
-	id = db.IntegerProperty(required=True)
 	transaction_time = db.DateTimeProperty(auto_now_add=True)
 	auction = db.ReferenceProperty(Auction, collection_name='past_bids')
 	user = db.ReferenceProperty(user.User, collection_name='past_bids')
