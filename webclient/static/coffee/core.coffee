@@ -32,6 +32,19 @@ window.USER_EMAIL_EXISTS = "/user_email_exists"
 window.USER_INFO = "/user_info"
 window.USER_LOGOUT = "/user_logout"
 
+############################################
+# A function for setting cookies.
+############################################
+window.set_cookie = (name, value, expiration_days) ->
+	expiration_days ?= 7300 # default to twenty years
+
+	now = new Date
+	expiration_date = new Date now.getTime + (expiration_days * 86400000)
+
+	cookie_text = "#{escape value}; expires=#{expiration_date.toUTCString}"
+	document.cookie = "#{name}=#{cookie_text}"
+
+
 $(document).ready ->
 
 	# Set up the jQuery AJAX stuff

@@ -43,6 +43,17 @@
 
   window.USER_LOGOUT = "/user_logout";
 
+  window.set_cookie = function(name, value, expiration_days) {
+    var cookie_text, expiration_date, now;
+    if (expiration_days == null) {
+      expiration_days = 7300;
+    }
+    now = new Date;
+    expiration_date = new Date(now.getTime + (expiration_days * 86400000));
+    cookie_text = "" + (escape(value)) + "; expires=" + expiration_date.toUTCString;
+    return document.cookie = "" + name + "=" + cookie_text;
+  };
+
   $(document).ready(function() {
     $.ajaxSetup({
       async: true,
