@@ -17,33 +17,36 @@
     fetchingAuctionUpdates: null,
     init: function() {
       var buildAuction;
-      callApi(AUCTIONS_LIST_CURRENT, {
-        count: 30
-      }, function(data) {
-        var b, i, ix, m, n, p, t, u, w, _results;
-        $("#auctions").html("");
-        auctions = data.result;
-        if (!(auctions != null)) {
-          $("#onecol .gallery").html('<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>');
-          return;
+      return jQuery.ajax({
+        url: AUCTIONS_LIST_CURRENT,
+        data: {
+          count: 30
+        },
+        success: function(data) {
+          var b, i, ix, m, n, p, t, u, w, _results;
+          $("#auctions").html("");
+          auctions = data.result;
+          if (!(auctions != null)) {
+            $("#onecol .gallery").html('<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>');
+            return;
+          }
+          _results = [];
+          for (ix in auctions) {
+            i = auctions[ix].id;
+            n = auctions[ix].name;
+            b = auctions[ix].base_price;
+            u = auctions[ix].product_url;
+            m = auctions[ix].image_url;
+            p = auctions[ix].price;
+            w = auctions[ix].winner;
+            t = secondsToHms(auctions[ix].time_left);
+            auction_ids.push(i);
+            auction_list[i] = auctions[ix];
+            _results.push($("#auctions").append(buildAuction(i, n, b, u, m, p, w, t)));
+          }
+          return _results;
         }
-        _results = [];
-        for (ix in auctions) {
-          i = auctions[ix].id;
-          n = auctions[ix].name;
-          b = auctions[ix].base_price;
-          u = auctions[ix].product_url;
-          m = auctions[ix].image_url;
-          p = auctions[ix].price;
-          w = auctions[ix].winner;
-          t = secondsToHms(auctions[ix].time_left);
-          auction_ids.push(i);
-          auction_list[i] = auctions[ix];
-          _results.push($("#auctions").append(buildAuction(i, n, b, u, m, p, w, t)));
-        }
-        return _results;
-      });
-      $("ul#auctions").delegate("div.bid", "click", function() {
+      }, $("ul#auctions").delegate("div.bid", "click", function() {
         var auction_id, id;
         if (user.loggedIn === false) {
           document.location.href = "/register";
@@ -55,18 +58,21 @@
         }
         if (user.bids > 0) {
           auction_id = $(this).closest('li').attr("id");
-          return callApi(AUCTION_BID, {
-            id: auction_id
-          }, function(data) {
-            user.bids -= 1;
-            user.update();
-            if (user.bids % 5 === 0) {
-              return user.refresh();
+          return jQuery.ajax({
+            url: AUCTION_BID,
+            data: {
+              id: auction_id
+            },
+            success: function(data) {
+              user.bids -= 1;
+              user.update();
+              if (user.bids % 5 === 0) {
+                return user.refresh();
+              }
             }
           });
         }
-      });
-      return buildAuction = function(id, productName, basePrice, productUrl, imageUrl, currentPrice, currentWinner, timeTilEnd) {
+      }), buildAuction = function(id, productName, basePrice, productUrl, imageUrl, currentPrice, currentWinner, timeTilEnd) {
         var tmplAuction;
         tmplAuction = void 0;
         tmplAuction = '';
@@ -100,7 +106,7 @@
         tmplAuction = tmplAuction.replaceAll("{winner}", currentWinner);
         tmplAuction = tmplAuction.replaceAll("{time-remaining}", timeTilEnd);
         return tmplAuction;
-      };
+      });
     },
     updateAuctions: function() {
       var fetchingAuctionUpdates, i, id, tmplist, _i, _len;
@@ -126,7 +132,7 @@
         fetchingAuctionUpdates.abort();
       }
       return fetchingAuctionUpdates = jQuery.ajax({
-        url: API + AUCTIONS_STATUS_BY_ID,
+        url: AUCTIONS_STATUS_BY_ID,
         data: {
           ids: auction_ids.join()
         },

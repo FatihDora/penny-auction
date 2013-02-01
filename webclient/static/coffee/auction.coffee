@@ -23,7 +23,10 @@ auction =
 		# * Setup a timer to get the data for the main and 3 side auctions every 1 second.
 		# * The main auction should return the same data as the side auctions as well as
 		#   the previous 9 bidders (for a total of 10 bidders).
-		callApi AUCTION_DETAIL,(id: auction_id), (data) ->
+		jQuery.ajax
+			url: AUCTION_DETAIL
+			data: {id: auction_id}
+			success: (data) ->
 				if data.result
 					auction = data.result
 					if not auction?
@@ -50,16 +53,22 @@ auction =
 					return false
 
 	update: ->
-		callApi AUCTION_RECENT_BIDS,(id: auction_id), (data) ->
-			if data.result
-				recent_bids = data.result
+		jQuery.ajax
+			url: AUCTION_RECENT_BIDS
+			data: {id: auction_id}
+			success: (data) ->
+				if data.result
+					recent_bids = data.result
 
 
 
 
 autobidder = init: ->
 	# Gets the user's autobidder infor for this auction
-	callApi AUTOBIDDER_STATUS_BY_AUCTION,(id: auction_id), (data) ->
+	jQuery.ajax
+		url: AUTOBIDDER_STATUS_BY_AUCTION
+		data: {id: auction_id}
+		success: (data) ->
 			if data.result
 
 				autobidder = data.result

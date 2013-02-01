@@ -11,42 +11,50 @@
 
   auction = {
     init: function() {
-      return callApi(AUCTION_DETAIL, {
-        id: auction_id
-      }, function(data) {
-        var b, i, m, n, p, t, u, w;
-        if (data.result) {
-          auction = data.result;
-          if (!(auction != null)) {
-            $("#onecol .gallery").html('<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>');
+      return jQuery.ajax({
+        url: AUCTION_DETAIL,
+        data: {
+          id: auction_id
+        },
+        success: function(data) {
+          var b, i, m, n, p, t, u, w;
+          if (data.result) {
+            auction = data.result;
+            if (!(auction != null)) {
+              $("#onecol .gallery").html('<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>');
+              return false;
+            }
+            i = auction.id;
+            n = auction.name;
+            b = auction.base_price;
+            u = auction.product_url;
+            m = auction.image_url;
+            p = auction.price;
+            w = auction.winner;
+            t = secondsToHms(auction.time_left);
+            $('#auction-name').text(auction.name);
+            $('#auction-image img').attr('src', auction.image_url);
+            $('#auction-detail div.price span.right').html('P' + auction.price);
+            $('#auction-detail div.winner span.right').html(auction.winner);
+            $('#auction-detail div.time-left').html(secondsToHms(auction.time_left));
+            return true;
+          } else {
             return false;
           }
-          i = auction.id;
-          n = auction.name;
-          b = auction.base_price;
-          u = auction.product_url;
-          m = auction.image_url;
-          p = auction.price;
-          w = auction.winner;
-          t = secondsToHms(auction.time_left);
-          $('#auction-name').text(auction.name);
-          $('#auction-image img').attr('src', auction.image_url);
-          $('#auction-detail div.price span.right').html('P' + auction.price);
-          $('#auction-detail div.winner span.right').html(auction.winner);
-          $('#auction-detail div.time-left').html(secondsToHms(auction.time_left));
-          return true;
-        } else {
-          return false;
         }
       });
     },
     update: function() {
-      return callApi(AUCTION_RECENT_BIDS, {
-        id: auction_id
-      }, function(data) {
-        var recent_bids;
-        if (data.result) {
-          return recent_bids = data.result;
+      return jQuery.ajax({
+        url: AUCTION_RECENT_BIDS,
+        data: {
+          id: auction_id
+        },
+        success: function(data) {
+          var recent_bids;
+          if (data.result) {
+            return recent_bids = data.result;
+          }
         }
       });
     }
@@ -54,17 +62,21 @@
 
   autobidder = {
     init: function() {
-      return callApi(AUTOBIDDER_STATUS_BY_AUCTION, {
-        id: auction_id
-      }, function(data) {
-        if (data.result) {
-          autobidder = data.result;
-          if (!autobidder.id) {
-            $('#create-autobidder').show();
-            return $('#cancel-autobidder').hide();
-          } else {
-            $('#cancel-autobidder').show();
-            return $('#create-autobidder').hide();
+      return jQuery.ajax({
+        url: AUTOBIDDER_STATUS_BY_AUCTION,
+        data: {
+          id: auction_id
+        },
+        success: function(data) {
+          if (data.result) {
+            autobidder = data.result;
+            if (!autobidder.id) {
+              $('#create-autobidder').show();
+              return $('#cancel-autobidder').hide();
+            } else {
+              $('#cancel-autobidder').show();
+              return $('#create-autobidder').hide();
+            }
           }
         }
       });

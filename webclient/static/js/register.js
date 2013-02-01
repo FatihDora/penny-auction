@@ -41,27 +41,31 @@
           showDialog("error", "Registration Error", error);
           return false;
         }
-        callApi(USER_REGISTER, {
-          first_name: first_name,
-          last_name: last_name,
-          username: username,
-          email: email,
-          password: password
-        }, function(data) {
-          if (data.exception) {
-            showDialog("error", "Registration Error", data.exception);
-            return;
-          }
-          if (data.result) {
-            $("#register-or-login").slideUp('slow', function() {
-              $("#registration-complete strong").text(email);
-              return $("#registration-complete").fadeIn(1000);
-            });
-          }
-        });
-        return false;
       });
     }
   };
+
+  jQuery.ajax({
+    url: USER_REGISTER,
+    data: {
+      first_name: first_name,
+      last_name: last_name,
+      username: username,
+      email: email,
+      password: password
+    },
+    success: function(data) {
+      if (data.exception) {
+        showDialog("error", "Registration Error", data.exception);
+        return;
+      }
+      if (data.result) {
+        $("#register-or-login").slideUp('slow', function() {
+          $("#registration-complete strong").text(email);
+          return $("#registration-complete").fadeIn(1000);
+        });
+      }
+    }
+  }, false);
 
 }).call(this);

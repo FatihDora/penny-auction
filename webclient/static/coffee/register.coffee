@@ -33,21 +33,24 @@ register = init: ->
             return false
 
 
-        callApi USER_REGISTER,
-            first_name: first_name
-            last_name: last_name
-            username: username
-            email: email
-            password: password
-        , (data) ->
-            if data.exception
-                showDialog "error", "Registration Error", data.exception
-                return
+		jQuery.ajax
+			url: USER_REGISTER
+			data: {
+				first_name: first_name
+				last_name: last_name
+				username: username
+				email: email
+				password: password
+			}
+			success: (data) ->
+				if data.exception
+					showDialog "error", "Registration Error", data.exception
+					return
 
-            if data.result
-                $("#register-or-login").slideUp 'slow', ->
-                    $("#registration-complete strong").text(email)
-                    $("#registration-complete").fadeIn 1000
-                return
+				if data.result
+					$("#register-or-login").slideUp 'slow', ->
+						$("#registration-complete strong").text(email)
+						$("#registration-complete").fadeIn 1000
+					return
 
-        false
+			false
