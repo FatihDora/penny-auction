@@ -3,9 +3,6 @@
 #		anything you want to be global needs to be prefixed with {window.}
 ######################
 
-# API
-window.API = "http://localhost:8080"
-
 # Autobidder
 window.AUTOBIDDERS_LIST_ALL = "/autobidders_list_all"
 window.AUTOBIDDERS_LIST_BY_AUCTION = "/autobidders_list_by_auction"
@@ -87,15 +84,18 @@ window.user =
 
 	refresh: ->
 		if fetchingInfo then fetchingInfo.abort()
-		fetchingInfo = callApi USER_INFO,{},(data) ->
-			if data.result
-				user.loggedIn = true
-				user.username = data.result[0]['username']
-				user.bids = data.result[0]['bids']
-				user.autobidders = data.result[0]['auto-bidders']
-				login.showLoggedIn user.username
-				user.update()
-			fetchingInfo = null
+		fetchingInfo = jQuery.ajax
+			url: USER_INFO
+			data: {}
+			success: (data) ->
+				if data.result
+					user.loggedIn = true
+					user.username = data.result[0]['username']
+					user.bids = data.result[0]['bids']
+					user.autobidders = data.result[0]['auto-bidders']
+					login.showLoggedIn user.username
+					user.update()
+				fetchingInfo = null
 
 	update: ->
 		$('#topbar-bids').text user.bids
@@ -113,17 +113,23 @@ window.login =
 			e.preventDefault()
 			username = $("#login-username").val()
 			password = $("#login-password").val()
-			callApi USER_AUTHENTICATE,
-				username: username
-				password: password
-			, (data) ->
+			jQuery.ajax
+				url: USER_AUTHENTICATE
+				data: {
+					username: username
+					password: password
+				}
+				success: (data) ->
 					if data.result? then user.refresh()
 					if data.exception? then showDialog "error", "Login Error", data.exception
 
 		$('#logout-link').click (e) ->
 			e.preventDefault()
-			callApi USER_LOGOUT,{}, (data) ->
-				login.showLoggedOut()
+			jQuery.ajax
+				url: USER_LOGOUT
+				data: {}
+				success: (data) ->
+					login.showLoggedOut()
 
 		$("#login-form").delegate "#login-username, #login-password", "focus", ->
 			if $(@).val() is "username" or $(@).val() is "password"
@@ -183,12 +189,6 @@ window.getCookie = (c_name) ->
 		x = x.replace(/^\s+|\s+$/g, "")
 		return unescape(y)	if x is c_name
 		i++
-
-window.callApi = (method, data, callback) ->
-	jQuery.ajax
-		url: API + method
-		data: data
-		success: callback
 
 # For getting parameters from the Query String
 window.getParameterByName = (name) ->

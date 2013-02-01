@@ -11,17 +11,21 @@
       var code;
       if ($("div#validate-email") != null) {
         code = getParameterByName('code');
-        return callApi(VALIDATE_EMAIL, {
-          code: code
-        }, function(data) {
-          $("div#validate-email div#please-wait").hide();
-          if (data.exception) {
-            $("#validation-error h2").text(data.exception);
-            $("#validation-error").fadeIn(1000);
-            return;
-          }
-          if (data.result) {
-            $("#validation-success").fadeIn(1000);
+        return jQuery.ajax({
+          url: VALIDATE_EMAIL,
+          data: {
+            code: code
+          },
+          success: function(data) {
+            $("div#validate-email div#please-wait").hide();
+            if (data.exception) {
+              $("#validation-error h2").text(data.exception);
+              $("#validation-error").fadeIn(1000);
+              return;
+            }
+            if (data.result) {
+              $("#validation-success").fadeIn(1000);
+            }
           }
         });
       }
