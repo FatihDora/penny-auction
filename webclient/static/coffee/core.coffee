@@ -33,7 +33,7 @@ window.USER_LOGOUT = "/user_logout"
 # A function for setting cookies.
 ############################################
 window.set_cookie = (name, value, expiration_days) ->
-	expiration_days ?= 7300 # default to twenty years
+	expiration_days ?= 365 # default to expire one year in the future
 
 	now = new Date
 	expiration_date = new Date now.getTime + (expiration_days * 86400000)

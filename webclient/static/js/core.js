@@ -44,7 +44,7 @@
   window.set_cookie = function(name, value, expiration_days) {
     var cookie_text, expiration_date, now;
     if (expiration_days == null) {
-      expiration_days = 7300;
+      expiration_days = 365;
     }
     now = new Date;
     expiration_date = new Date(now.getTime + (expiration_days * 86400000));
