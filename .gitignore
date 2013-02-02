@@ -10,3 +10,5 @@ desktop.ini
 # ignore cached Python bytecode
 *.pyc
 
+# ignore google appengine nag files
+.appcfg_nag
