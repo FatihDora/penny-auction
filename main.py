@@ -31,7 +31,7 @@ urls = (
     '/account','account',
     '/account/auto_bidders','account_auto_bidders',
     '/account/bidding_history','account_bidding_history',
-    '/auction/.*','auction',
+    '/auction/(.*)','auction',
     '/bid_packs','bid_packs',
     '/checkout','checkout',
     '/forgot_credentials','forgot_credentials',
@@ -100,10 +100,9 @@ class account_auto_bidders:
         return template.render(path, {})
 
 class auction:
-    def GET(self):
-        auction_id = web.ctx.path.replace("/auction/","")
+    def GET(self, auction_id):
         path = os.path.join(os.path.dirname(__file__), 'webclient/auction.html')
-        return template.render(path, {'id':auction_id})
+        return template.render(path, {'id': auction_id})
 
 class bid_packs:
     def GET(self):
