@@ -20,4 +20,5 @@ class DummyUsers(object):
 		user_controller.UserController.create("Darin", "Hoover", "darin", "darinh@gmail.com", "asdf").add_bids(100)
 		user_controller.UserController.create("Kevin", "Mershon", "kevin", "nwlinkvxd@gmail.com", "asdf").add_bids(100)
 		user_controller.UserController.create("Brent", "Houghton", "brent", "slixbits@gmail.com", "asdf").add_bids(100)
+		user_controller.UserController.create("Demo User", "Demo User", "demo user", "demo@example.com", "asdf").add_bids(100)
 

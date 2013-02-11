@@ -49,26 +49,10 @@ class AuctionController(object):
 		if not auction_ids:
 			return
 
-		# Try to parse the string of IDs and create a list of ints.
-		try:
-			sids = auction_ids.split(',')
-		except Exception, e:
-			raise Exception("The list of IDs provided could not be parsed.")
-		
-		ids = []
-		for sid in sids:
-			try:
-				ids.append(int(sid))
-			except Exception, e:
-				raise Exception("The list of IDs provided could not be parsed.")
-
-		if len(ids) > 40:
-			raise Exception("Too many ids")
-
 		# Try to get some auctions from the list of IDs
-		auctions = auction.Auction.get_by_id(ids)
+		auctions = auction.Auction.get_by_id(auction_ids)
 		if not auctions:
-			raise Exception("There were no auctions for the IDs you provided.")
+			auctions = []
 
 		return auctions
 
@@ -84,6 +68,35 @@ class AuctionController(object):
 			raise Exception("No current auctions.")
 
 		return auctions
+
+	@staticmethod
+	def auction_bid_history_by_user(auction_id, user_name):
+		'''
+			Returns a list of bids by the specified user on the specified
+			auction. An empty list will be returned if this user has never bid
+			on this auction. An Exception will be thrown if either the user or
+			auction does not exist.
+		'''
+
+		this_auction = auction.Auction.get_by_id(auction_id)
+		if not this_auction:
+			raise Exception("No auction with ID \"{}\" exists.".format(auction_id))
+
+		this_user = user.User.get_by_username(user_name)
+		if not this_user:
+			raise Exception("No user exists with user name \"{}\".".format(user_name))
+
+		return this_auction.past_bids.filter("user", this_user).order("transaction_time").run()
+
+	@staticmethod
+	def auction_recent_bids(auction_id):
+		'''
+			Returns a list of usernames, price, and datetimes for the last 10 bids
+		'''
+
+		#this_auction = auction.Auction.get_by_id(auction_id)
+		#if not this_auction:
+		#	raise Exception("No auction with ID\"{}\" exists.".format(auction_id))
 
 	@staticmethod
 	def auctions_list_all():
@@ -102,8 +115,6 @@ class AuctionController(object):
 		'''
 			Performs a single bid on the given auction on behalf of the specified user.
 		'''
-
-		# TODO: perform some kind of user authentication
 
 		userInfo = user.User.get_by_username(username)
 
@@ -128,20 +139,11 @@ class AuctionController(object):
 		auctionInfo.bid(userInfo)
 
 	@staticmethod
-	def auction_detail(auction_id):
-		'''
-			Returns detailed auction information for the auction page.
-		'''
-		pass
-
-	@staticmethod
 	def attach_autobidder(auction_id, user_name, num_bids):
 		'''
 			Creates a new autobidder on the specified auction on behalf of the
 			specified user with the specified number of bids.
 		'''
-
-		# TODO: perform some kind of user authentication
 
 		auction_info = auction.Auction.get_by_id(auction_id)
 
@@ -158,4 +160,55 @@ class AuctionController(object):
 
 		user_info.use_bids(num_bids)
 		auction_info.attach_autobidder(user_info, num_bids)
+
+
+	@staticmethod
+	def get_autobidder_remaining_bids(auction_id, user_name):
+		'''
+			Returns an integer number of bids remaining in the specified user's
+			autobidder attached to the specified auction. If the user has no
+			autobidder, 0 will be returned.
+		'''
+
+		auction_info = auction.Auction.get_by_id(auction_id)
+
+		if auction_info is None:
+			raise Exception("Auction does not exist.")
+
+		if not auction_info.active and auction_info.auction_end < datetime.datetime.now():
+			raise Exception("Auction has closed.")
+
+		user_info = user.User.get_by_username(user_name)
+
+		if user_info is None:
+			raise Exception("Couldn't get info for " + user_name)
+
+		autobidder = auction_info.attached_autobidders.filter("user", user_info).get()
+		if autobidder is None:
+			return 0
+		else:
+			return autobidder.remaining_bids
+
+	@staticmethod
+	def cancel_autobidder(auction_id, user_name):
+		'''
+			Cancels any autobidder attached to the specified auction and
+			belonging to the specified user. Does nothing if the user has no
+			active autobidder on the auction.
+		'''
+
+		auction_info = auction.Auction.get_by_id(auction_id)
+
+		if auction_info is None:
+			raise Exception("Auction does not exist.")
+
+		if not auction_info.active and auction_info.auction_end < datetime.datetime.now():
+			raise Exception("Auction has closed.")
+
+		user_info = user.User.get_by_username(user_name)
+
+		if user_info is None:
+			raise Exception("Couldn't get info for " + user_name)
+
+		auction_info.close_autobidder(user_info)
 

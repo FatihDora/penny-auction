@@ -217,7 +217,7 @@ class UserController(object):
 		# Validate.
 		aCookie = user_cookie.UserCookie.validate_cookie(token)
 
-		if aCookie.username is None:
+		if aCookie is None:
 			return None
 		else:
 			username = aCookie.username

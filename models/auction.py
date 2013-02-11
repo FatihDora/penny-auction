@@ -14,7 +14,7 @@ class Auction(db.Model):
 	''' This class represents a single auction. '''
 
 	item = db.ReferenceProperty(item.Item, collection_name='auctions')
-	current_price = decimal_property.DecimalProperty(default="0.00")
+	current_price = decimal_property.DecimalProperty(default=decimal.Decimal("0.00"))
 	current_winner = db.ReferenceProperty(user.User, collection_name='auctions_won', default=None)
 
 	# the time at which this auction began accepting bids, NOT the time the auction was created
@@ -37,7 +37,7 @@ class Auction(db.Model):
 
 
 	# the amount an auction's price increases when a bid is placed, in centavos
-	PRICE_INCREASE_FROM_BID = decimal.Decimal(0.01)
+	PRICE_INCREASE_FROM_BID = decimal.Decimal('0.01')
 
 
 	@staticmethod
@@ -66,7 +66,7 @@ class Auction(db.Model):
 			self.start_time = datetime.datetime.now()
 			self.auction_end = self.start_time + self.bid_pushback_time
 			self.put()
-			self.heartbeat()
+			self._heartbeat()
 
 	def _heartbeat(self):
 		'''
@@ -101,6 +101,8 @@ class Auction(db.Model):
 		self.current_price += self.PRICE_INCREASE_FROM_BID
 		self.auction_end = datetime.datetime.now() + self.bid_pushback_time
 		self.current_winner = user
+		new_bid_history = BidHistory(auction=self, user=user)
+		new_bid_history.put()
 		self.put()
 
 	def close(self):
@@ -116,7 +118,7 @@ class Auction(db.Model):
 		self.put()
 
 		if self.current_winner:
-			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price.2f} and winning user {winner}.".format(
+			logging.info("Auction of {item} begun at {start_time} closed at {end_time} with a final price of {price} and winning user {winner}.".format(
 				item = self.item.name,
 				start_time = self.start_time,
 				end_time = self.auction_end,
@@ -197,6 +199,25 @@ class Auction(db.Model):
 		new_autobidder = Autobidder(user=user, auction=self, remaining_bids=bids)
 		new_autobidder.put()
 
+	def close_autobidder(self, user):
+		'''
+			Closes any autobidder on this auction, where user is the user model
+			object for the user owning the autobidder. Does nothing if the user
+			has no active autobidder on this auction.
+		'''
+
+
+		if user is None:
+			raise Exception("The user passed to Auction.attach_autobidder() cannot be None.")
+
+		if not self.active and self.auction_end < datetime.datetime.now():
+			raise Exception("Cannot cancel autobidder because this auction has closed.")
+
+		autobidder = self.attached_autobidders.filter("user", user).get()
+		if autobidder:
+			autobidder.close()
+			db.delete(autobidder)
+
 	def __eq__(self, other):
 		'''
 			Equality tester
@@ -252,3 +273,17 @@ class Autobidder(db.Model):
 		owner.put()
 		self.remaining_bids = 0
 		self.put()
+
+
+
+
+class BidHistory(db.Model):
+	'''
+		This class models a record of a bid placed, either directly by a user
+		clicking the bid button in the front end, or by an autobidder bidding
+		on the user's behalf.
+	'''
+
+	transaction_time = db.DateTimeProperty(auto_now_add=True)
+	auction = db.ReferenceProperty(Auction, collection_name='past_bids')
+	user = db.ReferenceProperty(user.User, collection_name='past_bids')
