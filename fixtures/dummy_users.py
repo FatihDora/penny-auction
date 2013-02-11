@@ -17,8 +17,7 @@ class DummyUsers(object):
 		db.delete(user_cookie.UserCookie.all())
 
 		# admin users
-		user_controller.UserController.create("Darin", "Hoover", "darin", "darinh@gmail.com", "asdf").add_bids(100)
-		user_controller.UserController.create("Kevin", "Mershon", "kevin", "nwlinkvxd@gmail.com", "asdf").add_bids(100)
-		user_controller.UserController.create("Brent", "Houghton", "brent", "slixbits@gmail.com", "asdf").add_bids(100)
-		user_controller.UserController.create("Demo User", "Demo User", "demo user", "demo@example.com", "asdf").add_bids(100)
+		user_controller.UserController.create(first_name="Darin", last_name="Hoover", username="darin", email="darinh@gmail.com").add_bids(100)
+		user_controller.UserController.create(first_name="Kevin", last_name="Mershon", username="kevin", email="nwlinkvxd@gmail.com").add_bids(100)
+		user_controller.UserController.create(first_name="Brent", last_name="Houghton", username="brent", email="slixbits@gmail.com").add_bids(100)
 

@@ -151,5 +151,11 @@
 <!-- end container -->
 {% include '_footer.html' %}
 
+<!-- hidden login form; the login buttons link to and submit this form -->
+<form id="persona-login-form" action="/persona_login">
+	<input type="hidden" name="assertion">
+	<button type="submit"></button>
+</form>
+
 </body>
 </html>

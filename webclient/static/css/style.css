@@ -4685,3 +4685,8 @@ div#rightcol ul#auctions li .bid a {
 	width: 95%;
 	margin-top: 10px;
 }
+
+/* hiddden login form used when logging in with Persona */
+#persona-login-form {
+	display: none;
+}

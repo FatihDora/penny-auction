@@ -1,23 +1,59 @@
 ###############################################################################
 # These functions handle the client side of user login with Mozilla Persona.
-# They requires the set_cookie() function in core.js
+# They depend on core.js
 ###############################################################################
 
-# takes the browser's assertion code and sets it in a cookie
-persona_login_callback = (assertion) ->
-	window.set_cookie 'browser_id_assertion', assertion
-	window.location.reload()
 
-# initiates the login process by requesting the browser's assertion code and
-# passing the code to persona_login_callback
-persona_login = ->
-	navigator.id.getVerifiedEmail persona_login_callback
+window.session =
+	init: (assertion) ->
+		jQuery.ajax
+			url: USER_AUTHENTICATE
+			data: {
+				assertion: assertion
+			}
+			success: (data) ->
+				if data.result
+					user.refresh
+					window.session.showLoggedIn data.username
+				else
+					if data.error?
+						error_message = data.error
+					else
+						error_message = 'The server could not verify your credentials.'
 
-# destroys the Persona cookie
-persona_logout = ->
-	window.set_cookie 'browser_id_assertion', '', -10
-	window.location.reload
+					showDialog "error", "Login Failed", error_message
+
+	# execute cosmetic page changes on logging in
+	showLoggedIn: (username) ->
+		$('#login-wrapper').fadeOut 'fast', ->
+			$('.username-label').text username
+			$('#logout-wrapper').fadeIn 'slow', ->
+				$('#top-account-info').fadeIn 'slow'
+	
+	logOut: ->
+		window.login.showLoggedOut()
+		jQuery.ajax
+			url: USER_LOGOUT
+			data: {}
+	
+	# execute cosmetic page changes on logging out
+	showLoggedOut: ->
+		$('#logout-wrapper').fadeOut 'fast', ->
+			$('#login-wrapper').fadeIn 'slow', ->
+				$('#top-account-info').fadeOut 'slow'
+
 
 $(document).ready ->
-	$(".persona-login-button").click persona_login
+	navigator.id.watch
+		onlogin: (assertion) ->
+			window.session.init assertion
+		onlogout: ->
+			window.session.showLoggedOut
+
+	$('.persona-login-button').click ->
+		navigator.id.request {siteName: "Piso Auction"} # TODO: add a {siteLogo: "URL"} property to show the user our site's logo when logging in with Persona
+	
+	$('#logout-link').click (event) ->
+		event.preventDefault
+		window.session.logOut
 

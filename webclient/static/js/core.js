@@ -29,7 +29,7 @@
 
   window.USER_REGISTER = "/user_register";
 
-  window.USER_AUTHENTICATE = "/user_authenticate";
+  window.USER_AUTHENTICATE = "/persona_login";
 
   window.VALIDATE_EMAIL = "/user_validate_email";
 
@@ -65,7 +65,7 @@
         }
       }
     });
-    $("#messageDialog").dialog({
+    return $("#messageDialog").dialog({
       autoOpen: false,
       modal: true,
       width: 300,
@@ -76,8 +76,6 @@
         }
       }
     });
-    login.init();
-    return user.init();
   });
 
   window.user = {
@@ -85,8 +83,8 @@
     username: null,
     bids: null,
     autobidders: null,
-    loggedIn: false,
-    init: function() {
+    init: function(username) {
+      this.username = username;
       return user.refresh();
     },
     refresh: function() {
@@ -99,11 +97,8 @@
         data: {},
         success: function(data) {
           if (data.result) {
-            user.loggedIn = true;
-            user.username = data.result[0]['username'];
             user.bids = data.result[0]['bids'];
             user.autobidders = data.result[0]['auto-bidders'];
-            login.showLoggedIn(user.username);
             user.update();
           }
           return fetchingInfo = null;
@@ -113,70 +108,6 @@
     update: function() {
       $('#topbar-bids').text(user.bids);
       return $('#topbar-autobidders').text(user.autobidders);
-    }
-  };
-
-  window.login = {
-    init: function() {
-      $("#login-form").submit(function(e) {
-        var password, username;
-        e.preventDefault();
-        username = $("#login-username").val();
-        password = $("#login-password").val();
-        return jQuery.ajax({
-          url: USER_AUTHENTICATE,
-          data: {
-            username: username,
-            password: password
-          },
-          success: function(data) {
-            if (data.result != null) {
-              user.refresh();
-            }
-            if (data.exception != null) {
-              return showDialog("error", "Login Error", data.exception);
-            }
-          }
-        });
-      });
-      $('#logout-link').click(function(e) {
-        e.preventDefault();
-        return jQuery.ajax({
-          url: USER_LOGOUT,
-          data: {},
-          success: function(data) {
-            return login.showLoggedOut();
-          }
-        });
-      });
-      $("#login-form").delegate("#login-username, #login-password", "focus", function() {
-        if ($(this).val() === "username" || $(this).val() === "password") {
-          $(this).val("");
-          return $(this).addClass("login-focus");
-        }
-      });
-      return $("#login-form").delegate("#login-username, #login-password", "blur", function() {
-        if ($(this).val() === "") {
-          $(this).val($(this).attr("id").split("-")[1]);
-          return $(this).removeClass("login-focus");
-        }
-      });
-    },
-    showLoggedIn: function(username) {
-      return $('div#login-wrapper').fadeOut('fast', function() {
-        $('.username-label').html(user.username);
-        return $('#logout-wrapper').fadeIn('slow', function() {
-          return $('#top-account-info').fadeIn('slow');
-        });
-      });
-    },
-    showLoggedOut: function() {
-      return $('#logout-wrapper').fadeOut('fast', function() {
-        $('.username-label').html("");
-        return $('#login-wrapper').fadeIn('slow', function() {
-          return $('#top-account-info').fadeOut('slow');
-        });
-      });
     }
   };
 

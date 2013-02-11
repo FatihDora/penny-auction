@@ -57,7 +57,7 @@ urls = (
     '/user_get_nonce', 'user_get_nonce',
     '/user_register', 'user_register',
     '/user_validate_email', 'user_validate_email',
-    '/user_authenticate', 'user_authenticate',
+    '/persona_login', 'persona_login',
     '/user_info', 'user_info',
     '/user_username_exists', 'user_username_exists',
     '/user_email_exists', 'user_email_exists',
@@ -510,16 +510,21 @@ class user_validate_email:
         except Exception, e:
             return json.dumps({'exception':unicode(e)})
 
-class user_authenticate:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-        try:
-            result ={'result':user_controller.UserController.user_authenticate(inputs.username, inputs.password)}
-            return json.dumps(result)
+class persona_login:
+	def GET(self):
+		inputs = web.input(assertion=None)
+		web.header('Content-Type', 'application/json')
+		try:
+			this_user = user_controller.UserController.persona_login(inputs.assertion)
+			if this_user:
+				result = {'result': True, 'username': this_user.username}
+			else:
+				result = {'result': False, 'username': None}
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the login process to fail.'})
 
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
+		return json.dumps(result)
 
 class user_authenticate_cookie:
     def GET(self):
