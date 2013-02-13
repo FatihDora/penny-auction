@@ -19,3 +19,6 @@ desktop.ini
 
 # ignore output.xml from our casperjs test script
 output.xml
+
+# ignore ctags
+.tags
