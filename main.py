@@ -34,12 +34,9 @@ urls = (
     '/auction/(.*)','auction',
     '/bid_packs','bid_packs',
     '/checkout','checkout',
-    '/forgot_credentials','forgot_credentials',
-    '/register','register',
     '/support','support',
-    '/validate_email','validate_email',
     '/winners','winners',
-    
+
     '/autobidders_list_all', 'autobidders_list_all',
     '/autobidders_list_by_auction', 'autobidders_list_by_auction',
     '/autobidder_status_by_auction', 'autobidder_status_by_auction',
@@ -54,9 +51,6 @@ urls = (
 	'/auction_cancel_pending_bids_for_user', 'auction_cancel_pending_bids_for_user',
 	'/auction_add_pending_bids_for_user', 'auction_add_pending_bids_for_user',
 
-    '/user_get_nonce', 'user_get_nonce',
-    '/user_register', 'user_register',
-    '/user_validate_email', 'user_validate_email',
     '/persona_login', 'persona_login',
     '/user_info', 'user_info',
     '/user_username_exists', 'user_username_exists',
@@ -114,24 +108,9 @@ class checkout:
         path = os.path.join(os.path.dirname(__file__), 'webclient/checkout.html')
         return template.render(path, {})
 
-class forgot_credentials:
-    def GET(self):
-        path = os.path.join(os.path.dirname(__file__), 'webclient/forgot_credentials.html')
-        return template.render(path, {})
-
-class register:
-    def GET(self):
-        path = os.path.join(os.path.dirname(__file__), 'webclient/register.html')
-        return template.render(path, {})
-
 class support:
     def GET(self):
         path = os.path.join(os.path.dirname(__file__), 'webclient/support.html')
-        return template.render(path, {})
-
-class validate_email:
-    def GET(self):
-        path = os.path.join(os.path.dirname(__file__), 'webclient/validate_email.html')
         return template.render(path, {})
 
 class winners:
@@ -140,7 +119,7 @@ class winners:
         return template.render(path, {})
 
 
-        
+
 
 '''
     end Webclient
@@ -482,29 +461,6 @@ class user_logout:
 
         try:
             result = {'result':user_controller.UserController.user_logout()}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-
-class user_register:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-        try:
-            result = {'result':user_controller.UserController.user_register(inputs.first_name,inputs.last_name,inputs.username,inputs.email,inputs.password)}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-class user_validate_email:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-        try:
-            result = {'result':user_controller.UserController.user_validate_email(inputs.code)}
             return json.dumps(result)
 
         except Exception, e:

@@ -565,10 +565,6 @@ body {
 	display: none;
 }
 
-#login-username, #login-password {
-	padding: 0 1px;
-	width: 100px;
-	color:#ddd;
 }
 #logo {
 	float:left;
@@ -4316,16 +4312,6 @@ table td.last-child {
 	background: url("/images/cross.png") no-repeat scroll left top transparent;
 }
 /* ----------------------------------- START REGISTER PAGE	-----------------------------------*/
-.accordin-panel.register-page {
-	margin-top:-2px;
-}
-.accordin-panel.register-page .accordin-block {
-	padding:0;
-	width:100%;
-}
-.accordin-panel.register-page h2 {
-	padding-bottom:29px;
-}
 .contact .accordin-block {
 	padding:3px 26px 0px 26px;
 }
@@ -4528,13 +4514,6 @@ table#cart.wish td:first-child + td + td + td + td + td + td {
 }
 
 /* ----------------------------------- CUSTOM  -----------------------------------*/
-form#login-form .login-focus {
-	color: #000;
-}
-
-div#registration-complete, #top-account-info, #validation-error, #validation-success {
-	display: none;
-}
 
 ul#auctions div.bid a {
 	width: 94%;

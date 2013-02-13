@@ -27,11 +27,7 @@
 
   window.AUCTION_REMOVE_PENDING_BIDS_FOR_USER = "/auction_remove_pending_bids_for_user";
 
-  window.USER_REGISTER = "/user_register";
-
   window.USER_AUTHENTICATE = "/persona_login";
-
-  window.VALIDATE_EMAIL = "/user_validate_email";
 
   window.USER_USERNAME_EXISTS = "/user_username_exists";
 
