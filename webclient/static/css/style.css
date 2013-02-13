@@ -565,7 +565,12 @@ body {
 	display: none;
 }
 
+.persona-login-button {
+    /* both are required...THANKS IE!! */
+    cursor: pointer;
+    cursor: hand;
 }
+
 #logo {
 	float:left;
 }
