@@ -12,3 +12,10 @@ desktop.ini
 
 # ignore google appengine nag files
 .appcfg_nag
+
+# ignore datastore and search indexes files
+.datastore
+.searchindexes
+
+# ignore output.xml from our casperjs test script
+output.xml
