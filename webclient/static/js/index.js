@@ -26,10 +26,6 @@
           var b, i, ix, m, n, p, t, u, w, _results;
           $("#auctions").html("");
           auctions = data.result;
-          if (!(auctions != null)) {
-            $("#onecol .gallery").html('<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>');
-            return;
-          }
           _results = [];
           for (ix in auctions) {
             i = auctions[ix].id;

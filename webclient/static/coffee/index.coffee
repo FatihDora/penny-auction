@@ -23,9 +23,6 @@ auctions =
 			success: (data) ->
 				$("#auctions").html ""
 				auctions = data.result
-				if not auctions?
-					$("#onecol .gallery").html '<h2 class="red">Auctions</h2><br/><p style="font-size: 14px; width:100%">Unfortunately, there aren\'t any auctions in the system.  To spin up some auctions, visit http://pisoapi.appspot.com/reset_data.</p><br/><br/><br/><div class="clear"></div>'
-					return
 
 				for ix of auctions
 					i = auctions[ix].id
