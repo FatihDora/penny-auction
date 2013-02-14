@@ -18,12 +18,6 @@ handlers:
 - url: /checkout
   script: controllers/checkout.py
 
-- url: /register
-  script: controllers/register.py
-
-- url: /validate_email
-  script: controllers/validate_email.py
-
 - url: /bid_packs
   script: controllers/bid_packs.py
 
