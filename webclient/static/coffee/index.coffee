@@ -39,10 +39,6 @@ auctions =
 
 			# Bid Button Clicks
 			$("ul#auctions").delegate "div.bid", "click", ->
-				if user.loggedIn is false
-					document.location.href = "/register"
-					return
-
 				id = $(@).closest('li').attr('id')
 				if auction_list[id].t > 11.0
 					document.location.href = "/auction/" + id

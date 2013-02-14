@@ -44,10 +44,6 @@
         }
       }, $("ul#auctions").delegate("div.bid", "click", function() {
         var auction_id, id;
-        if (user.loggedIn === false) {
-          document.location.href = "/register";
-          return;
-        }
         id = $(this).closest('li').attr('id');
         if (auction_list[id].t > 11.0) {
           document.location.href = "/auction/" + id;
