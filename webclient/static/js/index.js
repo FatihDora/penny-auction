@@ -150,15 +150,10 @@
               t = secondsToHms(auctions[ix].time_left);
               a = auctions[ix].active;
               auction_list[i] = auctions[ix];
-              buttonText = "";
               if (auctions[ix].time_left > 11.0) {
                 buttonText = "Starting Soon...";
               } else {
-                if (user.loggedIn != null) {
-                  buttonText = "BID NOW!";
-                } else {
-                  buttonText = "REGISTER NOW!";
-                }
+                buttonText = "BID NOW!";
               }
               $("#" + i + " span.winner").html("<a href=\"#\">" + w + "</a>");
               $("#" + i + " span.price").text("P " + p);

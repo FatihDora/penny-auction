@@ -2,6 +2,7 @@
 (function() {
 
   window.session = {
+    loggedIn: false,
     init: function(assertion) {
       return jQuery.ajax({
         url: USER_AUTHENTICATE,
@@ -11,6 +12,7 @@
         success: function(data) {
           var error_message;
           if (data.result) {
+            window.session.loggedIn = true;
             user.refresh;
             return window.session.showLoggedIn(data.username);
           } else {
@@ -33,6 +35,7 @@
       });
     },
     logOut: function() {
+      window.session.loggedIn = false;
       window.login.showLoggedOut();
       return jQuery.ajax({
         url: USER_LOGOUT,
