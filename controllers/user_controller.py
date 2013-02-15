@@ -20,10 +20,20 @@ import json
 import hashlib
 import random
 import sys
+import os
 
 class UserController(object):
 
-	COOKIE_NAME = "PISOAUTH"
+	_COOKIE_NAME = "PISOAUTH"
+
+	# URL to send Persona assertions to for validation
+	# note that for testing purposes if running the development environement this URL can be set to the form
+	# "mock:<success or failure>:<email>" to bypass validation through Persona's servers
+	# and instead produce the result expected
+	# for example:
+	# 	"mock:success:me@example.org" would cause persona_login() to pretend a user with email me@example.org has a valid assertion
+	#	"mock:failure" would cause persona_login() to report the user has an invalid assertion
+	_PERSONA_AUTH_URL = "https://browserid.org/verify" 
 
 	@staticmethod
 	def _session_start(username, secret):
@@ -37,7 +47,7 @@ class UserController(object):
 		'''
 		secret = username + secret
 		token = bcrypt.hashpw(secret, bcrypt.gensalt())
-		web.setcookie(UserController.COOKIE_NAME, token, 3600)
+		web.setcookie(UserController._COOKIE_NAME, token, 3600)
 		user_cookie.UserCookie.create_cookie(username, token)
 
 	@staticmethod
@@ -53,13 +63,35 @@ class UserController(object):
 		if not assertion:
 			raise Exception("The assertion passed to UserController.persona_login() must be a non-empty string. Received {!r} instead.".format(assertion))
 
-		# send a message with the assertion to Persona's servers to validate its authenticity
-		message = urllib.urlencode(dict(audience=web.ctx.host, assertion=assertion))
-		response = json.loads(urllib.urlopen("https://browserid.org/verify", message).read())
+		# check whether to transmit a copy of the assertion to _PERSONA_AUTH_URL for validation (normal behavior)
+		# or skip validation (used for automated testing)
+		try:
+			  dev_environment = os.environ['SERVER_SOFTWARE'].startswith('Development')
+		except:
+			  dev_environment = False
+		if dev_environment and UserController._PERSONA_AUTH_URL.startswith('mock:'):
+			instructions = UserController._PERSONA_AUTH_URL.split(':', 3)
+			if instructions[1] == "failure":
+				response = {
+					"status": "failure",
+					"email": None
+				}
+			else:
+				response = {
+					"status": "success",
+					"email": instructions[2]
+				}
+		else:
+			# send a message with the assertion to Persona's servers to validate
+			# its authenticity
+			message = urllib.urlencode(dict(audience=web.ctx.host, assertion=assertion))
+			response = json.loads(urllib.urlopen(UserController._PERSONA_AUTH_URL, message).read())
 
 		# convert the status entry from a string to a more convenient boolean value
-		response["status"] = response["status"] is not "failure"
+		response["status"] = response["status"] != "failure"
 
+
+		# once the user's credentials are accepted or rejected, take appropriate actions
 		this_user = None
 		if response["status"]:
 			this_user = user.User.get_by_email(response["email"])
@@ -132,7 +164,7 @@ class UserController(object):
 		'''
 
 		# Do they have a cookie?
-		token = web.cookies().get(UserController.COOKIE_NAME)
+		token = web.cookies().get(UserController._COOKIE_NAME)
 		if token is None:
 			return None
 		# Validate.
