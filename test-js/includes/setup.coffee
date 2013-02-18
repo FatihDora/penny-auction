@@ -1,5 +1,8 @@
 # define an object for storing shortcuts
 PisoAuction = casper.PisoAuction = {}
+casper.on "load.finished", ->
+  #casper.test.comment "sleeping 250ms"
+  casper.wait(250)
 
 PisoAuction.test = (testBlock) ->
 	# clear the data

@@ -51,7 +51,7 @@ class Auction(db.Model):
 			Lists the top {count} auctions that are either open or waiting to open.
 		'''
 		return db.Query(model_class=Auction, keys_only=False).filter("auction_end >",datetime.datetime.now()).order("auction_end").run(limit=count)
-	
+
 	def start_countdown(self, delay=datetime.timedelta(hours=1)):
 		'''
 			Begins the countdown to making this auction active after the
@@ -109,7 +109,7 @@ class Auction(db.Model):
 		new_bid_history = BidHistory(auction=self, user=user)
 		new_bid_history.put()
 		self.put()
-	
+
 	def close(self):
 		'''
 			Close the auction and perform any required cleanup. Currently this
@@ -136,7 +136,7 @@ class Auction(db.Model):
 				start_time = self.start_time,
 				end_time = self.auction_end
 			))
-		
+
 		for autobidder in self.attached_autobidders:
 			autobidder.close()
 
@@ -176,7 +176,7 @@ class Auction(db.Model):
 				db.delete(self.attached_autobidders.filter("key", next_autobidder.key()))
 
 		return bid_placed
-	
+
 	def attach_autobidder(self, user, bids):
 		'''
 			Attaches an autobidder to this auction, where user is the user
@@ -203,7 +203,7 @@ class Auction(db.Model):
 
 		new_autobidder = Autobidder(user=user, auction=self, remaining_bids=bids)
 		new_autobidder.put()
-	
+
 	def close_autobidder(self, user):
 		'''
 			Closes any autobidder on this auction, where user is the user model
@@ -223,6 +223,18 @@ class Auction(db.Model):
 			autobidder.close()
 			db.delete(autobidder)
 
+	def __eq__(self, other):
+		'''
+			Equality tester
+		'''
+		return (isinstance(other, self.__class__)
+				and self.key().id() == other.key().id())
+
+	def __neq__(self, other):
+		'''
+			Inequality tester
+		'''
+		return not self.__eq__(other)
 
 
 
@@ -280,4 +292,3 @@ class BidHistory(db.Model):
 	transaction_time = db.DateTimeProperty(auto_now_add=True)
 	auction = db.ReferenceProperty(Auction, collection_name='past_bids')
 	user = db.ReferenceProperty(user.User, collection_name='past_bids')
-

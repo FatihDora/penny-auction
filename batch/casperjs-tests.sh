@@ -24,15 +24,15 @@ fi
 # start up the instance and get the process id for later
 CWD=`pwd`/`dirname $0`/..
 echo "Working directory is $CWD"
-"$GAE_PATH/dev_appserver.py" --port=8081 "$CWD" &
+"$GAE_PATH/dev_appserver.py" --port=8081 --datastore_path=.datastore \
+	--search_indexes_path=.searchindexes "$CWD" &
 PID=$!
 echo "Started with process ID $PID"
 sleep 2
 
 INCLUDES="$CWD/test-js/includes/setup.coffee"
 TARGETS="$CWD/test-js/tests/"
-#COMMAND="casperjs test --includes=$INCLUDES --xunit=output.xml $TARGETS"
+COMMAND="casperjs test --no-colors --includes=$INCLUDES --xunit=output.xml $TARGETS"
 #echo "command is $COMMAND"
-COMMAND="casperjs test --includes=$INCLUDES $TARGETS"
 eval "$COMMAND"
 kill "$PID"
