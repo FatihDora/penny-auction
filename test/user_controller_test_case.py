@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+################################################################################
+# © 2013
+# main author: Kevin Mershon
+################################################################################
+
 import models.user as user
 import controllers.user_controller as user_controller
 import unittest

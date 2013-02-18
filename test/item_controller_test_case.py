@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+################################################################################
+# © 2013
+# main author: Kevin Mershon
+################################################################################
+
 import controllers.item_controller as item_controller
 import unittest
 from decimal import Decimal

@@ -6,6 +6,11 @@ from __future__ import division
 # make string literals be Unicode strings
 from __future__ import unicode_literals
 
+################################################################################
+# © 2013
+# main author: Kevin Mershon
+################################################################################
+
 
 class AppSettings(db.Model):
 	''' This class stores important global settings for the auction system. '''

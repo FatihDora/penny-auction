@@ -1,3 +1,8 @@
+################################################################################
+# © 2013
+# main author: Darin Hoover
+################################################################################
+
 ######################
 # NOTE: Coffee doesn't allow anything into the global namespace, so
 #		anything you want to be global needs to be prefixed with {window.}
