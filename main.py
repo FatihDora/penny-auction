@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+################################################################################
+# © 2013
+# main author: Darin Hoover, Brent Houghton, Kevin Mershon
+################################################################################
+
 # make Python do floating-point division by default
 from __future__ import division
 # make string literals be Unicode strings

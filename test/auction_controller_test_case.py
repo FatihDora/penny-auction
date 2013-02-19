@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+################################################################################
+# © 2013
+# main author: Kevin Mershon
+################################################################################
+
 import controllers.auction_controller as auction_controller
 import models.auction as auction
 import models.item as item
