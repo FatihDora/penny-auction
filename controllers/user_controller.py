@@ -110,7 +110,10 @@ class UserController(object):
 	@staticmethod
 	def user_info():
 		'''
-			This will be used to authenticate a user's cookie information.
+			Validates the cookie sent with the request and retrieves the user's
+			user name, bids, and number of active auto bidders. Note that this
+			method assumes a session cookie and is therefore only meaningful if
+			used in conjuction with requests to our web-based REST API.
 		'''
 
 		this_user = UserController.validate_cookie()
@@ -125,7 +128,7 @@ class UserController(object):
 		else:
 			numAutoBidders = AutoBidders.size()
 
-		return {'username':username,'bids':numBids,'auto-bidders':numAutoBidders}
+		return {'username': this_user.username, 'bids': this_user.bid_count, 'auto-bidders': numAutoBidders}
 
 	@staticmethod
 	def user_logout():
@@ -179,7 +182,7 @@ class UserController(object):
 			return None
 
 		username = aCookie.username
-		this_user = User.get_by_username(username)
+		this_user = user.User.get_by_username(username)
 		return this_user
 
 	@staticmethod

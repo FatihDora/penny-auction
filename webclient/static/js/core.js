@@ -93,17 +93,17 @@
         data: {},
         success: function(data) {
           if (data.result) {
-            user.bids = data.result[0]['bids'];
-            user.autobidders = data.result[0]['auto-bidders'];
-            user.update();
+            window.user.bids = data.result['bids'];
+            window.user.autobidders = data.result['auto-bidders'];
+            window.user.update();
           }
-          return fetchingInfo = null;
+          return window.user.fetchingInfo = null;
         }
       });
     },
     update: function() {
-      $('#topbar-bids').text(user.bids);
-      return $('#topbar-autobidders').text(user.autobidders);
+      $('#topbar-bids').text(window.user.bids);
+      return $('#topbar-autobidders').text(window.user.autobidders);
     }
   };
 

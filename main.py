@@ -448,16 +448,16 @@ class auction_cancel_pending_bids_for_user:
 # USER Stuff
 
 class user_info:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
 
-        try:
-            result = {'result':user_controller.UserController.user_info()}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
+		try:
+			result = {'result':user_controller.UserController.user_info()}
+			return json.dumps(result)
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the login process to fail.'})
 
 class user_logout:
     def GET(self):

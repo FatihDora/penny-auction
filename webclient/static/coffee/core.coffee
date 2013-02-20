@@ -88,14 +88,14 @@ window.user =
 			data: {}
 			success: (data) ->
 				if data.result
-					user.bids = data.result[0]['bids']
-					user.autobidders = data.result[0]['auto-bidders']
-					user.update()
-				fetchingInfo = null
+					window.user.bids = data.result['bids']
+					window.user.autobidders = data.result['auto-bidders']
+					window.user.update()
+				window.user.fetchingInfo = null
 
 	update: ->
-		$('#topbar-bids').text user.bids
-		$('#topbar-autobidders').text user.autobidders
+		$('#topbar-bids').text window.user.bids
+		$('#topbar-autobidders').text window.user.autobidders
 
 
 # Functions
