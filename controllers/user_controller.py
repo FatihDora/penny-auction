@@ -203,6 +203,9 @@ class UserController(object):
 				username=username,
 				email=email
 		)
+		# TEMPORARY - new users start with 100 bids for demo purposes only
+		# remove this when the site goes live
+		new_user.bid_count = 100
 		new_user.put()
 		return new_user
 
