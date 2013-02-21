@@ -220,9 +220,9 @@ class auctions_status_by_id:
 			for elem in auctions:
 				result.append(generate_auction_dict(elem))
 
-			result = json.dumps(result)
+			result = json.dumps({"result": result})
 			logging.debug("/auctions_status_by_id response: {}".format(result))
-			return json.dumps({'result': result})
+			return result
 
 		except APIRequestException, exception:
 			logging.info("/auctions_status_by_id response to bad request: {}".format(result))
@@ -275,7 +275,9 @@ class auctions_list_all:
 			for elem in auctions:
 				result.append(generate_auction_dict(elem))
 
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/auctions_list_all response: {}".format(result))
+			return result
 
 		except APIRequestException, exception:
 			logging.info("/auctions_list_all response to bad request: {}".format(result))

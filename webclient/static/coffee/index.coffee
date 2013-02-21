@@ -22,10 +22,12 @@ auction_list = []
 auctions =
 	fetchingAuctionUpdates: null
 	init: ->
-		jQuery.ajax
+		if fetchingAuctionUpdates then fetchingAuctionUpdates.abort()
+		fetchingAuctionUpdates = jQuery.ajax
 			url: AUCTIONS_LIST_CURRENT
 			data: {count: 30}
 			success: (data) ->
+				fetchingAuctionUpdates = null
 				$("#auctions").html ""
 				auctions = data.result
 
@@ -48,16 +50,16 @@ auctions =
 				if auction_list[id].t > 11.0
 					document.location.href = "/auction/" + id
 
-				if user.bids > 0
+				if window.user.bids > 0
 					auction_id = $(@).closest('li').attr("id")
 					jQuery.ajax
 						url: AUCTION_BID
 						data: {id: auction_id}
 						success: (data) ->
-							user.bids -= 1
-							user.update()
-							if user.bids % 5 is 0
-								user.refresh()  #refresh user info every 5 bids
+							window.user.bids -= 1
+							window.user.update()
+							if window.user.bids % 5 is 0
+								window.user.refresh()  #refresh user info every 5 bids
 						
 
 
@@ -118,31 +120,34 @@ auctions =
 				ids: auction_ids.join()
 
 			success: (data) ->
-				$.map data, (auction) ->
-					auctions = data.result
+				auctions = data.result
+				if data.result
 					console.log("Updated Auctions Length: " + auctions.length)
-					auction_list = []
-					for ix of auctions
-						i = auctions[ix].id
-						p = auctions[ix].price
-						w = auctions[ix].winner
-						t = secondsToHms(auctions[ix].time_left)
-						a = auctions[ix].active
-						# IF WE NEED TO BLINK...
-						#if $("#" + i + " span.winner").text isnt w
-						#	$("#" + i + " span.winner").css "backgroundColor", "#CC0000"
-						#	$("#" + i + " span.winner").animate backgroundColor: "#FFFFFF"
-						auction_list[i] = auctions[ix]
-						if auctions[ix].time_left > 11.0
-							buttonText = "Starting Soon..."
-						else
-							buttonText = "BID NOW!"
+				else
+					console.log("Could not update Auctions Length: " + data.error)
+				temp_auction_list = []
+				for ix of auctions
+					i = auctions[ix].id
+					p = auctions[ix].price
+					w = auctions[ix].winner
+					t = secondsToHms(auctions[ix].time_left)
+					a = auctions[ix].active
+					# IF WE NEED TO BLINK...
+					#if $("#" + i + " span.winner").text isnt w
+					#	$("#" + i + " span.winner").css "backgroundColor", "#CC0000"
+					#	$("#" + i + " span.winner").animate backgroundColor: "#FFFFFF"
+					temp_auction_list[i] = auctions[ix]
+					if auctions[ix].time_left > 11.0
+						buttonText = "Starting Soon..."
+					else
+						buttonText = "BID NOW!"
 
-						$("#" + i + " span.winner").html "<a href=\"#\">" + w + "</a>"
-						$("#" + i + " span.price").text "P " + p
-						$("#" + i + " span.timeleft").html(t)
+					$("#" + i + " span.winner").html "<a href=\"#\">" + w + "</a>"
+					$("#" + i + " span.price").text "P " + p
+					$("#" + i + " span.timeleft").html(t)
 
-						if auctions[ix].time_left == 0
-							if w is "No Bidder" then  buttonText = "SOLD" else buttonText = "ENDED"
-		
-						$("#" + i + " div.bid").html '<a href="javascript:void(0);" class="button-default cart"><span class="hover">' + buttonText + '</span><span>' + buttonText + '</span></a>'
+					if auctions[ix].time_left == 0
+						if w is "No Bidder" then  buttonText = "SOLD" else buttonText = "ENDED"
+	
+					$("#" + i + " div.bid").html '<a href="javascript:void(0);" class="button-default cart"><span class="hover">' + buttonText + '</span><span>' + buttonText + '</span></a>'
+				auction_list = temp_auction_list
