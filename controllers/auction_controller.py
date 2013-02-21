@@ -42,8 +42,8 @@ class AuctionController(object):
 		if bid_pushback_time < timedelta(0):
 			raise Exception("The bid_pushback_time parameter must be a positive time interval, but the passed value was {}.".format(bid_pushback_time))
 		new_auction = auction.Auction(item=item_object, bid_pushback_time=bid_pushback_time)
-		new_auction.put()
 		new_auction.start_countdown(start_delay)
+		new_auction.put()
 		return new_auction
 
 	@staticmethod
