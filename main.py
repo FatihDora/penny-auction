@@ -296,11 +296,11 @@ class auction_bid:
 				raise APIRequestException("No auction ID was supplied in the 'id' parameter.")
 
 			# user validation
-			username = user_controller.UserController.validate_cookie()
-			if username is None:
+			user = user_controller.UserController.validate_cookie()
+			if user is None:
 				raise APIRequestException("Not logged in!")
 
-			result = auction_controller.AuctionController.auction_bid(inputs.id, username)
+			result = auction_controller.AuctionController.auction_bid(inputs.id, user.username)
 			result = json.dumps({'result': result})
 			logging.debug("/auction_bid response: {}".format(result))
 			return result
