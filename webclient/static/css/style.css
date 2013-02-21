@@ -570,6 +570,13 @@ body {
 	display: none;
 }
 
+.logout {
+	margin-top: 15px;
+	text-align: right;
+	line-height: 150%;
+	text-decoration: underline;
+}
+
 .persona-login-button {
     /* both are required...THANKS IE!! */
     cursor: pointer;
