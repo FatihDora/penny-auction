@@ -33,6 +33,10 @@ window.session =
         $('#top-account-info').fadeIn 'slow'
 
   logOut: ->
+    # log out of Persona
+    navigator.id.logout()
+
+    # then drop the session cookie from our system
     window.session.showLoggedOut()
     jQuery.ajax
       url: USER_LOGOUT
@@ -54,6 +58,7 @@ $(document).ready ->
   $('.persona-login-button').click ->
     # TODO: add a siteLogo: "URL" property to show the user our site's logo
     # when logging in with Persona
+    # note that Persona REQUIRES https on the hosting site when loading logos
     navigator.id.request
       siteName: "Piso Auction"
 

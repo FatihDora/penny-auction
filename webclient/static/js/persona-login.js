@@ -34,6 +34,7 @@
       });
     },
     logOut: function() {
+      navigator.id.logout();
       window.session.showLoggedOut();
       return jQuery.ajax({
         url: USER_LOGOUT
