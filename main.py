@@ -19,7 +19,7 @@ from google.appengine.ext import db
 from google.appengine.ext.webapp import template
 from lib import web
 import os
-from django.utils import simplejson as json
+import json
 import logging
 import datetime
 from datetime import timedelta
@@ -73,6 +73,13 @@ JSON_KEY_ITEM_NAME = "name"
 JSON_KEY_BASE_PRICE = "base_price"
 JSON_KEY_PRODUCT_URL = "product_url"
 JSON_KEY_IMAGE_URL = "image_url"
+
+class APIRequestException(Exception):
+	'''
+		Use this exception class for minor errors in API requests like not
+		being logged in for privileged API methods or missing parameters.
+	'''
+	pass
 
 
 '''
@@ -193,12 +200,12 @@ class auctions_status_by_id:
 
 		try:
 			if not auction_ids:
-				return json.dumps({"result": False, "error": "No auction IDs were supplied in the 'ids' parameter."})
+				raise APIRequestException("No auction IDs were supplied in the 'ids' parameter.")
 
 			# parse the string of IDs into a tuple of ints
 			sids = auction_ids.split(',')
 			if len(sids) > 40:
-				raise Exception("Too many ids")
+				raise APIRequestException("Maximum of 40 auction statuses, reduce number of requested auction statuses.")
 
 			ids = []
 			for sid in sids:
@@ -213,8 +220,13 @@ class auctions_status_by_id:
 			for elem in auctions:
 				result.append(generate_auction_dict(elem))
 
+			result = json.dumps(result)
+			logging.debug("/auctions_status_by_id response: {}".format(result))
 			return json.dumps({'result': result})
 
+		except APIRequestException, exception:
+			logging.info("/auctions_status_by_id response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -226,7 +238,7 @@ class auctions_list_current:
 
 		try:
 			if not inputs.count:
-				return json.dumps({"result": False, "error": "The number of auctions to list was not provided in the 'count' parameter."})
+				raise APIRequestException("The number of auctions to list was not provided in the 'count' parameter.")
 
 			auctions = auction_controller.AuctionController.auctions_list_current(inputs.count)
 
@@ -236,8 +248,13 @@ class auctions_list_current:
 			for elem in auctions:
 				result.append(generate_auction_dict(elem))
 
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/auctions_list_current response: {}".format(result))
+			return result
 
+		except APIRequestException, exception:
+			logging.info("/auctions_list_current response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -260,6 +277,9 @@ class auctions_list_all:
 
 			return json.dumps({'result': result})
 
+		except APIRequestException, exception:
+			logging.info("/auctions_list_all response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -271,16 +291,21 @@ class auction_bid:
 
 		try:
 			if not inputs.id:
-				return json.dumps({"result": False, "error": "No auction ID was supplied in the 'id' parameter."})
+				raise APIRequestException("No auction ID was supplied in the 'id' parameter.")
 
 			# user validation
 			username = user_controller.UserController.validate_cookie()
 			if username is None:
-				return json.dumps({"result": False, "error": "Not logged in!"})
+				raise APIRequestException("Not logged in!")
 
 			result = auction_controller.AuctionController.auction_bid(inputs.id, username)
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/auction_bid response: {}".format(result))
+			return result
 
+		except APIRequestException, exception:
+			logging.info("/auction_bid response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -292,13 +317,18 @@ class auction_detail:
 
 		try:
 			if not inputs.id:
-				return json.dumps({"result": False, "error": "No auction ID was supplied in the 'id' parameter."})
+				raise APIRequestException("No auction ID was supplied in the 'id' parameter.")
 
 			auction = auction_controller.AuctionController.auctions_status_by_ids(int(inputs.id))
 
 			result = generate_auction_dict(auction)
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/auction_detail response: {}".format(result))
+			return result
 
+		except APIRequestException, exception:
+			logging.info("/auction_detail response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -309,6 +339,8 @@ class auction_recent_bids:
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 		try:
+			## STUB ##
+			# TODO: fill in this stub
 
 			result = []
 			result.append({username:'kevin',price:'1.20',bidtime:'05:14:23 PM'})
@@ -321,8 +353,13 @@ class auction_recent_bids:
 			result.append({username:'brent',price:'1.13',bidtime:'05:13:42 PM'})
 			result.append({username:'chris',price:'1.12',bidtime:'05:13:36 PM'})
 
-			return json.dumps({'result':result})
+			result = json.dumps({'result': result})
+			logging.debug("/auction_recent_bids response: {}".format(result))
+			return result
 
+		except APIRequestException, exception:
+			logging.info("/auction_recent_bids response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -336,15 +373,15 @@ class auction_add_pending_bids_for_user:
 
 		try:
 			if not inputs.id:
-				return json.dumps({"result": False, "error": "No auction ID was supplied in the 'id' parameter."})
+				raise APIRequestException("No auction ID was supplied in the 'id' parameter.")
 
 			if inputs.num_bids == None:
-				return json.dumps({"result": False, "error": "No number of bids was supplied in the 'num_bids' parameter."})
+				raise APIRequestException("No number of bids was supplied in the 'num_bids' parameter.")
 
 			# user validation
 			user_name = user_controller.UserController.validate_cookie()
 			if user_name is None:
-				return json.dumps({"result": False, "error": "Not logged in!"})
+				raise APIRequestException("Not logged in!")
 
 			result = auction_controller.AuctionController.attach_autobidder(
 					auction_id=int(inputs.id),
@@ -352,8 +389,13 @@ class auction_add_pending_bids_for_user:
 					num_bids=inputs.num_bids
 			)
 
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/auction_add_pending_bids_for_user response: {}".format(result))
+			return result
 
+		except APIRequestException, exception:
+			logging.info("/auction_add_pending_bids_for_user response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -365,20 +407,25 @@ class auction_get_pending_bids_for_user:
 
 		try:
 			if not inputs.id:
-				return json.dumps({"result": False, "error": "No auction ID was supplied in the 'id' parameter."})
+				raise APIRequestException("No auction ID was supplied in the 'id' parameter.")
 
 			# user validation
 			user_name = user_controller.UserController.validate_cookie()
 			if user_name is None:
-				return json.dumps({"result": False, "error": "Not logged in!"})
+				raise APIRequestException("Not logged in!")
 
 			result = auction_controller.AuctionController.get_autobidder_remaining_bids(
 					auction_id=int(inputs.auction_id),
 					user_name=user_name
 			)
 
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/auction_get_pending_bids_for_user response: {}".format(result))
+			return result
 
+		except APIRequestException, exception:
+			logging.info("/auction_get_pending_bids_for_user response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -388,24 +435,27 @@ class auction_cancel_pending_bids_for_user:
 		inputs = web.input(id=None)
 		web.header('Content-Type', 'application/json')
 
-		return json.dumps({'result': unicode(result)})
-
 		try:
 			if not inputs.id:
-				return json.dumps({"result": False, "error": "No auction ID in the 'id' parameter."})
+				raise APIRequestException("No auction ID in the 'id' parameter.")
 
 			# user validation
 			user_name = user_controller.UserController.validate_cookie()
 			if user_name is None:
-				return json.dumps({"result": False, "error": "Not logged in."})
+				raise APIRequestException("Not logged in.")
 
 			result = auction_controller.AuctionController.cancel_autobidder(
 					auction_id=int(inputs.id),
 					user_name=user_name
 			)
 
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/auction_cancel_pending_bids_for_user response: {}".format(result))
+			return result
 
+		except APIRequestException, exception:
+			logging.info("/auction_cancel_pending_bids_for_user response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -419,8 +469,14 @@ class user_info:
 		web.header('Content-Type', 'application/json')
 
 		try:
-			result = {'result':user_controller.UserController.user_info()}
-			return json.dumps(result)
+			result = user_controller.UserController.user_info()
+			result = json.dumps({'result': result})
+			logging.debug("/user_info response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/user_info response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -431,8 +487,14 @@ class user_logout:
 		web.header('Content-Type', 'application/json')
 
 		try:
-			result = {'result':user_controller.UserController.user_logout()}
-			return json.dumps(result)
+			result = user_controller.UserController.user_logout()
+			result = json.dumps({'result': result})
+			logging.debug("/user_logout response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/user_logout response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -441,13 +503,21 @@ class persona_login:
 	def GET(self):
 		inputs = web.input(assertion=None)
 		web.header('Content-Type', 'application/json')
+
 		try:
 			this_user = user_controller.UserController.persona_login(inputs.assertion)
 			if this_user:
 				result = {'result': True, 'username': this_user.username}
 			else:
-				result = {'result': False, 'username': None}
-				return json.dumps(result)
+				result = {'result': False, 'error': 'invalid credentials'}
+
+			result = json.dumps(result)
+			logging.debug("/persona_login response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/persona_login response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -456,9 +526,16 @@ class user_authenticate_cookie:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
+
 		try:
-			result ={'result':user_controller.UserController.user_authenticate_cookie()}
-			return json.dumps(result)
+			result = user_controller.UserController.user_authenticate_cookie()
+			result = json.dumps({'result': result})
+			logging.debug("/user_authenticate_cookie response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/user_authenticate_cookie response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -470,11 +547,19 @@ class user_username_exists:
 		web.header('Content-Type', 'application/json')
 
 		try:
-			if not inputs.username:
-				raise Exception('required string parameter "username" was not passed to the server, or was an empty string')
+			if inputs.username == None:
+				raise APIRequestException("no user name in the 'username' parameter")
+			if inputs.username == "":
+				raise APIRequestException('username cannot be an empty string')
 
 			result = user_controller.UserController.user_username_exists(inputs.username)
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/user_username_exists response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/user_username_exists response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -486,10 +571,16 @@ class user_email_exists:
 
 		try:
 			if not inputs.email:
-				raise Exception('required string parameter "email" was not passed to the server, or was an empty string')
+				raise APIRequestException('required string parameter "email" was not passed to the server, or was an empty string')
 
 			result = user_controller.UserController.user_email_exists(inputs.email)
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/user_email_exists response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/user_email_exists response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
 		except Exception, exception:
 			logging.exception(exception)
 			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
@@ -512,5 +603,7 @@ class reset_data:
 app = web.application(urls, globals())
 application = app.gaerun()
 if (os.getenv("APPLICATION_ID").startswith("dev~")):
-    logging.getLogger().setLevel(logging.ERROR)
+    logging.getLogger().setLevel(logging.DEBUG)
+else:
+    logging.getLogger().setLevel(logging.INFO)
 
