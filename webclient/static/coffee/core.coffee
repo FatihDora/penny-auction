@@ -58,9 +58,12 @@ $(document).ready ->
 			# After every AJAX request, and after success/error handlers are
 			# called
 		error: (xhr, status, error) ->
+			# code 0 indicates user canceled / aborted
+			if xmlObject.status is 0 or xhr.statusText is "abort"
+					return
+
 			# Error handler
-			if xhr.statusText isnt "abort"
-				showDialog "error", "Unexpected Error", error
+			showDialog "error", "Unexpected Error", error
 
 	$("#messageDialog").dialog
 		autoOpen: false
