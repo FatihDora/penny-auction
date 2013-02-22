@@ -471,7 +471,10 @@ class user_info:
 		web.header('Content-Type', 'application/json')
 
 		try:
-			result = user_controller.UserController.user_info()
+			this_user = user_controller.UserController.validate_cookie()
+			if not this_user:
+				raise APIRequestException("Not logged in!")
+			result = user_controller.UserController.user_info(this_user)
 			result = json.dumps({'result': result})
 			logging.debug("/user_info response: {}".format(result))
 			return result
@@ -489,7 +492,8 @@ class user_logout:
 		web.header('Content-Type', 'application/json')
 
 		try:
-			result = user_controller.UserController.user_logout()
+			this_user = user_controller.UserController.validate_cookie()
+			result = user_controller.UserController.user_logout(this_user)
 			result = json.dumps({'result': result})
 			logging.debug("/user_logout response: {}".format(result))
 			return result
