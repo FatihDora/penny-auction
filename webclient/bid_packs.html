@@ -8,20 +8,11 @@
 </head>
 
 <body class="hideall">
-{% include '_messageDialog.html' %}
-{% include '_topbar.html' %}
-<!-- start header -->
-  <div id="header">
-    <div class="box"> 
-      {% include '_logo.html' %}
-      {% include '_menubar.html' %}
-    </div>
-  </div>
-<!-- end header --> 
+{% include '_header.html' %}
 <!-- start container -->
-<div id="container"> 
+<div id="container">
   <!-- start breadcrumb -->
-  <div class="breadcrumb"> 
+  <div class="breadcrumb">
     <!-- start box -->
     <div class="box"> <span>You are here:</span>
       <ul>
@@ -32,9 +23,9 @@
     <!-- end box -->
     <div class="clear"></div>
   </div>
-  <!-- end breadcrumb --> 
+  <!-- end breadcrumb -->
   <!-- start box -->
-  <div class="box"> 
+  <div class="box">
     <!-- start onecol -->
     <div id="onecol" class="medium">
       <h1 class="red">Bid Packs</h1>
@@ -60,43 +51,43 @@
         <div class="two">Lorem ipsum dolor sit amet, ds a consectetur lapusm adipiscing cursus eu condimentum rutrum, egestas sed sem. Nulla ac cursus leo. Vestibulum molestie ante vel ante elementum viv elit.</div>
       </div>
     </div>
-    <!-- end onecol --> 
+    <!-- end onecol -->
     <div class="clear"></div>
   </div>
-  <!-- end box --> 
+  <!-- end box -->
   <!-- start category -->
   <div class="category">
-    <div class="box"> 
+    <div class="box">
       <!-- start common -->
       <div class="common2 first">
         <h3 class="red">Linear Theme</h3>
         <p>Integer interdum pretium leo, venenatis commodo male uada sit amet. Suspe disse ut neque neque. <strong>Aenean tincidunt</strong> ullamcorper nibh sit amet singur lopsem egestas. Fermentum erat <strong>condimentum</strong> ac. Sed liget Morbi por ta eget ferment.</p>
       </div>
-      <!-- end common --> 
+      <!-- end common -->
       <!-- start twitter -->
       <div class="common2 twitter">
         <h3 class="red">Twitter</h3>
         <ul id="twitter_update_list">
           <li></li>
         </ul>
-        <script type="text/javascript" src="http://twitter.com/statuses/user_timeline/WPNewsStation.json?callback=twitterCallback2&amp;count=2"></script> 
+        <script type="text/javascript" src="http://twitter.com/statuses/user_timeline/WPNewsStation.json?callback=twitterCallback2&amp;count=2"></script>
       </div>
-      <!-- end twitter --> 
+      <!-- end twitter -->
       <!-- start facebook -->
       <div class="common2 last facebook">
         <h3 class="red">Facebook</h3>
-        <div class="fb-box"> 
-          <script type="text/javascript" src="js/facebook-box.js"></script> 
+        <div class="fb-box">
+          <script type="text/javascript" src="js/facebook-box.js"></script>
         </div>
-        <!-- the css needs an absolute path to work properly --> 
+        <!-- the css needs an absolute path to work properly -->
       </div>
       <!-- end facebook -->
       <div class="clear"></div>
     </div>
   </div>
-  <!-- end category --> 
+  <!-- end category -->
 </div>
-<!-- end container --> 
+<!-- end container -->
 {% include '_footer.html' %}
 
 </body>

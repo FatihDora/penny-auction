@@ -7,7 +7,6 @@
     <script type="text/javascript" src="/js/index.js"></script>
 </head>
 <body class="hideall">
-	{% include '_messageDialog.html' %}
 	<!-- Facebook code -->
 	<div id="fb-root"></div>
 	<script type="text/javascript">(function(d, s, id) {
@@ -19,15 +18,7 @@
 	}(document, 'script', 'facebook-jssdk'));</script>
 
 	<!-- end Facebook code -->
-	{% include '_topbar.html' %}
-	<!-- start header -->
-	<div id="header">
-		<div class="box">
-			{% include '_logo.html' %}
-			{% include '_menubar.html' %}
-		</div>
-	</div>
-	<!-- end header -->
+{% include '_header.html' %}
 	<!-- start container -->
 	<div id="container">
 	<!-- start showcase -->
