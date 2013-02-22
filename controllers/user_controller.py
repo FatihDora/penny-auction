@@ -11,8 +11,7 @@ from __future__ import division
 # make string literals be Unicode strings
 from __future__ import unicode_literals
 
-from models import user, user_cookie
-import lib.bcrypt.bcrypt as bcrypt
+from models import user
 from lib import web
 import logging
 
@@ -41,19 +40,17 @@ class UserController(object):
 	_PERSONA_AUTH_URL = "https://browserid.org/verify" 
 
 	@staticmethod
-	def _session_start(username, secret):
+	def _session_start(user, secret):
 		'''
-			Sets up a session for the current user. Username is the user name
-			of the user that logged in and secret is the seed for generating
-			the login token (this can be any string that an attacker shouldn't
-			be able to guess, such as the password for password-based
-			authentication or the Persona assertion if using Persona-based
-			login).
+			Sets up a session for the given user model object, where secret is
+			the seed for generating the login token (this can be any string
+			that an attacker shouldn't be able to guess, such as the password
+			for password-based authentication or the Persona assertion if using
+			Persona-based login).
 		'''
-		secret = username + secret
-		token = bcrypt.hashpw(secret, bcrypt.gensalt())
+
+		token = user.create_session_token(secret)
 		web.setcookie(UserController._COOKIE_NAME, token, 3600)
-		user_cookie.UserCookie.create_cookie(username, token)
 
 	@staticmethod
 	def persona_login(assertion):
@@ -104,7 +101,7 @@ class UserController(object):
 				# create this user if they don't exist yet
 				this_user = UserController.create(email=response["email"])
 
-			UserController._session_start(this_user.username, assertion)
+			UserController._session_start(this_user, assertion)
 		return this_user
 
 	@staticmethod
@@ -138,7 +135,7 @@ class UserController(object):
 		'''
 		this_user = UserController.validate_cookie()
 		if this_user:
-			user_cookie.UserCookie.delete_all_cookies(this_user.username)
+			this_user.destroy_session_token()
 
 	@staticmethod
 	def user_register(this_user, first_name=None, last_name=None, username=None):
@@ -176,14 +173,7 @@ class UserController(object):
 		if token is None:
 			return None
 		# Validate.
-		aCookie = user_cookie.UserCookie.validate_cookie(token)
-
-		if aCookie is None:
-			return None
-
-		username = aCookie.username
-		this_user = user.User.get_by_username(username)
-		return this_user
+		return user.User.get_by_token(token)
 
 	@staticmethod
 	def create(email, username=None, first_name=None, last_name=None):

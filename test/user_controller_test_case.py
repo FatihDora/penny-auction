@@ -108,7 +108,7 @@ class UserControllerTestCase(unittest.TestCase):
 		if not session_cookie:
 			self.fail("User logged in with valid credentials but no session cookie was set.")
 
-		db_cookie = UserCookie.all().filter("username", "testUser").get()
+		db_cookie = User.all().filter("username", "testUser").get().token
 		if not db_cookie:
 			self.fail("No session cookie was saved to the database for the intended user after a successful login.")
 		session_token = db_cookie.token
@@ -164,7 +164,7 @@ class UserControllerTestCase(unittest.TestCase):
 		if not session_cookie:
 			self.fail("User logged in with valid credentials but no session cookie was set.")
 
-		db_cookie = UserCookie.all().filter("email", "newUser@me.com").get()
+		db_cookie = User.all().filter("username", "testUser").get().token
 		if not db_cookie:
 			self.fail("No session cookie was saved to the database for the intended user after a successful login.")
 

@@ -6,7 +6,7 @@ from __future__ import division
 # make string literals be Unicode strings
 from __future__ import unicode_literals
 
-from models import user, user_cookie
+from models import user
 from controllers import user_controller
 from google.appengine.ext import db
 
@@ -14,7 +14,6 @@ class DummyUsers(object):
 	@staticmethod
 	def setup():
 		db.delete(user.User.all())
-		db.delete(user_cookie.UserCookie.all())
 
 		# admin users
 		user_controller.UserController.create(first_name="Darin", last_name="Hoover", username="darin", email="darinh@gmail.com").add_bids(100)

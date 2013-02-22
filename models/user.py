@@ -17,6 +17,8 @@ import sys
 from models import insufficient_bids_exception
 import logging
 
+import lib.bcrypt.bcrypt as bcrypt
+
 
 class User(db.Model):
 
@@ -26,6 +28,8 @@ class User(db.Model):
 	email = db.EmailProperty(required=True)
 	create_time = db.DateTimeProperty(auto_now_add=True)
 	bid_count = db.IntegerProperty(default=0)
+	token = db.StringProperty(required=False)
+	token_create_time = db.DateTimeProperty(required=False)
 	# implicit property 'active_autobidders' created by the Autobidder class
 	# implicit property 'auctions_won' created by the Auction class
 	# implicit property 'past_bids' created by the BidHistory class
@@ -38,6 +42,15 @@ class User(db.Model):
 	@staticmethod
 	def get_by_email(email):
 		return User.all().filter("email =", email).get()
+	
+	@staticmethod
+	def get_by_token(token):
+		'''
+			Retrives the user model for the user with the given token, or None
+			if no user has the given token or the given token is expired.
+		'''
+		# TODO: add expiration checking (24 hours is probably a reasonable expiration time)
+		return User.all().filter('token =',token).get()
 
 	@staticmethod
 	def username_exists(username):
@@ -101,4 +114,19 @@ class User(db.Model):
 			self.put()
 		else:
 			raise insufficient_bids_exception.InsufficientBidsException(self, number)
+
+	def create_session_token(self, secret):
+		'''
+			Creates a new session token for this user and returns the token.
+		'''
+		secret = self.username + secret
+		self.token = bcrypt.hashpw(secret, bcrypt.gensalt())
+		self.put()
+		return self.token
+
+	def destroy_session_token(self):
+		'''
+			Invalidates this user's session token, logging the user out.
+		'''
+		self.token = None
 
