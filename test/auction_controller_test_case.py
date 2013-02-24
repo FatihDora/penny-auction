@@ -77,68 +77,6 @@ class AuctionControllerTestCase(unittest.TestCase):
 			None)
 		self.assertEquals(auctions, None)
 
-	def testAuctionsStatusesByIdsWhenIdListIsCorrupt(self):
-		try:
-			auction_controller.AuctionController.auctions_status_by_ids(
-				"this is not a numeric list")
-		except Exception, e:
-			# expected behavior
-			assert re.search("could not be parsed", str(e), re.IGNORECASE)
-
-	def testAuctionsStatusesByIdsWhenMoreThan40IdsSpecified(self):
-		ids = ",".join(str(x) for x in range(41))
-		try:
-			auction_controller.AuctionController.auctions_status_by_ids(ids)
-			self.fail("Aution statuses retrieved for more than 40 ids!")
-		except Exception, e:
-			# expected behavior
-			assert re.search("too many ids", str(e), re.IGNORECASE)
-
-	def testAuctionsStatusesByIdsWhenSomeIdsDontExist(self):
-		# create some valid auctions
-		dummy_auctions.DummyAuctions.setup()
-
-		# fetch 10 valid auctions, and shuffle their order
-		valid_auctions = auction.Auction.all().fetch(10)
-		good_ids = list(int(a.key().id())
-			for a in valid_auctions)
-
-		# fudge half the numbers to be invalid
-		bad_ids = []
-		for x in range(10):
-			bad_ids.insert(x, random.randint(101,200))
-
-		# merge the lists and randomize the order
-		auction_ids = good_ids + bad_ids
-		random.shuffle(auction_ids)
-
-		# verify that only the good ids were returned
-		ids_list = ",".join(str(x) for x in auction_ids)
-		all_returned_auctions = auction_controller.AuctionController.auctions_status_by_ids(ids_list)
-		valid_auction_ids = []
-		for k in all_returned_auctions:
-			if not k is None:
-				valid_auction_ids.append(int(k.key().id()))
-		valid_auction_ids = sorted(valid_auction_ids)
-		self.assertEquals(valid_auction_ids, good_ids)
-
-	def testAuctionsStatusesByIdsWhenAllIdsExist(self):
-		# create some valid auctions
-		dummy_auctions.DummyAuctions.setup()
-
-		# fetch 10 valid auctions and randomize the order
-		valid_auctions = auction.Auction.all().fetch(10)
-		good_ids = list(int(a.key().id())
-			for a in valid_auctions)
-		random.shuffle(good_ids)
-
-		# verify that all Auctions requested were returned
-		ids_list = ",".join(str(x) for x in good_ids)
-		valid_auctions = auction_controller.AuctionController.auctions_status_by_ids(ids_list)
-		valid_auction_ids = list(int(x.key().id())
-			for x in valid_auctions)
-		self.assertEquals(sorted(valid_auction_ids), sorted(good_ids))
-
 	def testAuctionsListCurrentWhenNoAuctionsExist(self):
 		try:
 			current_auctions = auction_controller.AuctionController.auctions_list_current(10)
@@ -165,6 +103,12 @@ class AuctionControllerTestCase(unittest.TestCase):
 
 	def testAuctionsListCurrentWhenAuctionsExistAndAreCurrent(self):
 		pass
+
+# test auction_controller.AuctionController.auctions_status_by_ids
+# -- when id list is corrupt
+# -- when more than GAE hard-limit of 40 ids is specified
+# -- when some ids exist and some don't
+# -- when all ids exist
 
 # test auction_controller.AuctionController.auctions_list_all()
 # -- when no auctions exist
