@@ -11,16 +11,14 @@ from __future__ import division
 # make string literals be Unicode strings
 from __future__ import unicode_literals
 
+import fixtures.dummy_items as dummy_items
+
 import models.user as user
+import controllers.auction_controller as auction_controller
 import controllers.user_controller as user_controller
 
-import lib.bcrypt.bcrypt as bcrypt
-
 import unittest
-import urllib
-import urllib2
-import cookielib
-import json
+from datetime import *
 
 from google.appengine.ext import db
 from google.appengine.ext import testbed
@@ -31,6 +29,7 @@ class UserControllerTestCase(unittest.TestCase):
 		self.testbed = testbed.Testbed()
 		self.testbed.activate()
 		self.testbed.init_datastore_v3_stub()
+		self.testbed.init_taskqueue_stub(root_path=".")
 
 	def tearDown(self):
 		self.testbed.deactivate()
@@ -40,6 +39,43 @@ class UserControllerTestCase(unittest.TestCase):
 			last_name="user", username="testUser", email="testUser@me.com")
 		user_object = user.User.get_by_username("testUser")
 		self.assertNotEquals(None, user_object, "Failed to create User!")
+
+	def testUserInfoWithNoAutoBidders(self):
+		# create a user
+		self.testCreateSuccess()
+		the_user = user.User.get_by_username("testUser")
+
+		# validate user info
+		info = user_controller.UserController.user_info(the_user)
+		self.assertEquals(info["username"], "testUser")
+		self.assertEquals(info["bids"], 100)
+		self.assertEquals(info["auto-bidders"], 0)
+
+	def testUserInfoWithMultipleAutoBidders(self):
+		# fixtures
+		dummy_items.DummyItems.setup()
+
+		# create 2 auctions
+		mba_auction = auction_controller.AuctionController.create("MacBook Air",
+			timedelta(seconds=10), timedelta(10))
+		mbp_auction = auction_controller.AuctionController.create("MacBook Pro",
+			timedelta(seconds=10), timedelta(10))
+
+		# create a user
+		self.testCreateSuccess()
+		the_user = user.User.get_by_username("testUser")
+
+		# make some auto-bidders (25 to Air, 20 to Pro)
+		auction_controller.AuctionController.attach_autobidder(mba_auction.key().id(),
+			the_user.username, 25)
+		auction_controller.AuctionController.attach_autobidder(mbp_auction.key().id(),
+			the_user.username, 20)
+
+		# validate user info
+		info = user_controller.UserController.user_info(the_user)
+		self.assertEquals(info["username"], "testUser")
+		self.assertEquals(info["bids"], 100)
+		self.assertEquals(info["auto-bidders"], 2)
 
 	def testCreateWithDuplicateUsername(self):
 		self.testCreateSuccess()

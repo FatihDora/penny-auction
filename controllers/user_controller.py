@@ -37,7 +37,7 @@ class UserController(object):
 	# for example:
 	# 	"mock:success:me@example.org" would cause persona_login() to pretend a user with email me@example.org has a valid assertion
 	#	"mock:failure" would cause persona_login() to report the user has an invalid assertion
-	_PERSONA_AUTH_URL = "https://browserid.org/verify" 
+	_PERSONA_AUTH_URL = "https://browserid.org/verify"
 
 	@staticmethod
 	def _session_start(user, secret):
@@ -112,12 +112,12 @@ class UserController(object):
 		'''
 
 		numBids = this_user.bid_count
-		AutoBidders = this_user.active_autobidders.get()
+		AutoBidders = this_user.active_autobidders.fetch(None)
 
 		if AutoBidders is None:
 			numAutoBidders = 0
 		else:
-			numAutoBidders = AutoBidders.size()
+			numAutoBidders = len(AutoBidders)
 
 		return {'username': this_user.username, 'bids': this_user.bid_count, 'auto-bidders': numAutoBidders}
 
