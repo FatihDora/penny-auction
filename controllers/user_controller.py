@@ -37,7 +37,7 @@ class UserController(object):
 	# for example:
 	# 	"mock:success:me@example.org" would cause persona_login() to pretend a user with email me@example.org has a valid assertion
 	#	"mock:failure" would cause persona_login() to report the user has an invalid assertion
-	_PERSONA_AUTH_URL = "https://browserid.org/verify" 
+	_PERSONA_AUTH_URL = "https://browserid.org/verify"
 
 	@staticmethod
 	def _session_start(user, secret):
@@ -112,12 +112,12 @@ class UserController(object):
 		'''
 
 		numBids = this_user.bid_count
-		AutoBidders = this_user.active_autobidders.get()
+		AutoBidders = this_user.active_autobidders.fetch(None)
 
 		if AutoBidders is None:
 			numAutoBidders = 0
 		else:
-			numAutoBidders = AutoBidders.size()
+			numAutoBidders = len(AutoBidders)
 
 		return {'username': this_user.username, 'bids': this_user.bid_count, 'auto-bidders': numAutoBidders}
 
@@ -129,29 +129,6 @@ class UserController(object):
 		'''
 		if this_user:
 			this_user.destroy_session_token()
-
-	@staticmethod
-	def user_register(this_user, first_name=None, last_name=None, username=None):
-		'''
-			Register account information for a new user. Note that this user
-			should already have an account skeleton from logging in with
-			Persona (which gives us their email). Parameter this_user is the
-			user model object for the user that should be modified, while the
-			other parameters are the values that should be updated. All
-			parameters except the user model object are optional.
-		'''
-
-		if username:
-			this_user.username = username
-
-		if first_name:
-			this_user.first_name = first_name
-
-		if last_name:
-			this_user.last_name = last_name
-
-		this_user.put()
-		return this_user
 
 	@staticmethod
 	def validate_cookie():
