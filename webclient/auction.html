@@ -1,41 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Piso Auction</title>
-	<link href="/css/jquery-ui-1.8.23.custom.css" rel="stylesheet" type="text/css" />
-	<link href="/css/style.css" rel="stylesheet" type="text/css" />
-	<!--[if IE]>
-	<link href="css/ie.css" rel="stylesheet" type="text/css" />
-	<![endif]-->
-	<!--[if IE 8]>
-	<link href="css/ie8.css" rel="stylesheet" type="text/css" />
-	<![endif]-->
-	<script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
-	<script type="text/javascript" src="/js/jquery-ui-1.8.23.custom.min.js"></script>
-	<script type="text/javascript" src="/js/cufon/cufon-yui.js"></script>
-	<script type="text/javascript" src="/js/cufon/open-sans-latin.js"></script>
-	<script type="text/javascript" src="/js/common.js"></script>
-	<script type="text/javascript" src="/js/core.js"></script>
-	<script type="text/javascript">auction_id={{id}};</script>
-	<script type="text/javascript" src="/js/auction.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Piso Auction - Auctions</title>
+  {% include '_head_includes.html' %}
+  <script type="text/javascript">auction_id={{id}};</script>
+  <script type="text/javascript" src="/js/auction.js"></script>
 </head>
 
 <body class="hideall">
-{% include '_messageDialog.html' %}
-{% include '_topbar.html' %}
-<!-- start header -->
-<div id="header">
-	<div class="box"> 
-		{% include '_logo.html' %}
-		{% include '_menubar.html' %}
-	</div>
-</div>
-<!-- end header -->
+{% include '_header.html' %}
 <!-- start container -->
-<div id="container"> 
+<div id="container">
 	<!-- start breadcrumb -->
-	<div class="breadcrumb"> 
+	<div class="breadcrumb">
 		<!-- start box -->
 		<div class="box"> <span>You are here:</span>
 			<ul>
@@ -47,11 +25,11 @@
 		<!-- end box -->
 		<div class="clear"></div>
 	</div>
-	<!-- end breadcrumb --> 
+	<!-- end breadcrumb -->
 	<!-- start box -->
-	<div class="box"> 
+	<div class="box">
 		<!-- start leftcol -->
-		<div id="leftcol"> 
+		<div id="leftcol">
 			<!-- start deatilbox -->
 			<div class="detail-block">
 				<h1 id="auction-name">Tincidunt Consequat</h1>
@@ -59,7 +37,7 @@
 				<div class="detail-left">
 					<div id="auction-image" class="imgb"><img src="#" alt="product-image" width="292" height="242" /></div>
 				</div>
-				<!-- left --> 
+				<!-- left -->
 				<!-- right -->
 				<div class="detail-right">
 					<div id="auction-detail">
@@ -127,7 +105,7 @@
 				<!-- right -->
 				<div class="clear"></div>
 			</div>
-			<!-- end deatilbox --> 
+			<!-- end deatilbox -->
 			<!-- start more info -->
 			<div class="more-info">
 				<!-- start tabs -->
@@ -139,13 +117,13 @@
 						</div>
 					</div>
 				</div>
-				<!-- end tabs --> 
+				<!-- end tabs -->
 			</div>
-			<!-- end more info --> 
+			<!-- end more info -->
 		</div>
-		<!-- end leftcol --> 
+		<!-- end leftcol -->
 		<!-- start rightcol -->
-		<div id="rightcol"> 
+		<div id="rightcol">
 			<!-- banner -->
 			<ul id="auctions">
 				<li id="auction1">
@@ -191,14 +169,14 @@
 					<div class="bid"><a href="javascript:void(0);" class="button-default cart"><span class="hover">BID NOW</span><span>BID NOW</span></a></div>
 				</li>
 			</ul>
-			<!-- banner --> 
+			<!-- banner -->
 		</div>
 		<!-- end rightcol -->
 		<div class="clear"></div>
 	</div>
-	<!-- end box --> 
+	<!-- end box -->
 </div>
-<!-- end container --> 
+<!-- end container -->
 {% include '_footer.html' %}
 
 </body>

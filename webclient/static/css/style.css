@@ -1,3 +1,8 @@
+/*##############################################################################
+# © 2013
+# main author: Darin Hoover
+##############################################################################*/
+
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 	margin: 0;
 	padding: 0;
@@ -565,11 +570,19 @@ body {
 	display: none;
 }
 
-#login-username, #login-password {
-	padding: 0 1px;
-	width: 100px;
-	color:#ddd;
+.logout {
+	margin-top: 15px;
+	text-align: right;
+	line-height: 150%;
+	text-decoration: underline;
 }
+
+.persona-login-button {
+    /* both are required...THANKS IE!! */
+    cursor: pointer;
+    cursor: hand;
+}
+
 #logo {
 	float:left;
 }
@@ -4316,16 +4329,6 @@ table td.last-child {
 	background: url("/images/cross.png") no-repeat scroll left top transparent;
 }
 /* ----------------------------------- START REGISTER PAGE	-----------------------------------*/
-.accordin-panel.register-page {
-	margin-top:-2px;
-}
-.accordin-panel.register-page .accordin-block {
-	padding:0;
-	width:100%;
-}
-.accordin-panel.register-page h2 {
-	padding-bottom:29px;
-}
 .contact .accordin-block {
 	padding:3px 26px 0px 26px;
 }
@@ -4528,13 +4531,6 @@ table#cart.wish td:first-child + td + td + td + td + td + td {
 }
 
 /* ----------------------------------- CUSTOM  -----------------------------------*/
-form#login-form .login-focus {
-	color: #000;
-}
-
-div#registration-complete, #top-account-info, #validation-error, #validation-success {
-	display: none;
-}
 
 ul#auctions div.bid a {
 	width: 94%;
@@ -4685,3 +4681,4 @@ div#rightcol ul#auctions li .bid a {
 	width: 95%;
 	margin-top: 10px;
 }
+

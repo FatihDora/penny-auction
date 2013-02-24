@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+################################################################################
+# © 2013
+# main author: Brent Houghton
+################################################################################
+
 # make Python do floating-point division by default
 from __future__ import division
 # make string literals be Unicode strings
@@ -37,8 +42,8 @@ class AuctionController(object):
 		if bid_pushback_time < timedelta(0):
 			raise Exception("The bid_pushback_time parameter must be a positive time interval, but the passed value was {}.".format(bid_pushback_time))
 		new_auction = auction.Auction(item=item_object, bid_pushback_time=bid_pushback_time)
-		new_auction.put()
 		new_auction.start_countdown(start_delay)
+		new_auction.put()
 		return new_auction
 
 	@staticmethod

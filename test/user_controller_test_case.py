@@ -1,14 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+################################################################################
+# © 2013
+# main author: Kevin Mershon
+################################################################################
+
+# make Python do floating-point division by default
+from __future__ import division
+# make string literals be Unicode strings
+from __future__ import unicode_literals
+
 import models.user as user
 import controllers.user_controller as user_controller
+
+import lib.bcrypt.bcrypt as bcrypt
+
 import unittest
+import urllib
+import urllib2
+import cookielib
+import json
 
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 
 class UserControllerTestCase(unittest.TestCase):
+
 	def setUp(self):
 		self.testbed = testbed.Testbed()
 		self.testbed.activate()
@@ -18,79 +36,150 @@ class UserControllerTestCase(unittest.TestCase):
 		self.testbed.deactivate()
 
 	def make_user(self):
-		user_controller.UserController.user_register("test", "user",
-			"testUser", "testUser@me.com", "testPassword")
+		user_controller.UserController.create(first_name="test", last_name="user",
+			username="testUser", email="testUser@me.com")
 		user_object = user.User.get_by_username("testUser")
 		self.assertNotEquals(None, user_object, "Failed to create User!")
 
-	def testUserAuthenticate(self):
+	def send_login_request(self, email):
+		persona_auth_instructions = "mock:"
+		if not email:
+			persona_auth_instructions += "failure"
+		else:
+			persona_auth_instructions += "success:{}".format(email)
+		user_controller.UserController._PERSONA_AUTH_URL = persona_auth_instructions
+		cookie_jar = cookielib.CookieJar()
+		reader = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie_jar))
+		request_parameters = urllib.urlencode({"assertion": "fake assertion"})
+		return reader.open("http://localhost:8080/persona_login?{}".format(request_parameters))
+
+	def test_failed_login(self):
+		''' Test failed login.'''
+
+		expected_response = {"result": False, "username": None}
+
 		self.make_user()
+		raw_response = self.send_login_request(email=None)
+		actual_response = json.loads(raw_response.read())
 
-		# bad username
-		try:
-			user_controller.UserController.user_authenticate("fakeUser",
-				"doesn't matter")
-			self.fail("User permitted to login with bad username!")
-		except:
-			# expected behavior
-			pass
+		# check return value
+		if actual_response != expected_response:
+			self.fail(
+				"""/persona_login did not return the expected value for an invalid login.
+				Expected: {expected!r}
+				Actual: {actual!r}""".format(
+					expected=expected_response,
+					actual=actual_response
+				)
+			)
 
-		# bad password
-		try:
-			user_controller.UserController.user_authenticate("testUser",
-				"bad password")
-			self.fail("User permitted to login with bad password!")
-		except:
-			# expected behavior
-			pass
+		# check that no session cookie was set
+		for cookie in cookie_jar:
+			if cookie.key == user_controller.UserController._COOKIE_NAME:
+				self.fail("User logged in with invalid credentials and got a session cookie.")
 
-# cannot run this part because the cookie cannot be set due to path resolution
-# problems in web.py's setcookie function
-#
-#		# good login
-#		user_hash = user_controller.UserController.user_authenticate("testUser",
-#			"testPassword")
-#		user_key = db.Key.from_path("User", "testUser")
-#		user_object = db.get(user_key)
-#		hashed_password = user_controller.UserController.user_hash_password(
-#			"testUser", "testPassword", user_object.password_salt)
-#		self.assertEquals(hashed_password, user_hash)
-#		user_key = db.Key.from_path("User", "testUser")
-#		user_object = db.get(user_key)
-#		hashed_password = user_controller.UserController.user_hash_password(
-#			"testUser", "testPassword", user_object.password_salt)
 
-	def testUserCannotRegisterTwice(self):
+	def test_successful_login_with_existing_user(self):
+		''' Test successful login with existing user.'''
+
+		expected_response = {"result": True, "username": "testUser"}
+
 		self.make_user()
-		try:
-			self.make_user()
-			self.fail("Repeat registration was permitted!")
-		except:
-			# expected behavior
-			pass
+		raw_response = self.send_login_request(email="testUser@me.com")
+		actual_response = json.loads(raw_response.read())
 
-	def testUserUpdatePassword(self):
-		self.make_user()
+		# check return value
+		if actual_response != expected_response:
+			self.fail(
+				"""persona_login() did not return the expected value for an expected successful login of pre-existing user.
+				Expected: {expected!r}
+				Actual: {actual!r}""".format(
+					expected=expected_response,
+					actual=actual_response
+				)
+			)
 
-		# validate the password hash
-		user_object = user.User.get_by_username("testUser")
-		hashed_password = user_controller.UserController.user_hash_password(
-			"testUser", "testPassword", user_object.password_salt)
-		self.assertEquals(hashed_password, user_object.hashed_password)
+		# check that the correct session cookie was set
+		session_cookie = None
+		for cookie in cookie_jar:
+			if cookie.key == user_controller.UserController._COOKIE_NAME:
+				session_cookie = cookie
 
-		# change the password
-		user_controller.UserController.user_update_password(user_object,
-			"testNewPassword")
+		if not session_cookie:
+			self.fail("User logged in with valid credentials but no session cookie was set.")
 
-		# validate the new password hash
-		new_hashed_password = user_controller.UserController.user_hash_password(
-			"testUser", "testNewPassword", user_object.password_salt)
-		self.assertEquals(new_hashed_password, user_object.hashed_password)
+		db_cookie = User.all().filter("username", "testUser").get().token
+		if not db_cookie:
+			self.fail("No session cookie was saved to the database for the intended user after a successful login.")
+		session_token = db_cookie.token
+		if session_token != session_cookie.value:
+			self.fail(
+				"""User logged in successfully but session cookie contents don't match session token.
+				Expected: {expected!r}
+				Actual: {actual!r}""".format(
+					expected=session_token,
+					actual=session_cookie.value
+				)
+			)
 
-		# pull a new refrence to the user from the DB and re-validate the new
-		# password hash
-		dup_user_object = user.User.get_by_username("testUser")
-		self.assertEquals(new_hashed_password, dup_user_object.hashed_password)
+	def test_successful_login_with_new_user(self):
+		''' Test successful login with new user.'''
+
+		expected_response = {"result": True, "username": "newUser@me.com"}
+		raw_response = self.send_login_request(email="newUser@me.com")
+		actual_response = json.loads(raw_response.read())
+
+		# check return value
+		if actual_response != expected_response:
+			self.fail(
+				"""persona_login() did not return the expected value for an expected successful login of new user.
+				Expected: {expected!r}
+				Actual: {actual!r}""".format(
+					expected=expected_response,
+					actual=actual_response
+				)
+			)
+
+		# make sure an entry was created in the Users table for this new user
+		new_user = User.all().filter("email", "newUser@me.com").get()
+		if not new_user:
+			self.fail("No User entry was created in the database for the new user who successfully logged in.")
+		# make sure the User entry has a username that should be equal to the new user's email
+		if new_user.username != "newUser@me.com":
+			self.fail(
+				"""The User entry created in the database for the new user who successfully logged in has the wrong username.
+				Expected: {expected!r}
+				Actual: {actual!r}""".format(
+					expected="newUser@me.com",
+					actual=new_user.username
+				)
+			)
+
+		# check that the correct session cookie was set
+		session_cookie = None
+		for cookie in cookie_jar:
+			if cookie.key == user_controller.UserController._COOKIE_NAME:
+				session_cookie = cookie
+
+		if not session_cookie:
+			self.fail("User logged in with valid credentials but no session cookie was set.")
+
+		db_cookie = User.all().filter("username", "testUser").get().token
+		if not db_cookie:
+			self.fail("No session cookie was saved to the database for the intended user after a successful login.")
+
+		session_token = db_cookie.token
+		if session_token != session_cookie.value:
+			self.fail(
+				"""User logged in successfully but session cookie contents don't match session token.
+				Expected: {expected!r}
+				Actual: {actual!r}""".format(
+					expected=session_token,
+					actual=session_cookie.value
+				)
+			)
+
+
 
 if __name__ == '__main__':
 	unittest.main()

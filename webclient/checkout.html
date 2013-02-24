@@ -3,38 +3,15 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Piso Auction - Checkout</title>
-  <link href="/css/jquery-ui-1.8.23.custom.css" rel="stylesheet" type="text/css" />
-  <link href="/css/style.css" rel="stylesheet" type="text/css" />
-  <!--[if IE]>
-  <link href="css/ie.css" rel="stylesheet" type="text/css" />
-  <![endif]-->
-  <!--[if IE 8]>
-  <link href="css/ie8.css" rel="stylesheet" type="text/css" />
-  <![endif]-->
-  <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
-  <script type="text/javascript" src="/js/jquery-ui-1.8.23.custom.min.js"></script>
-  <script type="text/javascript" src="/js/cufon/cufon-yui.js"></script>
-  <script type="text/javascript" src="/js/cufon/open-sans-latin.js"></script>
-  <script type="text/javascript" src="/js/common.js"></script>
-  <script type="text/javascript" src="/js/core.js"></script>
-  <script type="text/javascript" src="/js/index.js"></script>
+  {% include '_head_includes.html' %}
 </head>
 
 <body class="hideall">
-{% include '_messageDialog.html' %}
-{% include '_topbar.html' %}
-<!-- start header -->
-  <div id="header">
-    <div class="box"> 
-      {% include '_logo.html' %}
-      {% include '_menubar.html' %}
-    </div>
-  </div>
-<!-- end header --> 
+{% include '_header.html' %}
 <!-- start container -->
-<div id="container"> 
+<div id="container">
   <!-- start breadcrumb -->
-  <div class="breadcrumb"> 
+  <div class="breadcrumb">
     <!-- start box -->
     <div class="box"> <span>You are here:</span>
       <ul>
@@ -45,11 +22,11 @@
     <!-- end box -->
     <div class="clear"></div>
   </div>
-  <!-- end breadcrumb --> 
+  <!-- end breadcrumb -->
   <!-- start box -->
-  <div class="box"> 
+  <div class="box">
     <!-- start leftcol -->
-    <div id="leftcol" class="medium"> 
+    <div id="leftcol" class="medium">
       <!-- start accordinpanel -->
       <div class="accordin-panel" id="checkout">
         <h1>Checkout</h1>
@@ -57,7 +34,7 @@
           <!-- block -->
           <div>
             <form  action="" method="post">
-              <div class="shopping"> 
+              <div class="shopping">
                 <!-- start table -->
                 <table id="checkout-tab">
                   <thead>
@@ -114,10 +91,10 @@
                     </tr>
                   </tbody>
                 </table>
-                <!-- end table --> 
+                <!-- end table -->
                 <!-- left -->
                 <div class="left"> </div>
-                <!-- left --> 
+                <!-- left -->
                 <!-- right -->
                 <div class="right">
                   <div class="col1"> <span>Sub-Total</span> <span>VAT 15%</span>
@@ -128,31 +105,31 @@
                   </div>
                   <div class="submit-review"> <a class="sub-hover">CONFIRM ORDER</a><a>CONFIRM ORDER</a> </div>
                 </div>
-                <!-- right --> 
+                <!-- right -->
               </div>
               <div class="clear"></div>
             </form>
           </div>
-          <!-- block -->  
+          <!-- block -->
         </div>
       <div class="clear"></div>
     </div>
-    <!-- end leftcol --> 
+    <!-- end leftcol -->
     <!-- start rightcol -->
-    <div id="rightcol"> 
+    <div id="rightcol">
       <!-- widget -->
       <div class="widget support rightcol-block">
         <h4 class="red">Need Support?</h4>
         <p>Donec tristique quam sit amet dolor aliquet vitae tempor <strong>libero ornare</strong>. In sit amet lorem in eros ullamcorper tincidunt. Proin vulputate mauris quis. <a href="contact-page.html"><span>more</span> →</a></p>
       </div>
-      <!-- widget --> 
+      <!-- widget -->
     </div>
     <!-- end rightcol -->
     <div class="clear"></div>
   </div>
-  <!-- end box --> 
+  <!-- end box -->
 </div>
-<!-- end container --> 
+<!-- end container -->
 {% include '_footer.html' %}
 
 </body>

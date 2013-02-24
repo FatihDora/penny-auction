@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+################################################################################
+# © 2013
+# main author: Darin Hoover
+################################################################################
+
 # make Python do floating-point division by default
 from __future__ import division
 # make string literals be Unicode strings
 from __future__ import unicode_literals
 
-from models import user, user_cookie
-import lib.bcrypt.bcrypt as bcrypt
+from models import user
 from lib import web
 import logging
 
@@ -15,233 +19,176 @@ from google.appengine.ext import db
 from google.appengine.api import mail
 
 from datetime import datetime
+import urllib
+import json
 import hashlib
 import random
 import sys
+import os
 
 class UserController(object):
 
-	@staticmethod
-	def user_get_nonce():
-		'''
-			Get a random number, to be used only once, hence nonce ("Number used
-			ONCE")
-		'''
-		return random.randint(32768, sys.maxint)
+	_COOKIE_NAME = "PISOAUTH"
+
+	# URL to send Persona assertions to for validation
+	# note that for testing purposes if running the development environement this URL can be set to the form
+	# "mock:<success or failure>:<email>" to bypass validation through Persona's servers
+	# and instead produce the result expected
+	# for example:
+	# 	"mock:success:me@example.org" would cause persona_login() to pretend a user with email me@example.org has a valid assertion
+	#	"mock:failure" would cause persona_login() to report the user has an invalid assertion
+	_PERSONA_AUTH_URL = "https://browserid.org/verify" 
 
 	@staticmethod
-	def user_authenticate(username, password):
+	def _session_start(user, secret):
 		'''
-			Login to the API and return a hash which corresponds to the
-			username, password, and salt
+			Sets up a session for the given user model object, where secret is
+			the seed for generating the login token (this can be any string
+			that an attacker shouldn't be able to guess, such as the password
+			for password-based authentication or the Persona assertion if using
+			Persona-based login).
 		'''
 
-		# Verify the user exists in the database
-		aUser = user.User.get_by_username(username)
-		if aUser is None:
-			raise Exception("Invalid username or password")
-
-		# Verify the username/password combination (including the user's password
-		# salt) matches the hashed password currently stored to the user object
-		hashed_password = UserController.user_hash_password(username,
-			password, aUser.password_salt)
-		if hashed_password != aUser.hashed_password:
-			raise Exception("Invalid username or password")
-
-		UserController.create_cookie(aUser.username)
-
-		return aUser.username
+		token = user.create_session_token(secret)
+		web.setcookie(UserController._COOKIE_NAME, token, 3600)
 
 	@staticmethod
-	def user_info():
+	def persona_login(assertion):
 		'''
-			This will be used to authenticate a user's cookie information.
+			Authenticate a user from their Persona assertion (generated
+			client-side by the persona-login.coffee script) and start a session
+			for them if their login is valid. The User model object for the
+			user will be returned if login is successful, otherwise None will
+			be returned.
 		'''
 
-		username = UserController.validate_cookie()
-		if username is None:
-			raise Exception("Not logged in.")
+		if not assertion:
+			raise Exception("The assertion passed to UserController.persona_login() must be a non-empty string. Received {!r} instead.".format(assertion))
 
-		userInfo = user.User.get_by_username(username)
+		# check whether to transmit a copy of the assertion to _PERSONA_AUTH_URL for validation (normal behavior)
+		# or skip validation (used for automated testing)
+		try:
+			  dev_environment = os.environ['SERVER_SOFTWARE'].startswith('Development')
+		except:
+			  dev_environment = False
+		if dev_environment and UserController._PERSONA_AUTH_URL.startswith('mock:'):
+			instructions = UserController._PERSONA_AUTH_URL.split(':', 3)
+			if instructions[1] == "failure":
+				response = {
+					"status": "failure",
+					"email": None
+				}
+			else:
+				response = {
+					"status": "success",
+					"email": instructions[2]
+				}
+		else:
+			# send a message with the assertion to Persona's servers to validate
+			# its authenticity
+			message = urllib.urlencode(dict(audience=web.ctx.host, assertion=assertion))
+			response = json.loads(urllib.urlopen(UserController._PERSONA_AUTH_URL, message).read())
 
-		if userInfo is None:
-			return None # maybe raise an exception. Why would a cookie exist but no user?
+		# convert the status entry from a string to a more convenient boolean value
+		response["status"] = response["status"] != "failure"
 
-		numBids = userInfo.bid_count
-		AutoBidders = userInfo.active_autobidders.get()
+
+		# once the user's credentials are accepted or rejected, take appropriate actions
+		this_user = None
+		if response["status"]:
+			this_user = user.User.get_by_email(response["email"])
+			if not this_user:
+				# create this user if they don't exist yet
+				this_user = UserController.create(email=response["email"])
+
+			UserController._session_start(this_user, assertion)
+		return this_user
+
+	@staticmethod
+	def user_info(this_user):
+		'''
+			Returns a dict with the the user's user name, bids, and number of
+			active auto bidders.
+		'''
+
+		numBids = this_user.bid_count
+		AutoBidders = this_user.active_autobidders.get()
 
 		if AutoBidders is None:
 			numAutoBidders = 0
 		else:
 			numAutoBidders = AutoBidders.size()
 
-
-		result = []
-		result.append({'username':username,'bids':numBids,'auto-bidders':numAutoBidders})
-		#'auto-bidders':user.active_autobidders.count()}
-		return result
+		return {'username': this_user.username, 'bids': this_user.bid_count, 'auto-bidders': numAutoBidders}
 
 	@staticmethod
-	def user_logout():
-		username = UserController.validate_cookie()
-		user_cookie.UserCookie.delete_all_cookies(username)
-		return username
+	def user_logout(this_user):
+		'''
+			Log the specified user model out of their session with the server.
+			Does nothing if the user has no current session.
+		'''
+		if this_user:
+			this_user.destroy_session_token()
 
 	@staticmethod
-	def user_register(first_name, last_name, username, email, password):
+	def user_register(this_user, first_name=None, last_name=None, username=None):
 		'''
-			Register a new account
-		'''
-
-		if user.User.username_exists(username):
-			raise Exception("This username already exists.  Please choose another.")
-
-		if user.User.email_exists(email):
-			raise Exception("This email address has already been registered.  If you "
-				           +"need help logging in, please <a href='/forgot_credentials'>click here.</a>")
-		# create a new user and hash their password
-
-		userInfo = UserController.create(first_name, last_name, username,
-			email, password)
-
-		message = mail.EmailMessage(sender="Darin Hoover <darinh@gmail.com>",
-									subject="Please Validate Your Account")
-
-		message.to = email # FirstName + " " + LastName + "<" + email + ">"
-
-		message.body = """
-		Dear """ + first_name + """:
-
-		Your Piso Auction account has been created, but we still need to
-		validate your email address.  Please click the following link
-		to verify your email account:
-
-		http://pisoauction.appspot.com/validate_email?code=""" + unicode(userInfo.email_validation_code) + """
-
-		Once your email has been validated, you will be able to login.
-
-		Please let us know if you have any questions.
-
-		The Piso Auction Team
-		"""
-
-		message.html = """
-		<html><head></head><body>
-		Dear """ + first_name + """<br/>
-		<br/>
-		Your Piso Auction account has been created, but we still need to<br/>
-		validate your email address.  Please click the following link<br/>
-		to verify your email account:<br/>
-		<br/>
-		<a href='http://pisoauction.appspot.com/validate_email?code=""" + unicode(userInfo.email_validation_code) + """'>Validate Email</a><br/>
-		<br/>
-		Once your email has been validated, you will be able to login.<br/>
-		<br/>
-		Please let us know if you have any questions.<br/>
-		<br/>
-		The Piso Auction Team<br/>
-		</body></html>
-		"""
-
-		message.send()
-
-
-		# return the new user instance
-		return userInfo.username
-
-	@staticmethod
-	def user_validate_email(email_validation_code):
-		'''
-			Attempts to validate a user's email with an email_validation_code
+			Register account information for a new user. Note that this user
+			should already have an account skeleton from logging in with
+			Persona (which gives us their email). Parameter this_user is the
+			user model object for the user that should be modified, while the
+			other parameters are the values that should be updated. All
+			parameters except the user model object are optional.
 		'''
 
-		if not email_validation_code:
-			raise Exception("You must provide a validaton code.")
+		if username:
+			this_user.username = username
 
-		return user.User.validate_email(email_validation_code)
+		if first_name:
+			this_user.first_name = first_name
 
-	@staticmethod
-	def user_update_password(user_object, new_password):
-		'''
-			Update the specified user to now have the specified salt. Also,
-			recompute a random password salt
-		'''
-		# compute a new salt for the user
-		new_salt = bcrypt.gensalt()
+		if last_name:
+			this_user.last_name = last_name
 
-		# compute the new password hash using the new salt
-		hashes = user.User.compute_secure_hashes(user_object.username,
-				new_password)
-		user_object.hashed_password = hashes["hashed_password"]
-		user_object.password_salt = hashes["password_salt"]
-		user_object.put()
-
-	@staticmethod
-	def user_hash_password(username, password, salt):
-		'''
-			Generate a password hash based on the provided username, password, and
-			salt
-		'''
-		# compute the new password hash using the new salt
-		return bcrypt.hashpw(password + username, salt)
-
-
-	@staticmethod
-	def create_cookie(username):
-		'''
-			Creates a cookie in user_cookie and sends it to the browser.
-		'''
-
-		# Cookie Design: http://jaspan.com/improved_persistent_login_cookie_best_practice
-		# Cookie Syntax: http://webpy.org/cookbook/cookies
-
-		token = bcrypt.gensalt()
-		web.setcookie('PISOAUTH', token, 3600)
-		user_cookie.UserCookie.create_cookie(username,token)
-
-		return
+		this_user.put()
+		return this_user
 
 	@staticmethod
 	def validate_cookie():
 		'''
-			Validates the user's cookie
-			Deletes the old one
-			Creates a new one
-			Returns the username
+			Checks the cookie sent by the client and returns the user model
+			object for the logged-in user, or None if the user is not logged
+			in.
 		'''
 
 		# Do they have a cookie?
-		token = web.cookies().get('PISOAUTH')
+		token = web.cookies().get(UserController._COOKIE_NAME)
 		if token is None:
 			return None
 		# Validate.
-		aCookie = user_cookie.UserCookie.validate_cookie(token)
-
-		if aCookie is None:
-			return None
-		else:
-			username = aCookie.username
-			aCookie.delete()
-			UserController.create_cookie(username)
-			return username
+		return user.User.get_by_token(token)
 
 	@staticmethod
-	def create(first_name,last_name,username,email,password):
+	def create(email, username=None, first_name=None, last_name=None):
 		'''
 			Define a new user in the database. Returns the model object for the
-			new user to allow method chaining.
+			new user to allow method chaining. All arguments are optional
+			except email. If a user name is not provided, then the email
+			address will be used for the username.
 		'''
 
-		secure_hashes = user.User.compute_secure_hashes(username, password)
+		if not username:
+			username = email
+
 		new_user = user.User(
 				first_name=first_name,
 				last_name=last_name,
 				username=username,
-				email=email,
-				hashed_password=secure_hashes["hashed_password"],
-				password_salt=secure_hashes["password_salt"],
-				email_validation_code=secure_hashes["email_validation_code"]
+				email=email
 		)
+		# TEMPORARY - new users start with 100 bids for demo purposes only
+		# remove this when the site goes live
+		new_user.bid_count = 100
 		new_user.put()
 		return new_user
 

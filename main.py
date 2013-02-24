@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+################################################################################
+# © 2013
+# main author: Darin Hoover, Brent Houghton, Kevin Mershon
+################################################################################
+
 # make Python do floating-point division by default
 from __future__ import division
 # make string literals be Unicode strings
@@ -14,7 +19,7 @@ from google.appengine.ext import db
 from google.appengine.ext.webapp import template
 from lib import web
 import os
-from django.utils import simplejson as json
+import json
 import logging
 import datetime
 from datetime import timedelta
@@ -34,12 +39,9 @@ urls = (
     '/auction/(.*)','auction',
     '/bid_packs','bid_packs',
     '/checkout','checkout',
-    '/forgot_credentials','forgot_credentials',
-    '/register','register',
     '/support','support',
-    '/validate_email','validate_email',
     '/winners','winners',
-    
+
     '/autobidders_list_all', 'autobidders_list_all',
     '/autobidders_list_by_auction', 'autobidders_list_by_auction',
     '/autobidder_status_by_auction', 'autobidder_status_by_auction',
@@ -54,10 +56,7 @@ urls = (
 	'/auction_cancel_pending_bids_for_user', 'auction_cancel_pending_bids_for_user',
 	'/auction_add_pending_bids_for_user', 'auction_add_pending_bids_for_user',
 
-    '/user_get_nonce', 'user_get_nonce',
-    '/user_register', 'user_register',
-    '/user_validate_email', 'user_validate_email',
-    '/user_authenticate', 'user_authenticate',
+    '/persona_login', 'persona_login',
     '/user_info', 'user_info',
     '/user_username_exists', 'user_username_exists',
     '/user_email_exists', 'user_email_exists',
@@ -74,6 +73,13 @@ JSON_KEY_ITEM_NAME = "name"
 JSON_KEY_BASE_PRICE = "base_price"
 JSON_KEY_PRODUCT_URL = "product_url"
 JSON_KEY_IMAGE_URL = "image_url"
+
+class APIRequestException(Exception):
+	'''
+		Use this exception class for minor errors in API requests like not
+		being logged in for privileged API methods or missing parameters.
+	'''
+	pass
 
 
 '''
@@ -114,24 +120,9 @@ class checkout:
         path = os.path.join(os.path.dirname(__file__), 'webclient/checkout.html')
         return template.render(path, {})
 
-class forgot_credentials:
-    def GET(self):
-        path = os.path.join(os.path.dirname(__file__), 'webclient/forgot_credentials.html')
-        return template.render(path, {})
-
-class register:
-    def GET(self):
-        path = os.path.join(os.path.dirname(__file__), 'webclient/register.html')
-        return template.render(path, {})
-
 class support:
     def GET(self):
         path = os.path.join(os.path.dirname(__file__), 'webclient/support.html')
-        return template.render(path, {})
-
-class validate_email:
-    def GET(self):
-        path = os.path.join(os.path.dirname(__file__), 'webclient/validate_email.html')
         return template.render(path, {})
 
 class winners:
@@ -140,7 +131,7 @@ class winners:
         return template.render(path, {})
 
 
-        
+
 
 '''
     end Webclient
@@ -203,32 +194,25 @@ def generate_auction_dict(auction):
 
 class auctions_status_by_id:
 	def GET(self):
-		inputs = web.input()
+		inputs = web.input(ids=None)
 		web.header('Content-Type', 'application/json')
 		auction_ids = inputs.ids
 
 		try:
 			if not auction_ids:
-				raise Exception("No auction IDs were supplied in the 'ids' parameter.")
+				raise APIRequestException("No auction IDs were supplied in the 'ids' parameter.")
 
 			# parse the string of IDs into a tuple of ints
 			sids = auction_ids.split(',')
 			if len(sids) > 40:
-				raise Exception("Too many ids")
+				raise APIRequestException("Maximum of 40 auction statuses, reduce number of requested auction statuses.")
 
 			ids = []
 			for sid in sids:
-				try:
-					ids.append(int(sid))
-				except Exception, e:
-					raise Exception("The list of IDs provided could not be parsed.")
+				ids.append(int(sid))
 			ids = tuple(ids) 	# freeze the ID list
 
-			try:
-				auctions = auction_controller.AuctionController.auctions_status_by_ids(ids)
-			except Exception, exception:
-				logging.error("The following exception was raised by AuctionController.auctions_status_by_ids():\n{}".format(exception))
-				#raise Exception("An internal error occurred.")
+			auctions = auction_controller.AuctionController.auctions_status_by_ids(ids)
 
 			# Build the JSON payload
 			result = []
@@ -236,26 +220,27 @@ class auctions_status_by_id:
 			for elem in auctions:
 				result.append(generate_auction_dict(elem))
 
-			return json.dumps({'result': result})
+			result = json.dumps({"result": result})
+			logging.debug("/auctions_status_by_id response: {}".format(result))
+			return result
 
-		except Exception, e:
-			return json.dumps({'exception':unicode(e)})
+		except APIRequestException, exception:
+			logging.info("/auctions_status_by_id response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
 
 class auctions_list_current:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
+	def GET(self):
+		inputs = web.input(count=None)
+		web.header('Content-Type', 'application/json')
 
-        try:
+		try:
 			if not inputs.count:
-				raise Exception("The number of auctions to list was not provided in the 'count' parameter.")
+				raise APIRequestException("The number of auctions to list was not provided in the 'count' parameter.")
 
-			try:
-				auctions = auction_controller.AuctionController.auctions_list_current(inputs.count)
-
-			except Exception, exception:
-				logging.error("The following exception was raised by AuctionController.auctions_list_current():\n{}".format(exception))
-				raise Exception("An internal error occurred.")
+			auctions = auction_controller.AuctionController.auctions_list_current(inputs.count)
 
 			# Build the JSON payload
 			result = []
@@ -263,84 +248,92 @@ class auctions_list_current:
 			for elem in auctions:
 				result.append(generate_auction_dict(elem))
 
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/auctions_list_current response: {}".format(result))
+			return result
 
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
+		except APIRequestException, exception:
+			logging.info("/auctions_list_current response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
 
 class auctions_list_all:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-
-        try:
-            # TODO: check that an administrative user issued this request
-
-			try:
-				auctions = auction_controller.AuctionController.auctions_list_all()
-
-			except Exception, exception:
-				logging.error("The following exception was raised by AuctionController.auctions_list_all():\n{}".format(exception))
-				raise Exception("An internal error occurred.")
-
-			# Build the JSON payload
-			result = []
-
-			for elem in auctions:
-				result.append(generate_auction_dict(elem))
-
-			return json.dumps({'result': result})
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-class auction_bid:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-
-        try:
-
-			if not inputs.id:
-				raise Exception("No auction ID to bid on was given in the 'id' parameter.")
-
-			# user validation
-			username = user_controller.UserController.validate_cookie()
-			if username is None:
-				raise Exception("Not logged in!")
-
-			try:
-				result = auction_controller.AuctionController.auction_bid(inputs.id, username)
-
-			except Exception, exception:
-				logging.error("The following exception was raised by AuctionController.auction_bid():\n{}".format(exception))
-				raise Exception("An internal error occurred.")
-
-			return json.dumps({'result': result})
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-class auction_detail:
 	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 
 		try:
-			if not inputs.id:
-				raise Exception("No auction ID was supplied in the 'id' parameter.")
+			# TODO: check that an administrative user issued this request
 
-			try:
-				auction = auction_controller.AuctionController.auctions_status_by_ids(int(inputs.id))
-			except Exception, exception:
-				logging.error("The following exception was raised by AuctionController.auctions_status_by_ids():\n{}".format(exception))
-				#raise Exception("An internal error occurred.")
+			auctions = auction_controller.AuctionController.auctions_list_all()
+
+			# Build the JSON payload
+			result = []
+
+			for elem in auctions:
+				result.append(generate_auction_dict(elem))
+
+			result = json.dumps({'result': result})
+			logging.debug("/auctions_list_all response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/auctions_list_all response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
+
+class auction_bid:
+	def GET(self):
+		inputs = web.input(id=None)
+		web.header('Content-Type', 'application/json')
+
+		try:
+			if not inputs.id:
+				raise APIRequestException("No auction ID was supplied in the 'id' parameter.")
+
+			# user validation
+			user = user_controller.UserController.validate_cookie()
+			if user is None:
+				raise APIRequestException("Not logged in!")
+
+			result = auction_controller.AuctionController.auction_bid(inputs.id, user.username)
+			result = json.dumps({'result': result})
+			logging.debug("/auction_bid response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/auction_bid response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
+
+class auction_detail:
+	def GET(self):
+		inputs = web.input(id=None)
+		web.header('Content-Type', 'application/json')
+
+		try:
+			if not inputs.id:
+				raise APIRequestException("No auction ID was supplied in the 'id' parameter.")
+
+			auction = auction_controller.AuctionController.auctions_status_by_ids(int(inputs.id))
 
 			result = generate_auction_dict(auction)
-			return json.dumps({'result': result})
+			result = json.dumps({'result': result})
+			logging.debug("/auction_detail response: {}".format(result))
+			return result
 
-		except Exception, e:
-			return json.dumps({'exception':unicode(e)})
+		except APIRequestException, exception:
+			logging.info("/auction_detail response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
 
 class auction_recent_bids:
     def GET(self):
@@ -348,6 +341,8 @@ class auction_recent_bids:
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 		try:
+			## STUB ##
+			# TODO: fill in this stub
 
 			result = []
 			result.append({username:'kevin',price:'1.20',bidtime:'05:14:23 PM'})
@@ -360,207 +355,244 @@ class auction_recent_bids:
 			result.append({username:'brent',price:'1.13',bidtime:'05:13:42 PM'})
 			result.append({username:'chris',price:'1.12',bidtime:'05:13:36 PM'})
 
-			return json.dumps({'result':result})
+			result = json.dumps({'result': result})
+			logging.debug("/auction_recent_bids response: {}".format(result))
+			return result
 
-		except Exception, e:
-			return json.dumps({'exception':unicode(e)})
+		except APIRequestException, exception:
+			logging.info("/auction_recent_bids response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
 
 
 
 class auction_add_pending_bids_for_user:
     def GET(self):
-		inputs = web.input()
+		inputs = web.input(id=None, num_bids=None)
 		web.header('Content-Type', 'application/json')
 
 		try:
 			if not inputs.id:
-				raise Exception("No auction ID was supplied in the 'id' parameter.")
+				raise APIRequestException("No auction ID was supplied in the 'id' parameter.")
 
-			if not inputs.num_bids:
-				raise Exception("No number of bids was supplied in the 'num_bids' parameter.")
+			if inputs.num_bids == None:
+				raise APIRequestException("No number of bids was supplied in the 'num_bids' parameter.")
 
 			# user validation
 			user_name = user_controller.UserController.validate_cookie()
 			if user_name is None:
-				raise Exception("Not logged in!")
+				raise APIRequestException("Not logged in!")
 
-			try:
-				result = auction_controller.AuctionController.attach_autobidder(
-						auction_id=int(inputs.id),
-						user_name=user_name,
-						num_bids=inputs.num_bids
-				)
+			result = auction_controller.AuctionController.attach_autobidder(
+					auction_id=int(inputs.id),
+					user_name=user_name,
+					num_bids=inputs.num_bids
+			)
 
-			except Exception, exception:
-				logging.error("The following exception was raised by AuctionController.attach_autobidder():\n{}".format(exception))
-				raise Exception("An internal error occurred.")
+			result = json.dumps({'result': result})
+			logging.debug("/auction_add_pending_bids_for_user response: {}".format(result))
+			return result
 
-			return json.dumps({'result': result})
-
-		except Exception, e:
-			return json.dumps({'exception':unicode(e)})
+		except APIRequestException, exception:
+			logging.info("/auction_add_pending_bids_for_user response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
 
 class auction_get_pending_bids_for_user:
     def GET(self):
-		inputs = web.input()
+		inputs = web.input(id=None)
 		web.header('Content-Type', 'application/json')
 
 		try:
 			if not inputs.id:
-				raise Exception("No auction ID was supplied in the 'id' parameter.")
+				raise APIRequestException("No auction ID was supplied in the 'id' parameter.")
 
 			# user validation
 			user_name = user_controller.UserController.validate_cookie()
 			if user_name is None:
-				raise Exception("Not logged in!")
+				raise APIRequestException("Not logged in!")
 
-			try:
-				result = auction_controller.AuctionController.get_autobidder_remaining_bids(
-						auction_id=int(inputs.auction_id),
-						user_name=user_name
-				)
+			result = auction_controller.AuctionController.get_autobidder_remaining_bids(
+					auction_id=int(inputs.auction_id),
+					user_name=user_name
+			)
 
-			except Exception, exception:
-				logging.error("The following exception was raised by AuctionController.get_autobidder_remaining_bids():\n{}".format(exception))
-				raise Exception("An internal error occurred.")
+			result = json.dumps({'result': result})
+			logging.debug("/auction_get_pending_bids_for_user response: {}".format(result))
+			return result
 
-			return json.dumps({'result': result})
-
-		except Exception, e:
-			return json.dumps({'exception':unicode(e)})
+		except APIRequestException, exception:
+			logging.info("/auction_get_pending_bids_for_user response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
 
 class auction_cancel_pending_bids_for_user:
     def GET(self):
-		inputs = web.input()
+		inputs = web.input(id=None)
 		web.header('Content-Type', 'application/json')
-
-		return json.dumps({'result': unicode(result)})
 
 		try:
 			if not inputs.id:
-				raise Exception("No auction ID was supplied in the 'id' parameter.")
+				raise APIRequestException("No auction ID in the 'id' parameter.")
 
 			# user validation
 			user_name = user_controller.UserController.validate_cookie()
 			if user_name is None:
-				raise Exception("Not logged in!")
+				raise APIRequestException("Not logged in.")
 
-			try:
-				result = auction_controller.AuctionController.cancel_autobidder(
-						auction_id=int(inputs.id),
-						user_name=user_name
-				)
+			result = auction_controller.AuctionController.cancel_autobidder(
+					auction_id=int(inputs.id),
+					user_name=user_name
+			)
 
-			except Exception, exception:
-				logging.error("The following exception was raised by AuctionController.cancel_autobidder():\n{}".format(exception))
-				raise Exception("An internal error occurred.")
+			result = json.dumps({'result': result})
+			logging.debug("/auction_cancel_pending_bids_for_user response: {}".format(result))
+			return result
 
-			return json.dumps({'result': result})
-
-		except Exception, e:
-			return json.dumps({'exception':unicode(e)})
+		except APIRequestException, exception:
+			logging.info("/auction_cancel_pending_bids_for_user response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
 
 
 # USER Stuff
 
 class user_info:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-
-        try:
-            result = {'result':user_controller.UserController.user_info()}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-class user_logout:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-
-        try:
-            result = {'result':user_controller.UserController.user_logout()}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-
-class user_register:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-        try:
-            result = {'result':user_controller.UserController.user_register(inputs.first_name,inputs.last_name,inputs.username,inputs.email,inputs.password)}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-class user_validate_email:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-        try:
-            result = {'result':user_controller.UserController.user_validate_email(inputs.code)}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-class user_authenticate:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-        try:
-            result ={'result':user_controller.UserController.user_authenticate(inputs.username, inputs.password)}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-class user_authenticate_cookie:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-        try:
-            result ={'result':user_controller.UserController.user_authenticate_cookie()}
-            return json.dumps(result)
-
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-
-class user_username_exists:
-    def GET(self):
-        inputs = web.input()
-        web.header('Content-Type', 'application/json')
-
-        try:
-			if not inputs.username:
-				raise Exception('required string parameter "username" was not passed to the server, or was an empty string')
-
-			result = user_controller.UserController.user_username_exists(inputs.username)
-			return json.dumps({'result': result})
-        except Exception, e:
-            return json.dumps({'exception':unicode(e)})
-
-class user_email_exists:
-    def GET(self):
+	def GET(self):
 		inputs = web.input()
 		web.header('Content-Type', 'application/json')
 
 		try:
+			this_user = user_controller.UserController.validate_cookie()
+			if not this_user:
+				raise APIRequestException("Not logged in!")
+			result = user_controller.UserController.user_info(this_user)
+			result = json.dumps({'result': result})
+			logging.debug("/user_info response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/user_info response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
+
+class user_logout:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			this_user = user_controller.UserController.validate_cookie()
+			result = user_controller.UserController.user_logout(this_user)
+			result = json.dumps({'result': result})
+			logging.debug("/user_logout response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/user_logout response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
+
+class persona_login:
+	def GET(self):
+		inputs = web.input(assertion=None)
+		web.header('Content-Type', 'application/json')
+
+		try:
+			this_user = user_controller.UserController.persona_login(inputs.assertion)
+			if this_user:
+				result = {'result': True, 'username': this_user.username}
+			else:
+				result = {'result': False, 'error': 'invalid credentials'}
+
+			result = json.dumps(result)
+			logging.debug("/persona_login response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/persona_login response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
+
+class user_authenticate_cookie:
+	def GET(self):
+		inputs = web.input()
+		web.header('Content-Type', 'application/json')
+
+		try:
+			result = user_controller.UserController.user_authenticate_cookie()
+			result = json.dumps({'result': result})
+			logging.debug("/user_authenticate_cookie response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/user_authenticate_cookie response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
+
+
+class user_username_exists:
+	def GET(self):
+		inputs = web.input(username=None)
+		web.header('Content-Type', 'application/json')
+
+		try:
+			if inputs.username == None:
+				raise APIRequestException("no user name in the 'username' parameter")
+			if inputs.username == "":
+				raise APIRequestException('username cannot be an empty string')
+
+			result = user_controller.UserController.user_username_exists(inputs.username)
+			result = json.dumps({'result': result})
+			logging.debug("/user_username_exists response: {}".format(result))
+			return result
+
+		except APIRequestException, exception:
+			logging.info("/user_username_exists response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
+
+class user_email_exists:
+    def GET(self):
+		inputs = web.input(email=None)
+		web.header('Content-Type', 'application/json')
+
+		try:
 			if not inputs.email:
-				raise Exception('required string parameter "email" was not passed to the server, or was an empty string')
+				raise APIRequestException('required string parameter "email" was not passed to the server, or was an empty string')
 
 			result = user_controller.UserController.user_email_exists(inputs.email)
-			return json.dumps({'result': result})
-		except Exception, e:
-			return json.dumps({'exception':unicode(e)})
+			result = json.dumps({'result': result})
+			logging.debug("/user_email_exists response: {}".format(result))
+			return result
 
+		except APIRequestException, exception:
+			logging.info("/user_email_exists response to bad request: {}".format(result))
+			return json.dumps({"result": False, "error": unicode(exception)})
+		except Exception, exception:
+			logging.exception(exception)
+			return json.dumps({'result': False, 'error': 'An internal server error caused the request to fail.'})
+
+
+# TODO: remove this debugging tool when the site goes live!
 class reset_data:
     def GET(self):
 		br = '<br/>'
@@ -577,5 +609,7 @@ class reset_data:
 app = web.application(urls, globals())
 application = app.gaerun()
 if (os.getenv("APPLICATION_ID").startswith("dev~")):
-    logging.getLogger().setLevel(logging.ERROR)
+    logging.getLogger().setLevel(logging.DEBUG)
+else:
+    logging.getLogger().setLevel(logging.INFO)
 
