@@ -11,10 +11,12 @@ function! Cleanfile()
 	if &modifiable
 		" trim whitespace on save
 		:%s/\s\+$//e
-		:%s/    /\t/ge
+		:%s/	/\t/ge
 	endif
 endfunction
 autocmd! bufreadpost *.python call Cleanfile()
 autocmd! bufwritepre *.python call Cleanfile()
 autocmd! bufreadpost *.html call Cleanfile()
 autocmd! bufwritepre *.html call Cleanfile()
+
+autocmd! bufwritepost *.coffee !batch/coffee-compile.sh
