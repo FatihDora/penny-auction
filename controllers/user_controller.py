@@ -131,29 +131,6 @@ class UserController(object):
 			this_user.destroy_session_token()
 
 	@staticmethod
-	def user_register(this_user, first_name=None, last_name=None, username=None):
-		'''
-			Register account information for a new user. Note that this user
-			should already have an account skeleton from logging in with
-			Persona (which gives us their email). Parameter this_user is the
-			user model object for the user that should be modified, while the
-			other parameters are the values that should be updated. All
-			parameters except the user model object are optional.
-		'''
-
-		if username:
-			this_user.username = username
-
-		if first_name:
-			this_user.first_name = first_name
-
-		if last_name:
-			this_user.last_name = last_name
-
-		this_user.put()
-		return this_user
-
-	@staticmethod
 	def validate_cookie():
 		'''
 			Checks the cookie sent by the client and returns the user model
