@@ -1977,25 +1977,6 @@ $(window).load(function() {
     
      $("body").removeClass("hideall");
      
-    //CUFON REPLACEMENT
-    
-    Cufon.replace('.feature span.heading', {hover: true});
-    Cufon.replace('.post-col .txtb h1', {hover: true});
-    Cufon.replace('.accordin-panel h5', {hover: true, 
-    hoverables: { h5: true }
-    });
-    Cufon.replace('.accordin-panel h5.ui-state-active a', {hover: true});
-    Cufon.replace('h3:not(.nocufon)', { fontFamily: 'Open Sans' });
-    Cufon.replace('#navigation ul:first-child > li', {hover: true,
-    hoverables: { li: true },
-    ignore: { ul: true },
-    textless: { li: true }
-    });
-    Cufon.replace('.pro-left h4 a', {hover: true});
-    Cufon.set('fontFamily', 'Open Sans').replace('h1')('h2')('h4')('h5')('h6')('.feature span.heading')('.button-cart')('#navigation ul:first-child > li > a')('.gallery .price')('#rightcol h3')('.category h3')('#footer-bottom .copyright')('.cart-button')('.detail-button')('.button-default')('.slider-wrapper-cycle ul li span.thumb-arrow')('submit-review')('.ui-tabs li a')('.shopping .left .labeltop span')('.submit-review a')('table th')('.contact h4 span')('.404');
-    
-    //END CUFON REPLACEMENT
-    
      // LAZY LOAD CODE
     (function() {  
         var lis = $('span.lazy img').hide(); 
@@ -2304,14 +2285,6 @@ $(document).ready(function() {
             autoHeight: false,
             navigation: true
         });
-        
-    $(".accordin-panel h5").click(
-    function () {
-        Cufon.refresh('.accordin-panel h5');
-    });
-    //END CHECKOUT ACCORDION
-    
-
 });
     
 /* -------------- END CUSTOM JAVASCRIPT BLOCK -------------- */
