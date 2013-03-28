@@ -1,12 +1,12 @@
-PisoAuction = casper.PisoAuction
+PennyAuction = casper.PennyAuction
 
-PisoAuction.test ->
+PennyAuction.test ->
 	# successful login/logout
 	casper.then ->
 		casper.test.comment "Testing successful user login"
 		# login
 		username = "kevin"
-		PisoAuction.login username, "asdf", ->
+		PennyAuction.login username, "asdf", ->
 			casper.test.assertNotVisible "#login-wrapper",
 				"Login wrapper shouldn't be visible"
 
@@ -15,7 +15,7 @@ PisoAuction.test ->
 			casper.test.assertEquals actualUsername, username, "Check username"
 
 			# logout
-			PisoAuction.logout ->
+			PennyAuction.logout ->
 				casper.test.assertVisible "#login-wrapper",
 					"Login wrapper should be visible"
 

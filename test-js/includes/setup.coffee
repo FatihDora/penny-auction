@@ -1,10 +1,10 @@
 # define an object for storing shortcuts
-PisoAuction = casper.PisoAuction = {}
+PennyAuction = casper.PennyAuction = {}
 casper.on "load.finished", ->
   #casper.test.comment "sleeping 250ms"
   casper.wait(250)
 
-PisoAuction.test = (testBlock) ->
+PennyAuction.test = (testBlock) ->
 	# clear the data
 	casper.test.info "Resetting fixtures"
 	casper.start "http://localhost:8081/reset_data"
@@ -18,7 +18,7 @@ PisoAuction.test = (testBlock) ->
 		@test.done()
 
 # define a login shortcut
-PisoAuction.login = (username, password, callback) ->
+PennyAuction.login = (username, password, callback) ->
 	casper.test.info "Logging in as '#{username}'"
 	casper.test.assertVisible "#login-wrapper",
 		"Login wrapper should be visible"
@@ -35,7 +35,7 @@ PisoAuction.login = (username, password, callback) ->
 	, callback
 
 # define a logout shortcut
-PisoAuction.logout = (callback) ->
+PennyAuction.logout = (callback) ->
 	casper.test.info "Logging out"
 	casper.test.assertNotVisible "#login-wrapper",
 		"Login wrapper shouldn't be visible"
@@ -48,7 +48,7 @@ PisoAuction.logout = (callback) ->
 	, callback
 
 # define a shortcut for expecting certain dialog messages
-PisoAuction.expectMessage = (expectedMessage) ->
+PennyAuction.expectMessage = (expectedMessage) ->
 	casper.test.assertVisible "#messageDialog",
 		"Message dialog shown"
 	actualMessage = casper.fetchText "#messageDialog p"
@@ -56,7 +56,7 @@ PisoAuction.expectMessage = (expectedMessage) ->
 		"Check message"
 
 # define a shortcut for expecting certain dialog partial messages
-PisoAuction.expectMessageRegex = (expectedRegex) ->
+PennyAuction.expectMessageRegex = (expectedRegex) ->
 	casper.test.assertVisible "#messageDialog",
 		"Message dialog shown"
 	actualMessage = casper.fetchText "#messageDialog p"

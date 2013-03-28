@@ -1,7 +1,7 @@
-PisoAuction = casper.PisoAuction
+PennyAuction = casper.PennyAuction
 
 # define a registration shortcut
-PisoAuction.register = (props, callback) ->
+PennyAuction.register = (props, callback) ->
 	casper.reload ->
 		casper.fill "form#registration-form", props, false
 		casper.click ".submit-review a.sub-hover"
@@ -14,7 +14,7 @@ PisoAuction.register = (props, callback) ->
 			actualMessage = casper.fetchText "#messageDialog p"
 			casper.test.error actualMessage
 
-PisoAuction.test ->
+PennyAuction.test ->
 	# register a valid account
 	casper.then ->
 		casper.test.comment "Testing successful user registration"
@@ -24,7 +24,7 @@ PisoAuction.test ->
 				"Check page title"
 
 			email = "sumd00d@hotmail.com"
-			PisoAuction.register
+			PennyAuction.register
 				"FirstName": "Some"
 				"LastName": "Dude"
 				"Username": "somed00d"

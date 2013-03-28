@@ -1,18 +1,7 @@
 Readme
 ======
 
-Check out the <a href="https://github.com/PraetoriumUS/PisoAuction/blob/master/docs/vision.md" title="Vision Document">vision document</a> (/<a href="https://github.com/PraetoriumUS/PisoAuction/tree/master/docs">docs</a>/<a href="https://github.com/PraetoriumUS/PisoAuction/blob/master/docs/vision.md">vision.md</a>)
+license: [AGPLv3](http://www.gnu.org/licenses/agpl-3.0.html)
 
-Tools & Utilities
------------------
-UML Modeling - <a href="http://argouml.tigris.org/" title="ArgoUML">ArgoUML</a>
+This is an implementation of a penny auction site like [Deal Dash](http://www.dealdash.com) for use on Google App Engine infrastructure. The code is a bit messy both from being a rapidly developed prototype and because it was not originally intended to be open sourced.
 
-Technologies
-------------
-* **API** - Python
-* **Client** - HTML5 / NodeJS / JQuery (Server Side Language?)
-* **Database** - ??? on Amazon RDS/DynamoDB
-* **Web Server** - Nginx on Amazon EC2
-* **Content Delivery Network** - Amazon S3 storage delivered by Amazon CloudFront
-* **Load Balancer** - Amazon Elastic Load Balancer
-* **Static IPs** - Amazon Elastic IPs

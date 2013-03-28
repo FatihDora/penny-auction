@@ -1,19 +1,19 @@
-PisoAuction = casper.PisoAuction
+PennyAuction = casper.PennyAuction
 
 # define a registration shortcut
-PisoAuction.register = (props, failureMessage) ->
+PennyAuction.register = (props, failureMessage) ->
     casper.reload ->
         casper.fill "form#registration-form", props, false
         casper.click ".submit-review a.sub-hover"
         casper.waitUntilVisible "#registration-complete", ->
             casper.test.error "Registration was completed successfully, when it shouldn't have"
         , ->
-            PisoAuction.expectMessage failureMessage
+            PennyAuction.expectMessage failureMessage
             casper.test.assertNotVisible "#registration-complete strong",
                 "User registration email shouldn't be visible"
         , 500
 
-PisoAuction.registrationProperties = ->
+PennyAuction.registrationProperties = ->
     "FirstName": "Some"
     "LastName": "Dude"
     "Username": "somed00d"
@@ -22,7 +22,7 @@ PisoAuction.registrationProperties = ->
     "termsandconditions": true
 
 
-PisoAuction.test ->
+PennyAuction.test ->
     casper.then ->
         casper.test.comment "Testing bad user registration (missing fields)"
         casper.click "#register-link"
@@ -33,42 +33,42 @@ PisoAuction.test ->
     # without FirstName
     casper.then ->
         casper.test.comment "Without first name"
-        props = PisoAuction.registrationProperties()
+        props = PennyAuction.registrationProperties()
         delete props["FirstName"]
-        PisoAuction.register props, "A First Name is required."
+        PennyAuction.register props, "A First Name is required."
 
     # without LastName
     casper.then ->
         casper.test.comment "Without last name"
-        props = PisoAuction.registrationProperties()
+        props = PennyAuction.registrationProperties()
         delete props["LastName"]
-        PisoAuction.register props, "A Last Name is required."
+        PennyAuction.register props, "A Last Name is required."
 
     # without Username
     casper.then ->
         casper.test.comment "Without username"
-        props = PisoAuction.registrationProperties()
+        props = PennyAuction.registrationProperties()
         delete props["Username"]
-        PisoAuction.register props, "A username is required."
+        PennyAuction.register props, "A username is required."
 
     # without Email
     casper.then ->
         casper.test.comment "Without email"
-        props = PisoAuction.registrationProperties()
+        props = PennyAuction.registrationProperties()
         delete props["Email"]
-        PisoAuction.register props, "An email address is required."
+        PennyAuction.register props, "An email address is required."
 
     # without Password
     casper.then ->
         casper.test.comment "Without password"
-        props = PisoAuction.registrationProperties()
+        props = PennyAuction.registrationProperties()
         delete props["Password"]
-        PisoAuction.register props, "A password is required."
+        PennyAuction.register props, "A password is required."
 
     # without terms & conditions
     casper.then ->
         casper.test.comment "Without terms & conditions"
-        props = PisoAuction.registrationProperties()
+        props = PennyAuction.registrationProperties()
         delete props["termsandconditions"]
-        PisoAuction.register props,
+        PennyAuction.register props,
             "You must accept our terms and conditions to register an account."
